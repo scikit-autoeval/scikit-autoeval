@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: scikit-eval
+Version: 0.1.0
+Summary: AutoEval library for automatic evaluation of supervised models
+Author-email: Lucas Santos Rodeigues <lucasantos2003@gmail.com>, Ismael Santana Silva <ismasantana@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/ismasantana/AutoEval
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: scikit-learn>=1.0
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: pytest

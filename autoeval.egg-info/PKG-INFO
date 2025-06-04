@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: autoeval
+Version: 0.1.0
+Summary: AutoEval: Automatic model evaluation tools
+Author-email: Seu Nome <seu@email.com>
+License: MIT
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: scikit-learn
