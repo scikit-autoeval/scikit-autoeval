@@ -43,7 +43,7 @@ class ConfidenceThresholdEvaluator(BaseEstimator):
         dict
         Dictionary with estimated scores for each scorer.
         '''
-        conf, correct = self._get_confidences_and_correct(X)
+        conf, correct = self.__get_confidences_and_correct(X)
         
         if self.verbose:
             print("[Verbose] Confidences:", conf)
@@ -52,7 +52,7 @@ class ConfidenceThresholdEvaluator(BaseEstimator):
         if not np.any(correct):
             if self.verbose:
                 print("[Verbose] No predictions passed the threshold.")
-            return {name: 0.0 for name in self._get_scorer_names()}
+            return {name: 0.0 for name in self.__get_scorer_names()}
 
         y_pred = self.estimator.predict(X)
         y_estimated = [y_pred[i] if c == 1 else (y_pred[i]+1)%2 for i, c in enumerate(correct)]
@@ -78,7 +78,7 @@ class ConfidenceThresholdEvaluator(BaseEstimator):
         else:
             raise ValueError("'scorer' must be a callable or a dict of callables.")
 
-    def _get_confidences_and_correct(self, X):
+    def __get_confidences_and_correct(self, X):
         """
         Computes confidence scores and applies the confidence threshold.
 
@@ -101,7 +101,7 @@ class ConfidenceThresholdEvaluator(BaseEstimator):
         return conf, correct
 
         
-    def _get_scorer_names(self):
+    def __get_scorer_names(self):
         """
         Returns the names of the scorers.
         
