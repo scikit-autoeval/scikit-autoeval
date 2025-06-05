@@ -21,8 +21,8 @@ def datasets():
         y = df["Alzheimer"]
         return X, y
 
-    X_geri, y_geri = load_dataset("datasets/geriatria-controle-alzheimerLabel.csv")
-    X_neuro, y_neuro = load_dataset("datasets/neurologia-controle-alzheimerLabel.csv")
+    X_geri, y_geri = load_dataset("skeval/datasets/geriatria-controle-alzheimerLabel.csv")
+    X_neuro, y_neuro = load_dataset("skeval/datasets/neurologia-controle-alzheimerLabel.csv")
     return X_geri, y_geri, X_neuro, y_neuro
 
 @pytest.fixture
