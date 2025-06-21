@@ -5,8 +5,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, mean_absolute_error, mean_squared_error
 
-from evaluators.confidence import ConfidenceThresholdEvaluator
-from metrics.comparison import score_error
+from ..evaluators.confidence import ConfidenceThresholdEvaluator
+from ..metrics.comparison import score_error
 
 def load_dataset(path):
     df = pd.read_csv(path)
@@ -49,3 +49,4 @@ def run_score_error_test(X_train, y_train, X_test, y_test, label):
 if __name__ == "__main__":
     run_score_error_test(X_geri, y_geri, X_neuro, y_neuro, "Geriatria → Neurologia")
     run_score_error_test(X_neuro, y_neuro, X_geri, y_geri, "Neurologia → Geriatria")
+    

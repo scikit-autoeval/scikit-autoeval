@@ -1,24 +1,78 @@
-from sklearn.base import BaseEstimator
-from sklearn.metrics import accuracy_score
+# Authors: The scikit-autoeval developers
+# SPDX-License-Identifier: BSD-3-Clause
 import numpy as np
+from sklearn.metrics import accuracy_score
 
-class ConfidenceThresholdEvaluator(BaseEstimator):
+# Assuming 'base' is in a parent directory, used for context.
+from ..base import BaseEvaluator
+
+class ConfidenceThresholdEvaluator(BaseEvaluator):
     """
-        Confidence-based evaluator for classification models.
+    Confidence-based evaluator for classification models.
 
-        Parameters:
-        -----------
-        estimator : object
-            Any model with fit/predict/predict_proba or decision_function methods.
-        scorer : callable or dict of str -> callable
-            Evaluation function or a dict of multiple evaluation functions.
-        threshold : float
-            Minimum confidence required to include a prediction.
-        limit_to_top_class : bool
-            If True, uses only the top class probability as confidence.
-        verbose : bool
-            If True, prints additional information during evaluation.
-        """
+    This evaluator filters the predictions of a classification model based on a
+    confidence threshold. Only predictions with a confidence greater than or
+    equal to the specified threshold are considered for scoring.
+
+    Parameters
+    ----------
+    estimator : object
+        Any model with `fit`, `predict`, and `predict_proba` or
+        `decision_function` methods.
+    scorer : callable or dict of str -> callable, default=accuracy_score
+        An evaluation function or a dict of multiple evaluation functions.
+    threshold : float, default=0.8
+        The minimum confidence required to include a prediction in the calculation.
+    limit_to_top_class : bool, default=True
+        If True, uses only the probability of the top class as the confidence score.
+    verbose : bool, default=False
+        If True, prints additional information during evaluation.
+
+    Attributes
+    ----------
+    estimator : object
+        The estimator passed in the constructor.
+    scorer : callable or dict
+        The scoring function(s) passed in the constructor.
+    threshold : float
+        The confidence threshold.
+    limit_to_top_class : bool
+        Indicates if confidence is based solely on the highest probability class.
+    verbose : bool
+        The verbosity level.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from sklearn.linear_model import LogisticRegression
+    >>> from sklearn.metrics import precision_score, recall_score
+    >>> # Sample data
+    >>> X_train = np.array([[1], [2], [3], [4], [5], [6]])
+    >>> y_train = np.array([0, 0, 0, 1, 1, 1])
+    >>> X_test = np.array([[0.5], [0.8], [3.5], [5.5]])
+    >>> # 1. Create and train a standard classifier
+    >>> classifier = LogisticRegression(solver='liblinear', random_state=0)
+    >>> classifier.fit(X_train, y_train)
+    LogisticRegression(random_state=0, solver='liblinear')
+    >>> # 2. Create the evaluator with the trained classifier
+    >>> scorings = {'precision': precision_score, 'recall': recall_score}
+    >>> conf_eval = ConfidenceThresholdEvaluator(
+    ...     estimator=classifier,
+    ...     scorer=scorings,
+    ...     threshold=0.9
+    ... )
+    >>> # 3. The fit method is for compatibility, not strictly needed here
+    >>> #    since the estimator is already trained.
+    >>> conf_eval.fit(X_train, y_train)
+    ConfidenceThresholdEvaluator(...)
+    >>> # 4. Estimate the performance on the test set
+    >>> #    The evaluator will internally call classifier.predict_proba(X_test)
+    >>> scores = conf_eval.estimate(X_test)
+    >>> for score_name, value in scores.items():
+    ...    print(f"{score_name}: {value:.2f}")
+    precision: 1.00
+    recall: 1.00
+    """
     
     def __init__(self, estimator, scorer=accuracy_score, threshold=0.8, limit_to_top_class=True, verbose=False):
         self.estimator = estimator
@@ -28,30 +82,52 @@ class ConfidenceThresholdEvaluator(BaseEstimator):
         self.verbose = verbose
 
     def fit(self, X, y):
+        """
+        Fits the estimator to the training data.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            The training input samples.
+        y : array-like of shape (n_samples,)
+            The target labels.
+
+        Returns
+        -------
+        self : object
+            Returns the instance itself.
+        """
         self.estimator.fit(X, y)
         return self
 
     def estimate(self, X):
-        '''
+        """
         Estimates scores based on the confidence threshold.
-        Parameters:
-        -----------
-        X : array-like, shape (n_samples, n_features)
+
+        This method calculates the prediction confidences, filters out those
+        that do not meet the threshold, and then computes the score(s)
+        specified in the `scorer`.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
             Input data for which to estimate scores.
-        Returns:
-        --------
+
+        Returns
+        -------
         dict
-        Dictionary with estimated scores for each scorer.
-        '''
+            A dictionary with estimated scores for each scorer. If no predictions
+            pass the threshold, it returns 0.0 for each scorer.
+        """
         conf, correct = self.__get_confidences_and_correct(X)
         
         if self.verbose:
-            print("[Verbose] Confidences:", conf)
-            print("[Verbose] Passed threshold:", correct)
+            print("Confidences:", conf)
+            print("Passed threshold:", correct)
 
         if not np.any(correct):
             if self.verbose:
-                print("[Verbose] No predictions passed the threshold.")
+                print("No predictions passed the threshold.")
             return {name: 0.0 for name in self.__get_scorer_names()}
 
         y_pred = self.estimator.predict(X)
@@ -59,8 +135,8 @@ class ConfidenceThresholdEvaluator(BaseEstimator):
         y_estimated = [int(y) for y in y_estimated]
 
         if self.verbose:
-            print("[Verbose] y_pred:", y_pred)
-            print("[Verbose] y_estimated:", y_estimated)
+            print("y_pred:", y_pred)
+            print("y_estimated:", y_estimated)
 
         if isinstance(self.scorer, dict):
             scores = {
@@ -68,12 +144,12 @@ class ConfidenceThresholdEvaluator(BaseEstimator):
                 for name, func in self.scorer.items()
             }
             if self.verbose:
-                print("[Verbose] Estimated scores:", scores)
+                print("Estimated scores:", scores)
             return scores
         elif callable(self.scorer):
             score = self.scorer(y_estimated, y_pred)
             if self.verbose:
-                print("[Verbose] Estimated score:", score)
+                print("Estimated score:", score)
             return {'score': score}
         else:
             raise ValueError("'scorer' must be a callable or a dict of callables.")
@@ -82,11 +158,29 @@ class ConfidenceThresholdEvaluator(BaseEstimator):
         """
         Computes confidence scores and applies the confidence threshold.
 
-        Returns:
-        --------
-        tuple (confidences, correct)
-            confidences: array of confidence scores
-            correct: boolean array where confidence >= threshold
+        This private method extracts prediction confidences from the estimator,
+        either from `predict_proba` or `decision_function`. It then compares
+        these confidences against the `threshold` to determine which predictions
+        are considered correct (above the threshold).
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            The input data.
+
+        Returns
+        -------
+        confidences : ndarray
+            An array of confidence scores for each sample.
+        correct : ndarray of bool
+            A boolean array indicating `True` for samples where confidence
+            is greater than or equal to the `threshold`.
+        
+        Raises
+        ------
+        ValueError
+            If the estimator does not implement `predict_proba` or
+            `decision_function` methods.
         """
         if hasattr(self.estimator, "predict_proba"):
             probas = self.estimator.predict_proba(X)
@@ -105,14 +199,14 @@ class ConfidenceThresholdEvaluator(BaseEstimator):
         """
         Returns the names of the scorers.
         
-        Parameters:
-        -----------
-        None
-        
-        Returns:
-        --------
+        This helper method gets the names of the scoring functions to be used
+        as keys in the results dictionary.
+
+        Returns
+        -------
         list
-            List of scorer names.
+            A list containing the names of the scorers. If the scorer is a
+            single callable, it returns `['score']`.
         """
         if isinstance(self.scorer, dict):
             return list(self.scorer.keys())
