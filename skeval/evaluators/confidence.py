@@ -3,13 +3,12 @@
 import numpy as np
 from sklearn.metrics import accuracy_score
 
-# Assuming 'base' is in a parent directory, used for context.
-from ..base import BaseEvaluator
+from skeval.base import BaseEvaluator
 
 class ConfidenceThresholdEvaluator(BaseEvaluator):
     """
     Confidence-based evaluator for classification models.
-
+    
     This evaluator filters the predictions of a classification model based on a
     confidence threshold. Only predictions with a confidence greater than or
     equal to the specified threshold are considered for scoring.
@@ -20,7 +19,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         Any model with `fit`, `predict`, and `predict_proba` or
         `decision_function` methods.
     scorer : callable or dict of str -> callable, default=accuracy_score
-        An evaluation function or a dict of multiple evaluation functions.
+        An evaluation function or a dictionary of multiple evaluation functions.
     threshold : float, default=0.8
         The minimum confidence required to include a prediction in the calculation.
     limit_to_top_class : bool, default=True
@@ -69,7 +68,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
     >>> #    The evaluator will internally call classifier.predict_proba(X_test)
     >>> scores = conf_eval.estimate(X_test)
     >>> for score_name, value in scores.items():
-    ...    print(f"{score_name}: {value:.2f}")
+    ...     print(f"{score_name}: {value:.2f}")
     precision: 1.00
     recall: 1.00
     """
@@ -116,8 +115,9 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         Returns
         -------
         dict
-            A dictionary with estimated scores for each scorer. If no predictions
-            pass the threshold, it returns 0.0 for each scorer.
+            A dictionary with estimated scores for each scorer.
+
+            If no predictions pass the threshold, it returns 0.0 for each scorer.
         """
         conf, correct = self.__get_confidences_and_correct(X)
         
@@ -161,7 +161,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         This private method extracts prediction confidences from the estimator,
         either from `predict_proba` or `decision_function`. It then compares
         these confidences against the `threshold` to determine which predictions
-        are considered correct (above the threshold).
+        are considered to meet the confidence criteria.
 
         Parameters
         ----------

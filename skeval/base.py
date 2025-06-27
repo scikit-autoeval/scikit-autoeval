@@ -7,11 +7,6 @@ class BaseEvaluator(BaseEstimator):
     All evaluators should inherit from this class and implement the `estimate` method.
     This class also inherits from `sklearn.base.BaseEstimator` to ensure compatibility
     with scikit-learn utilities like `get_params` and `set_params`.
-
-    Methods
-    -------
-    estimate(X)
-        Abstract method to be implemented by subclasses for evaluating performance.
     """
 
     def estimate(self, X):
