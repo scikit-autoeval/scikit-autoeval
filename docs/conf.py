@@ -34,3 +34,25 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 html_theme = 'furo'
 html_static_path = ['_static']
+html_baseurl = "https://scikit-autoeval.github.io/scikit-autoeval/"
+
+html_theme_options = {
+    "navigation_with_keys": True,
+    "light_logo": "logo-light.png",
+    "dark_logo": "logo-dark.png",
+    "sidebar_hide_name": True,
+    "source_repository": "https://github.com/scikit-autoeval/scikit-autoeval/",
+    "source_branch": "main",
+    "source_directory": "docs/",
+}
+
+html_context = {
+    "display_github": True,
+    "github_user": "scikit-autoeval",
+    "github_repo": "scikit-autoeval",
+    "github_version": "main",
+    "conf_py_path": "/docs/",
+}
+
+html_theme_options["relbar"] = False
+
