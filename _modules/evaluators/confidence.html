@@ -263,7 +263,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    estimator : object</span>
+<span class="sd">    model : object</span>
 <span class="sd">        Any model with `fit`, `predict`, and `predict_proba` or</span>
 <span class="sd">        `decision_function` methods.</span>
 <span class="sd">    scorer : callable or dict of str -&gt; callable, default=accuracy_score</span>
@@ -277,8 +277,8 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    estimator : object</span>
-<span class="sd">        The estimator passed in the constructor.</span>
+<span class="sd">    model : object</span>
+<span class="sd">        The model passed in the constructor.</span>
 <span class="sd">    scorer : callable or dict</span>
 <span class="sd">        The scoring function(s) passed in the constructor.</span>
 <span class="sd">    threshold : float</span>
@@ -304,12 +304,12 @@
 <span class="sd">    &gt;&gt;&gt; # 2. Create the evaluator with the trained classifier</span>
 <span class="sd">    &gt;&gt;&gt; scorings = {&#39;precision&#39;: precision_score, &#39;recall&#39;: recall_score}</span>
 <span class="sd">    &gt;&gt;&gt; conf_eval = ConfidenceThresholdEvaluator(</span>
-<span class="sd">    ...     estimator=classifier,</span>
+<span class="sd">    ...     model=classifier,</span>
 <span class="sd">    ...     scorer=scorings,</span>
 <span class="sd">    ...     threshold=0.9</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; # 3. The fit method is for compatibility, not strictly needed here</span>
-<span class="sd">    &gt;&gt;&gt; #    since the estimator is already trained.</span>
+<span class="sd">    &gt;&gt;&gt; #    since the model is already trained.</span>
 <span class="sd">    &gt;&gt;&gt; conf_eval.fit(X_train, y_train)</span>
 <span class="sd">    ConfidenceThresholdEvaluator(...)</span>
 <span class="sd">    &gt;&gt;&gt; # 4. Estimate the performance on the test set</span>
@@ -321,8 +321,8 @@
 <span class="sd">    recall: 1.00</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">limit_to_top_class</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">limit_to_top_class</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span> <span class="o">=</span> <span class="n">scorer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">limit_to_top_class</span> <span class="o">=</span> <span class="n">limit_to_top_class</span>
@@ -332,7 +332,7 @@
 <a class="viewcode-back" href="../../evaluators.html#evaluators.confidence.ConfidenceThresholdEvaluator.fit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Fits the estimator to the training data.</span>
+<span class="sd">        Fits the model to the training data.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -346,7 +346,7 @@
 <span class="sd">        self : object</span>
 <span class="sd">            Returns the instance itself.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
@@ -383,7 +383,7 @@
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No predictions passed the threshold.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_scorer_names</span><span class="p">()}</span>
 
-        <span class="n">y_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">y_estimated</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">correct</span><span class="p">)]</span>
         <span class="n">y_estimated</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">y_estimated</span><span class="p">]</span>
 
@@ -412,7 +412,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes confidence scores and applies the confidence threshold.</span>
 
-<span class="sd">        This private method extracts prediction confidences from the estimator,</span>
+<span class="sd">        This private method extracts prediction confidences from the model,</span>
 <span class="sd">        either from `predict_proba` or `decision_function`. It then compares</span>
 <span class="sd">        these confidences against the `threshold` to determine which predictions</span>
 <span class="sd">        are considered to meet the confidence criteria.</span>
@@ -433,17 +433,17 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If the estimator does not implement `predict_proba` or</span>
+<span class="sd">            If the model does not implement `predict_proba` or</span>
 <span class="sd">            `decision_function` methods.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span> <span class="s2">&quot;predict_proba&quot;</span><span class="p">):</span>
-            <span class="n">probas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;predict_proba&quot;</span><span class="p">):</span>
+            <span class="n">probas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
             <span class="n">conf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">probas</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit_to_top_class</span> <span class="k">else</span> <span class="n">probas</span>
-        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span> <span class="s2">&quot;decision_function&quot;</span><span class="p">):</span>
-            <span class="n">decision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;decision_function&quot;</span><span class="p">):</span>
+            <span class="n">decision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
             <span class="n">conf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">decision</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">decision</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">decision</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The estimator must implement predict_proba or decision_function.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The model must implement predict_proba or decision_function.&quot;</span><span class="p">)</span>
         
         <span class="n">correct</span> <span class="o">=</span> <span class="n">conf</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>
         <span class="k">return</span> <span class="n">conf</span><span class="p">,</span> <span class="n">correct</span>

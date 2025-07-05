@@ -263,7 +263,7 @@
 <span id="evaluators-confidence-module"></span><h2>evaluators.confidence module<a class="headerlink" href="#module-evaluators.confidence" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.confidence.</span></span><span class="sig-name descname"><span class="pre">ConfidenceThresholdEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold=0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_to_top_class=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.confidence.</span></span><span class="sig-name descname"><span class="pre">ConfidenceThresholdEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold=0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_to_top_class=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
 <p>Confidence-based evaluator for classification models.</p>
 <p>This evaluator filters the predictions of a classification model based on a
@@ -272,7 +272,7 @@ equal to the specified threshold are considered for scoring.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>estimator</strong> (<em>object</em>) – Any model with <cite>fit</cite>, <cite>predict</cite>, and <cite>predict_proba</cite> or
+<li><p><strong>model</strong> (<em>object</em>) – Any model with <cite>fit</cite>, <cite>predict</cite>, and <cite>predict_proba</cite> or
 <cite>decision_function</cite> methods.</p></li>
 <li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – An evaluation function or a dictionary of multiple evaluation functions.</p></li>
 <li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>default=0.8</em>) – The minimum confidence required to include a prediction in the calculation.</p></li>
@@ -282,9 +282,9 @@ equal to the specified threshold are considered for scoring.</p>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.estimator">
-<span class="sig-name descname"><span class="pre">estimator</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.estimator" title="Link to this definition">¶</a></dt>
-<dd><p>The estimator passed in the constructor.</p>
+<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.model" title="Link to this definition">¶</a></dt>
+<dd><p>The model passed in the constructor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>object</p>
@@ -351,12 +351,12 @@ equal to the specified threshold are considered for scoring.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># 2. Create the evaluator with the trained classifier</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scorings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="n">precision_score</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">:</span> <span class="n">recall_score</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">conf_eval</span> <span class="o">=</span> <span class="n">ConfidenceThresholdEvaluator</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">estimator</span><span class="o">=</span><span class="n">classifier</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">classifier</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">scorer</span><span class="o">=</span><span class="n">scorings</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">threshold</span><span class="o">=</span><span class="mf">0.9</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># 3. The fit method is for compatibility, not strictly needed here</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#    since the estimator is already trained.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#    since the model is already trained.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">conf_eval</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="go">ConfidenceThresholdEvaluator(...)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># 4. Estimate the performance on the test set</span>
@@ -393,7 +393,7 @@ specified in the <cite>scorer</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.fit">
 <span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.fit" title="Link to this definition">¶</a></dt>
-<dd><p>Fits the estimator to the training data.</p>
+<dd><p>Fits the model to the training data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -417,7 +417,7 @@ specified in the <cite>scorer</cite>.</p>
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-evaluators" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.</span></span><span class="sig-name descname"><span class="pre">ConfidenceThresholdEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold=0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_to_top_class=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.</span></span><span class="sig-name descname"><span class="pre">ConfidenceThresholdEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold=0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_to_top_class=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
 <p>Confidence-based evaluator for classification models.</p>
 <p>This evaluator filters the predictions of a classification model based on a
@@ -426,7 +426,7 @@ equal to the specified threshold are considered for scoring.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>estimator</strong> (<em>object</em>) – Any model with <cite>fit</cite>, <cite>predict</cite>, and <cite>predict_proba</cite> or
+<li><p><strong>model</strong> (<em>object</em>) – Any model with <cite>fit</cite>, <cite>predict</cite>, and <cite>predict_proba</cite> or
 <cite>decision_function</cite> methods.</p></li>
 <li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – An evaluation function or a dictionary of multiple evaluation functions.</p></li>
 <li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>default=0.8</em>) – The minimum confidence required to include a prediction in the calculation.</p></li>
@@ -436,9 +436,9 @@ equal to the specified threshold are considered for scoring.</p>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator.estimator">
-<span class="sig-name descname"><span class="pre">estimator</span></span><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator.estimator" title="Link to this definition">¶</a></dt>
-<dd><p>The estimator passed in the constructor.</p>
+<dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator.model" title="Link to this definition">¶</a></dt>
+<dd><p>The model passed in the constructor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>object</p>
@@ -505,12 +505,12 @@ equal to the specified threshold are considered for scoring.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># 2. Create the evaluator with the trained classifier</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scorings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="n">precision_score</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">:</span> <span class="n">recall_score</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">conf_eval</span> <span class="o">=</span> <span class="n">ConfidenceThresholdEvaluator</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">estimator</span><span class="o">=</span><span class="n">classifier</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">classifier</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">scorer</span><span class="o">=</span><span class="n">scorings</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">threshold</span><span class="o">=</span><span class="mf">0.9</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># 3. The fit method is for compatibility, not strictly needed here</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#    since the estimator is already trained.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#    since the model is already trained.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">conf_eval</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="go">ConfidenceThresholdEvaluator(...)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># 4. Estimate the performance on the test set</span>
@@ -547,7 +547,7 @@ specified in the <cite>scorer</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator.fit">
 <span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator.fit" title="Link to this definition">¶</a></dt>
-<dd><p>Fits the estimator to the training data.</p>
+<dd><p>Fits the model to the training data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -628,7 +628,7 @@ specified in the <cite>scorer</cite>.</p>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-evaluators.confidence">evaluators.confidence module</a><ul>
 <li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator</span></code></a><ul>
-<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.estimator"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.estimator</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.model"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.model</span></code></a></li>
 <li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.scorer"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.scorer</span></code></a></li>
 <li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.threshold"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.threshold</span></code></a></li>
 <li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.limit_to_top_class"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.limit_to_top_class</span></code></a></li>
@@ -641,7 +641,7 @@ specified in the <cite>scorer</cite>.</p>
 </li>
 <li><a class="reference internal" href="#module-evaluators">Module contents</a><ul>
 <li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator</span></code></a><ul>
-<li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.estimator"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.estimator</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.model"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.model</span></code></a></li>
 <li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.scorer"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.scorer</span></code></a></li>
 <li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.threshold"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.threshold</span></code></a></li>
 <li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.limit_to_top_class"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.limit_to_top_class</span></code></a></li>
