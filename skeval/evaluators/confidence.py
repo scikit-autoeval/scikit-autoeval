@@ -15,7 +15,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
 
     Parameters
     ----------
-    estimator : object
+    model : object
         Any model with `fit`, `predict`, and `predict_proba` or
         `decision_function` methods.
     scorer : callable or dict of str -> callable, default=accuracy_score
@@ -29,8 +29,8 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
 
     Attributes
     ----------
-    estimator : object
-        The estimator passed in the constructor.
+    model : object
+        The model passed in the constructor.
     scorer : callable or dict
         The scoring function(s) passed in the constructor.
     threshold : float
@@ -56,12 +56,12 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
     >>> # 2. Create the evaluator with the trained classifier
     >>> scorings = {'precision': precision_score, 'recall': recall_score}
     >>> conf_eval = ConfidenceThresholdEvaluator(
-    ...     estimator=classifier,
+    ...     model=classifier,
     ...     scorer=scorings,
     ...     threshold=0.9
     ... )
     >>> # 3. The fit method is for compatibility, not strictly needed here
-    >>> #    since the estimator is already trained.
+    >>> #    since the model is already trained.
     >>> conf_eval.fit(X_train, y_train)
     ConfidenceThresholdEvaluator(...)
     >>> # 4. Estimate the performance on the test set
@@ -73,8 +73,8 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
     recall: 1.00
     """
     
-    def __init__(self, estimator, scorer=accuracy_score, threshold=0.8, limit_to_top_class=True, verbose=False):
-        self.estimator = estimator
+    def __init__(self, model, scorer=accuracy_score, threshold=0.8, limit_to_top_class=True, verbose=False):
+        self.model = model
         self.scorer = scorer
         self.threshold = threshold
         self.limit_to_top_class = limit_to_top_class
@@ -82,7 +82,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
 
     def fit(self, X, y):
         """
-        Fits the estimator to the training data.
+        Fits the model to the training data.
 
         Parameters
         ----------
@@ -96,7 +96,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         self : object
             Returns the instance itself.
         """
-        self.estimator.fit(X, y)
+        self.model.fit(X, y)
         return self
 
     def estimate(self, X):
@@ -130,7 +130,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
                 print("No predictions passed the threshold.")
             return {name: 0.0 for name in self.__get_scorer_names()}
 
-        y_pred = self.estimator.predict(X)
+        y_pred = self.model.predict(X)
         y_estimated = [y_pred[i] if c == 1 else (y_pred[i]+1)%2 for i, c in enumerate(correct)]
         y_estimated = [int(y) for y in y_estimated]
 
@@ -158,7 +158,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         """
         Computes confidence scores and applies the confidence threshold.
 
-        This private method extracts prediction confidences from the estimator,
+        This private method extracts prediction confidences from the model,
         either from `predict_proba` or `decision_function`. It then compares
         these confidences against the `threshold` to determine which predictions
         are considered to meet the confidence criteria.
@@ -179,17 +179,17 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         Raises
         ------
         ValueError
-            If the estimator does not implement `predict_proba` or
+            If the model does not implement `predict_proba` or
             `decision_function` methods.
         """
-        if hasattr(self.estimator, "predict_proba"):
-            probas = self.estimator.predict_proba(X)
+        if hasattr(self.model, "predict_proba"):
+            probas = self.model.predict_proba(X)
             conf = np.max(probas, axis=1) if self.limit_to_top_class else probas
-        elif hasattr(self.estimator, "decision_function"):
-            decision = self.estimator.decision_function(X)
+        elif hasattr(self.model, "decision_function"):
+            decision = self.model.decision_function(X)
             conf = np.max(decision, axis=1) if decision.ndim > 1 else np.abs(decision)
         else:
-            raise ValueError("The estimator must implement predict_proba or decision_function.")
+            raise ValueError("The model must implement predict_proba or decision_function.")
         
         correct = conf >= self.threshold
         return conf, correct

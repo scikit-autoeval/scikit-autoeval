@@ -11,7 +11,7 @@ class BaseEvaluator(BaseEstimator):
 
     def estimate(self, X):
         """
-        Abstract method to estimate the estimator's performance on the given data.
+        Abstract method to estimate the model's performance on the given data.
 
         Parameters
         ----------

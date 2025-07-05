@@ -21,7 +21,7 @@ from ..confidence import ConfidenceThresholdEvaluator
 class TestConfidenceThresholdEvaluator(unittest.TestCase):
 
     def setUp(self):
-        """Set up a trained estimator and test data."""
+        """Set up a trained model and test data."""
         self.X_train = np.array([[1], [2], [3], [4], [5], [6]])
         self.y_train = np.array([0, 0, 0, 1, 1, 1])
         self.X_test = np.array([[0.5], [2.5], [3.5], [5.8]]) # Probas: [~0.7, ~0.5, ~0.5, ~0.9]
@@ -33,7 +33,7 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
     def test_initialization(self):
         """Test if attributes are set correctly in the constructor."""
         evaluator = ConfidenceThresholdEvaluator(self.classifier, scorer=accuracy_score, threshold=0.9)
-        self.assertIs(evaluator.estimator, self.classifier)
+        self.assertIs(evaluator.model, self.classifier)
         self.assertIs(evaluator.scorer, accuracy_score)
         self.assertEqual(evaluator.threshold, 0.9)
 
@@ -80,7 +80,7 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
         self.assertAlmostEqual(scores['score'], 1.0)
         
     def test_estimator_with_decision_function(self):
-        """Test the evaluator with an estimator that uses decision_function (e.g., SVC)."""
+        """Test the evaluator with an model that uses decision_function (e.g., SVC)."""
         # SVC without probability=True does not have predict_proba
         svc_classifier = SVC(gamma='auto', random_state=0)
         svc_classifier.fit(self.X_train, self.y_train)
@@ -91,10 +91,10 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
             scores = evaluator.estimate(self.X_test)
             self.assertIn('score', scores)
         except ValueError:
-            self.fail("estimate() raised ValueError unexpectedly for estimator with decision_function.")
+            self.fail("estimate() raised ValueError unexpectedly for model with decision_function.")
 
     def test_estimator_with_no_confidence_method(self):
-        """Test if a ValueError is raised for an estimator without confidence methods."""
+        """Test if a ValueError is raised for an model without confidence methods."""
         class DummyEstimator:
             def fit(self, X, y):
                 return self
@@ -102,11 +102,11 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
                 return np.zeros(len(X))
 
         evaluator = ConfidenceThresholdEvaluator(DummyEstimator())
-        with self.assertRaisesRegex(ValueError, "The estimator must implement predict_proba or decision_function."):
+        with self.assertRaisesRegex(ValueError, "The model must implement predict_proba or decision_function."):
             evaluator.estimate(self.X_test)
 
     def test_fit_method(self):
-        """Test if the fit method trains the estimator."""
+        """Test if the fit method trains the model."""
         unfitted_classifier = LogisticRegression(solver='liblinear')
         evaluator = ConfidenceThresholdEvaluator(unfitted_classifier)
         
