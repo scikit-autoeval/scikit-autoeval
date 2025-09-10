@@ -245,7 +245,7 @@
           
 <section class="genindex-section">
   <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox"><a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#V"><strong>V</strong></a></div>
+  <div class="genindex-jumpbox"><a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#V"><strong>V</strong></a></div>
 </section>
 <section id="B" class="genindex-section">
   <h2>B</h2>
@@ -280,11 +280,11 @@
         <ul>
           <li><a href="evaluators.html#evaluators.ConfidenceThresholdEvaluator.estimate">(evaluators.ConfidenceThresholdEvaluator method)</a>
 </li>
+          <li><a href="evaluators.html#evaluators.regression.RegressionBasedEvaluator.estimate">(evaluators.regression.RegressionBasedEvaluator method)</a>
+</li>
           <li><a href="base.html#skeval.base.BaseEvaluator.estimate">(skeval.base.BaseEvaluator method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     evaluators
 
@@ -292,11 +292,20 @@
           <li><a href="evaluators.html#module-evaluators">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     evaluators.confidence
 
         <ul>
           <li><a href="evaluators.html#module-evaluators.confidence">module</a>
+</li>
+        </ul></li>
+        <li>
+    evaluators.regression
+
+        <ul>
+          <li><a href="evaluators.html#module-evaluators.regression">module</a>
 </li>
         </ul></li>
     </ul></td>
@@ -311,6 +320,8 @@
 
         <ul>
           <li><a href="evaluators.html#evaluators.ConfidenceThresholdEvaluator.fit">(evaluators.ConfidenceThresholdEvaluator method)</a>
+</li>
+          <li><a href="evaluators.html#evaluators.regression.RegressionBasedEvaluator.fit">(evaluators.regression.RegressionBasedEvaluator method)</a>
 </li>
           <li><a href="base.html#skeval.base.BaseEvaluator.fit">(skeval.base.BaseEvaluator method)</a>
 </li>
@@ -339,6 +350,12 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="metrics.html#metrics.scorers.make_scorer">make_scorer() (in module metrics.scorers)</a>
 </li>
+        <li><a href="evaluators.html#evaluators.regression.RegressionBasedEvaluator.mean_conf">mean_conf (evaluators.regression.RegressionBasedEvaluator attribute)</a>
+</li>
+        <li><a href="evaluators.html#evaluators.regression.RegressionBasedEvaluator.mean_entropy">mean_entropy (evaluators.regression.RegressionBasedEvaluator attribute)</a>
+</li>
+        <li><a href="evaluators.html#evaluators.regression.RegressionBasedEvaluator.meta_regressor">meta_regressor (evaluators.regression.RegressionBasedEvaluator attribute)</a>
+</li>
         <li>
     metrics
 
@@ -360,14 +377,14 @@
           <li><a href="metrics.html#module-metrics.scorers">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="evaluators.html#evaluators.confidence.ConfidenceThresholdEvaluator.model">model (evaluators.confidence.ConfidenceThresholdEvaluator attribute)</a>
 
         <ul>
           <li><a href="evaluators.html#evaluators.ConfidenceThresholdEvaluator.model">(evaluators.ConfidenceThresholdEvaluator attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     module
 
@@ -375,6 +392,8 @@
           <li><a href="evaluators.html#module-evaluators">evaluators</a>
 </li>
           <li><a href="evaluators.html#module-evaluators.confidence">evaluators.confidence</a>
+</li>
+          <li><a href="evaluators.html#module-evaluators.regression">evaluators.regression</a>
 </li>
           <li><a href="metrics.html#module-metrics">metrics</a>
 </li>
@@ -385,6 +404,16 @@
           <li><a href="base.html#module-skeval.base">skeval.base</a>
 </li>
         </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="evaluators.html#evaluators.regression.RegressionBasedEvaluator">RegressionBasedEvaluator (class in evaluators.regression)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -401,8 +430,12 @@
           <li><a href="evaluators.html#evaluators.ConfidenceThresholdEvaluator.scorer">(evaluators.ConfidenceThresholdEvaluator attribute)</a>
 </li>
         </ul></li>
+        <li><a href="evaluators.html#evaluators.regression.RegressionBasedEvaluator.set_fit_request">set_fit_request() (evaluators.regression.RegressionBasedEvaluator method)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="evaluators.html#evaluators.regression.RegressionBasedEvaluator.set_score_request">set_score_request() (evaluators.regression.RegressionBasedEvaluator method)</a>
+</li>
         <li>
     skeval.base
 
@@ -410,6 +443,10 @@
           <li><a href="base.html#module-skeval.base">module</a>
 </li>
         </ul></li>
+        <li><a href="evaluators.html#evaluators.regression.RegressionBasedEvaluator.std_conf">std_conf (evaluators.regression.RegressionBasedEvaluator attribute)</a>
+</li>
+        <li><a href="evaluators.html#evaluators.regression.RegressionBasedEvaluator.std_entropy">std_entropy (evaluators.regression.RegressionBasedEvaluator attribute)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -436,6 +473,8 @@
 
         <ul>
           <li><a href="evaluators.html#evaluators.ConfidenceThresholdEvaluator.verbose">(evaluators.ConfidenceThresholdEvaluator attribute)</a>
+</li>
+          <li><a href="evaluators.html#evaluators.regression.RegressionBasedEvaluator.verbose">(evaluators.regression.RegressionBasedEvaluator attribute)</a>
 </li>
         </ul></li>
     </ul></td>

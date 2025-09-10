@@ -12,6 +12,14 @@ evaluators.confidence module
    :show-inheritance:
    :undoc-members:
 
+evaluators.regression module
+----------------------------
+
+.. automodule:: evaluators.regression
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Module contents
 ---------------
 
