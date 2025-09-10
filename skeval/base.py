@@ -24,5 +24,23 @@ class BaseEvaluator(BaseEstimator):
             A dictionary containing the evaluation scores.
         """
         pass
+    
+    def fit(self, X, y):
+        """
+        Fit the evaluator to the training data.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data.
+        y : array-like of shape (n_samples,)
+            Target labels.
+
+        Returns
+        -------
+        self : object
+            Returns the instance itself.
+        """
+        pass
 
 

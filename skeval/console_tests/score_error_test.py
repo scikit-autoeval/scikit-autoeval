@@ -46,7 +46,7 @@ def run_score_error_test(X_train, y_train, X_test, y_test, label):
 
     print()
 
-if __name__ == "__main__":
-    run_score_error_test(X_geri, y_geri, X_neuro, y_neuro, "Geriatria → Neurologia")
-    run_score_error_test(X_neuro, y_neuro, X_geri, y_geri, "Neurologia → Geriatria")
+
+run_score_error_test(X_geri, y_geri, X_neuro, y_neuro, "Geriatria → Neurologia")
+run_score_error_test(X_neuro, y_neuro, X_geri, y_geri, "Neurologia → Geriatria")
     
