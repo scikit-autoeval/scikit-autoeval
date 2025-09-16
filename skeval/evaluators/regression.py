@@ -1,111 +1,131 @@
-from sklearn.base import RegressorMixin
-from sklearn.ensemble import RandomForestRegressor
-from skeval.base import BaseEvaluator
+# Authors: The scikit-autoeval developers
+# SPDX-License-Identifier: BSD-3-Clause
 import numpy as np
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import accuracy_score
+from skeval.base import BaseEvaluator
 
-class RegressionBasedEvaluator(BaseEvaluator, RegressorMixin):
+
+class RegressionBasedEvaluator(BaseEvaluator):
     """
     Regression-based evaluator for classification models.
-
-    This evaluator estimates the accuracy of a classification model without
-    requiring labeled test data. It trains a meta-regressor (e.g., Random Forest)
-    that maps meta-features extracted from predicted probability distributions
-    and classifier behavior to the model's true accuracy. Once trained, the
-    regressor can be used to predict the accuracy of new classifiers on
-    unlabeled datasets.
+    
+    This evaluator estimates the accuracy (or another performance metric) of a
+    classification model without requiring labeled test data. It does so by
+    extracting meta-features from the model's predicted probability
+    distributions (e.g., mean confidence, entropy) and feeding them into a
+    regression meta-model that has been trained to map such features to real
+    performance values.
 
     Parameters
     ----------
+    model : object
+        Any model with `fit`, `predict`, and `predict_proba` methods.
+    scorer : callable or dict of str -> callable, default=accuracy_score
+        An evaluation function or a dictionary of multiple evaluation functions.
     meta_regressor : object, default=None
-        A regression model implementing `fit` and `predict`.
-        If None, a RandomForestRegressor with 100 trees is used.
+        A regression model implementing `fit` and `predict`. If None, a
+        RandomForestRegressor with 100 trees is used.
     verbose : bool, default=False
         If True, prints additional information during training and estimation.
 
     Attributes
     ----------
+    model : object
+        The classification model passed in the constructor.
+    scorer : callable or dict
+        The scoring function(s) passed in the constructor.
     meta_regressor : object
         The regression model trained to predict classifier accuracy.
     verbose : bool
         The verbosity level.
-    mean_conf : float
-        Mean confidence score, computed as the average maximum predicted probability per sample.
-    std_conf : float
-        Standard deviation of the confidence scores across all samples.
-    mean_entropy : float
-        Mean entropy of the predicted probability distributions, reflecting overall uncertainty.
-    std_entropy : float
-        Standard deviation of the entropy values, reflecting variability in uncertainty across samples.
-
-    Examples
-    --------
-    >>> import numpy as np
-    >>> from sklearn.datasets import load_iris
-    >>> from sklearn.model_selection import train_test_split
-    >>> from sklearn.linear_model import LogisticRegression
-    >>> from skeval.regression_based import RegressionBasedEvaluator
-    >>> 
-    >>> # Load dataset
-    >>> X, y = load_iris(return_X_y=True)
-    >>> X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.3, random_state=42)
-    >>> 
-    >>> # Base classifier
-    >>> clf = LogisticRegression(max_iter=200)
-    >>> 
-    >>> # Create evaluator
-    >>> evaluator = RegressionBasedEvaluator()
-    >>> 
-    >>> # Fit evaluator using labeled validation data
-    >>> evaluator.fit(
-    ...     estimators=[clf],
-    ...     X_train_list=[X_train],
-    ...     y_train_list=[y_train],
-    ...     X_val_list=[X_val],
-    ...     y_val_list=[y_val]
-    ... )
-    RegressionBasedEvaluator(...)
-    >>> 
-    >>> # Estimate accuracy on unlabeled data
-    >>> acc_est = evaluator.estimate(clf, X_val)
-    >>> print(f"Estimated accuracy: {acc_est:.2f}")
-    Estimated accuracy: 0.92
     """
 
-    def __init__(self, meta_regressor=None, verbose=False):
+    def __init__(self, model, scorer=accuracy_score, meta_regressor=None, verbose=False):
+        self.model = model
+        self.scorer = scorer
         self.meta_regressor = meta_regressor or RandomForestRegressor(n_estimators=100, random_state=42)
         self.verbose = verbose
 
-    def _extract_metafeatures(self, estimator, X):
+    def fit(self, X, y):
         """
-        Extracts meta-features from input data based on predicted probability
-        distributions.
-
-        Examples of meta-features include:
-        - mean entropy of predicted probability distributions
-        - variance of predicted class probabilities
-        - mean maximum probability (average confidence)
+        Fits the base classification model.
 
         Parameters
         ----------
-        estimator : classifier with predict_proba method
-            The base classifier used for probability estimation.
         X : array-like of shape (n_samples, n_features)
+            The training input samples.
+        y : array-like of shape (n_samples,)
+            The target labels.
+
+        Returns
+        -------
+        self : object
+            Returns the instance itself.
+        """
+        self.model.fit(X, y)
+        return self
+
+    def estimate(self, X):
+        """
+        Estimates the model's performance on unlabeled data using
+        regression-based meta-features.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Unlabeled input data.
+
+        Returns
+        -------
+        dict
+            Dictionary containing the estimated performance scores.
+        """
+        feats = self.__extract_metafeatures(X)
+        acc_estimate = self.meta_regressor.predict(feats)[0]
+
+        if self.verbose:
+            print("[INFO] Extracted meta-features:", feats.flatten())
+            print("[INFO] Estimated accuracy:", acc_estimate)
+
+        # Support for multiple scorers
+        if isinstance(self.scorer, dict):
+            scores = {name: func([acc_estimate], [acc_estimate]) for name, func in self.scorer.items()}
+            if self.verbose:
+                print("[INFO] Estimated scores:", scores)
+            return scores
+        elif callable(self.scorer):
+            score = self.scorer([acc_estimate], [acc_estimate])
+            if self.verbose:
+                print("[INFO] Estimated score:", score)
+            return {"score": score}
+        else:
+            raise ValueError("'scorer' must be a callable or a dict of callables.")
+
+    def __extract_metafeatures(self, X):
+        """
+        Extracts meta-features from the model's predicted probabilities.
+
+        Features include:
+        - mean confidence (average max probability per sample)
+        - std confidence
+        - mean entropy
+        - std entropy
+
+        Parameters
+        ----------
+        X : array-like
             Input data to extract meta-features from.
 
         Returns
         -------
         ndarray of shape (1, n_features)
-            Extracted meta-features for the given input data.
-
-        Raises
-        ------
-        ValueError
-            If the classifier does not implement `predict_proba`.
+            Extracted meta-features.
         """
-        if hasattr(estimator, "predict_proba"):
-            probas = estimator.predict_proba(X)
+        if hasattr(self.model, "predict_proba"):
+            probas = self.model.predict_proba(X)
         else:
-            raise ValueError("The classifier must implement predict_proba.")
+            raise ValueError("The model must implement predict_proba.")
 
         max_probs = np.max(probas, axis=1)
 
@@ -116,72 +136,7 @@ class RegressionBasedEvaluator(BaseEvaluator, RegressorMixin):
             "mean_conf": np.mean(max_probs),
             "std_conf": np.std(max_probs),
             "mean_entropy": np.mean(entropy),
-            "std_entropy": np.std(entropy)
+            "std_entropy": np.std(entropy),
         }
 
         return np.array(list(features.values())).reshape(1, -1)
-
-    def fit(self, estimators, X_train_list, y_train_list, X_val_list, y_val_list):
-        """
-        Trains the regression meta-model based on multiple classifiers
-        and datasets, where the true accuracies are known.
-
-        Parameters
-        ----------
-        estimators : list
-            List of trained classifiers.
-        X_train_list, y_train_list : list
-            Lists of training data and labels.
-        X_val_list, y_val_list : list
-            Lists of validation data (with labels) to compute true accuracy.
-
-        Returns
-        -------
-        self : object
-            Fitted RegressionBasedEvaluator instance.
-        """
-        meta_X = []
-        meta_y = []
-
-        for est, X_train, y_train, X_val, y_val in zip(estimators, X_train_list, y_train_list, X_val_list, y_val_list):
-            est.fit(X_train, y_train)
-
-            feats = self._extract_metafeatures(est, X_val)
-
-            acc = est.score(X_val, y_val)
-
-            meta_X.append(feats.flatten())
-            meta_y.append(acc)
-
-            if self.verbose:
-                print(f"[INFO] True accuracy: {acc:.4f}, Metafeatures: {feats.flatten()}")
-
-        meta_X = np.array(meta_X)
-        meta_y = np.array(meta_y)
-
-        self.meta_regressor.fit(meta_X, meta_y)
-        return self
-
-    def estimate(self, estimator, X_unlabeled):
-        """
-        Estimates the accuracy of a classifier on an unlabeled dataset.
-
-        Parameters
-        ----------
-        estimator : fitted classifier
-            The pre-trained classifier to evaluate.
-        X_unlabeled : array-like
-            Unlabeled input dataset.
-
-        Returns
-        -------
-        float
-            Estimated accuracy of the classifier.
-        """
-        feats = self._extract_metafeatures(estimator, X_unlabeled)
-        acc_estimate = self.meta_regressor.predict(feats)[0]
-
-        if self.verbose:
-            print(f"[INFO] Estimated accuracy: {acc_estimate:.4f}")
-
-        return acc_estimate

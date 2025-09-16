@@ -122,12 +122,12 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         conf, correct = self.__get_confidences_and_correct(X)
         
         if self.verbose:
-            print("Confidences:", conf)
-            print("Passed threshold:", correct)
+            print("[INFO] Confidences:", conf)
+            print("[INFO] Passed threshold:", correct)
 
         if not np.any(correct):
             if self.verbose:
-                print("No predictions passed the threshold.")
+                print("[INFO] No predictions passed the threshold.")
             return {name: 0.0 for name in self.__get_scorer_names()}
 
         y_pred = self.model.predict(X)
@@ -135,8 +135,8 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         y_estimated = [int(y) for y in y_estimated]
 
         if self.verbose:
-            print("y_pred:", y_pred)
-            print("y_estimated:", y_estimated)
+            print("[INFO] y_pred:", y_pred)
+            print("[INFO] y_estimated:", y_estimated)
 
         if isinstance(self.scorer, dict):
             scores = {
@@ -144,12 +144,12 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
                 for name, func in self.scorer.items()
             }
             if self.verbose:
-                print("Estimated scores:", scores)
+                print("[INFO] Estimated scores:", scores)
             return scores
         elif callable(self.scorer):
             score = self.scorer(y_estimated, y_pred)
             if self.verbose:
-                print("Estimated score:", score)
+                print("[INFO] Estimated score:", score)
             return {'score': score}
         else:
             raise ValueError("'scorer' must be a callable or a dict of callables.")

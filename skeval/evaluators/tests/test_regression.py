@@ -1,5 +1,5 @@
-# test_regression_based.py
-
+# Authors: The scikit-autoeval developers
+# SPDX-License-Identifier: BSD-3-Clause
 import unittest
 import numpy as np
 from sklearn.datasets import make_classification
@@ -30,13 +30,13 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
         """Test that the evaluator is initialized correctly."""
         # Test default case
         evaluator_default = RegressionBasedEvaluator()
-        self.assertIsInstance(evaluator_default.meta_regressor, RandomForestRegressor)
+        self.assertIsInstance(evaluator_default.model, RandomForestRegressor)
         self.assertFalse(evaluator_default.verbose)
 
         # Test with custom regressor and verbose=True
         custom_regressor = LinearRegression()
-        evaluator_custom = RegressionBasedEvaluator(meta_regressor=custom_regressor, verbose=True)
-        self.assertIs(evaluator_custom.meta_regressor, custom_regressor)
+        evaluator_custom = RegressionBasedEvaluator(model=custom_regressor, verbose=True)
+        self.assertIs(evaluator_custom.model, custom_regressor)
         self.assertTrue(evaluator_custom.verbose)
 
     def test_extract_metafeatures_calculation(self):
@@ -94,7 +94,7 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
         evaluator.fit(self.classifiers, X_train_list, y_train_list, X_val_list, y_val_list)
 
         # Check that the internal meta-regressor has been fitted
-        self.assertTrue(hasattr(evaluator.meta_regressor, "feature_importances_"))
+        self.assertTrue(hasattr(evaluator.model, "feature_importances_"))
 
         # Prepare a new classifier for the estimation test
         X_train_new, X_unlabeled, y_train_new, y_unlabeled_true = train_test_split(
