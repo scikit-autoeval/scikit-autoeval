@@ -96,6 +96,8 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         self : object
             Returns the instance itself.
         """
+        if self.verbose:
+                print(f"[INFO] Model has been trained.")
         self.model.fit(X, y)
         return self
 
