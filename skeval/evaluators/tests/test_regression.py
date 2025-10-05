@@ -7,7 +7,7 @@ from sklearn.datasets import load_iris, load_breast_cancer, make_classification
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score
-from ..regression import RegressionBasedEvaluator
+from ..regression import RegressionEvaluator
 
 
 class TestRegressionBasedEvaluator(unittest.TestCase):
@@ -21,7 +21,7 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
 
     def test_fit_and_estimate_with_single_scorer(self):
         model = LogisticRegression(max_iter=1000)
-        evaluator = RegressionBasedEvaluator(model=model, scorer=accuracy_score, n_splits=3, verbose=False)
+        evaluator = RegressionEvaluator(model=model, scorer=accuracy_score, n_splits=3, verbose=False)
         evaluator.fit(self.X_list, self.y_list)
 
         final_model = LogisticRegression(max_iter=1000).fit(self.X_list[1], self.y_list[1])
@@ -37,7 +37,7 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
             "accuracy": accuracy_score,
             "f1_macro": lambda y, p: f1_score(y, p, average="macro")
         }
-        evaluator = RegressionBasedEvaluator(model=model, scorer=scorers, n_splits=2, verbose=False)
+        evaluator = RegressionEvaluator(model=model, scorer=scorers, n_splits=2, verbose=False)
         evaluator.fit(self.X_list, self.y_list)
 
         final_model = RandomForestClassifier(n_estimators=50, random_state=42).fit(self.X_list[0], self.y_list[0])
@@ -52,7 +52,7 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
     def test_estimate_without_fit_raises_error(self):
         X, y = make_classification(n_samples=100, n_features=5, random_state=42)
         model = LogisticRegression(max_iter=200)
-        evaluator = RegressionBasedEvaluator(model=model, scorer=accuracy_score)
+        evaluator = RegressionEvaluator(model=model, scorer=accuracy_score)
 
         with self.assertRaises(RuntimeError):
             evaluator.estimate(X)
@@ -61,17 +61,17 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
         model = LogisticRegression(max_iter=500)
         model.fit(self.X_list[0], self.y_list[0])
 
-        evaluator = RegressionBasedEvaluator(model=model)
-        feats = evaluator._RegressionBasedEvaluator__extract_metafeatures(model, self.X_list[0])
+        evaluator = RegressionEvaluator(model=model)
+        feats = evaluator._RegressionEvaluator__extract_metafeatures(model, self.X_list[0])
         self.assertEqual(feats.shape, (1, 4))  # mean_conf, std_conf, mean_entropy, std_entropy
 
     def test_invalid_scorer_raises_valueerror(self):
         X, y = make_classification(n_samples=100, n_features=5, random_state=42)
         model = LogisticRegression(max_iter=200)
-        evaluator = RegressionBasedEvaluator(model=model, scorer="invalid")
+        evaluator = RegressionEvaluator(model=model, scorer="invalid")
 
         with self.assertRaises(ValueError):
-            evaluator._RegressionBasedEvaluator__get_scorer_names()
+            evaluator._RegressionEvaluator__get_scorer_names()
 
 
 if __name__ == "__main__":

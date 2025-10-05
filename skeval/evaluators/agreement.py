@@ -25,21 +25,17 @@ class AgreementEvaluator(BaseEvaluator):
     def __init__(
         self,
         model,
-        sec_model=None,
         scorer=accuracy_score,
+        verbose=False,
+        sec_model=None,
         n_splits=10,
         use_train=True,
-        verbose=False,
     ):
-        self.model = model
+        super().__init__(model=model, scorer=scorer, verbose=verbose)
+
         self.sec_model = sec_model if sec_model is not None else GaussianNB()
-        self.scorer = scorer
         self.n_splits = n_splits
         self.use_train = use_train
-        self.verbose = verbose
-        self._pred_main = None
-        self._pred_secondary = None
-        self._y = None
 
     def _cross_val_predict(self, model, X, y):
         kf = KFold(n_splits=self.n_splits, shuffle=False)
@@ -66,29 +62,22 @@ class AgreementEvaluator(BaseEvaluator):
         y : array-like
             Target vector.
         """
-        self._y = y 
 
-        if self.use_train:
-            self._pred_main = self._cross_val_predict(self.model, X, y)
-            self._pred_secondary = self._cross_val_predict(self.sec_model, X, y)
-        else:
-            self.model.fit(X, y)
-            self.sec_model.fit(X, y)
-            self._pred_main = self.model.predict(X)
-            self._pred_secondary = self.sec_model.predict(X)
-
+        self.model.fit(X, y)
+        self.sec_model.fit(X, y)
+        
         if self.verbose:
             print("[AgreementEvaluator] Fit completed.")
 
         return self
 
-    def estimate(self, X):
+    def estimate(self, X_eval):
         """
         Estimate the agreement score between the main and secondary models.
 
         Parameters
         ----------
-        X : array-like
+        X_eval : array-like
             Feature matrix (not used, kept for interface consistency).
 
         Returns
@@ -96,13 +85,17 @@ class AgreementEvaluator(BaseEvaluator):
         scores : dict or float
             Agreement score(s) computed using the provided scorer(s).
         """
-        if self._pred_main is None or self._pred_secondary is None:
-            raise ValueError("You must call `fit` before `estimate`.")
+        
+        # COLOCAR VALIDAÇÃO DO FIT ANTES
+        
+        _pred_main = self.model.predict(X_eval)
+        _pred_secondary = self.sec_model.predict(X_eval)
 
-        agreement = (self._pred_main == self._pred_secondary).astype(int)
-
+        agreement = (self._pred_main == _pred_secondary).astype(int)
+        y_agreement = [p if a else 1 - p for p, a in zip(_pred_main, agreement)]
+        
         if isinstance(self.scorer, dict):
-            return {name: metric(self._y, agreement) for name, metric in self.scorer.items()}
+            return {name: metric(y_agreement, agreement) for name, metric in self.scorer.items()}
         else:
-            return self.scorer(self._y, agreement)
+            return self.scorer(y_agreement, agreement)
 

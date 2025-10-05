@@ -5,10 +5,11 @@ from sklearn.base import clone
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+from sklearn.utils.validation import check_is_fitted
 
-from skeval.base import BaseEvaluator
+from ..base import BaseEvaluator
 
-class RegressionBasedEvaluator(BaseEvaluator):
+class RegressionEvaluator(BaseEvaluator):
     """Regression-based evaluator for classification models.
 
     This evaluator estimates the performance of a classification model (e.g.,
@@ -49,17 +50,17 @@ class RegressionBasedEvaluator(BaseEvaluator):
     >>> from sklearn.datasets import load_iris
     >>> from sklearn.linear_model import LogisticRegression
     >>> from sklearn.metrics import accuracy_score
-    >>> from skeval.evaluators.regression import RegressionBasedEvaluator
+    >>> from skeval.evaluators.regression import RegressionEvaluator
     >>>
     >>> iris = load_iris()
     >>> X_list, y_list = [iris.data], [iris.target]
-    >>> evaluator = RegressionBasedEvaluator(
+    >>> evaluator = RegressionEvaluator(
     ...     model=LogisticRegression(max_iter=1000),
     ...     scorer=accuracy_score,
     ...     verbose=False
     ... )
     >>> evaluator.fit(X_list, y_list)
-    RegressionBasedEvaluator(...)
+    RegressionEvaluator(...)
     >>> # Train a final model manually
     >>> final_model = LogisticRegression(max_iter=1000).fit(iris.data, iris.target)
     >>> evaluator.model = final_model
@@ -67,12 +68,11 @@ class RegressionBasedEvaluator(BaseEvaluator):
     >>> print(estimated_scores)
     {'score': ...}
     """
-    def __init__(self, model, meta_regressor=None, n_splits=5, scorer=accuracy_score, verbose=False):
-        self.model = model
+    def __init__(self, model, scorer=accuracy_score, verbose=False, meta_regressor=None, n_splits=5):
+        super().__init__(model=model, scorer=scorer, verbose=verbose)
+
         self.meta_regressor = meta_regressor or RandomForestRegressor(n_estimators=500, random_state=42)
         self.n_splits = n_splits
-        self.scorer = scorer
-        self.verbose = verbose
 
     def fit(self, X, y):
         """Trains the internal meta-regressor(s) using a single model type.
@@ -92,9 +92,9 @@ class RegressionBasedEvaluator(BaseEvaluator):
         self : object
             The fitted evaluator instance.
         """
-        scorers = self.__get_scorer_names()
+        scorers_names = self._get_scorer_names()
         meta_features = []
-        meta_targets = {name: [] for name in scorers}
+        meta_targets = {name: [] for name in scorers_names}
 
         for X_i, y_i in zip(X, y):
             for split in range(self.n_splits):
@@ -106,19 +106,24 @@ class RegressionBasedEvaluator(BaseEvaluator):
                 )
 
                 est.fit(X_train_meta, y_train_meta)
-
                 feats = self.__extract_metafeatures(est, X_holdout_meta)
                 y_pred_holdout = est.predict(X_holdout_meta)
 
                 meta_features.append(feats.flatten())
-                for name, func in scorers.items():
-                    score = func(y_holdout_meta, y_pred_holdout)
-                    meta_targets[name].append(score)
+
+                if isinstance(self.scorer, dict):
+                    for name in scorers_names:
+                        func = self.scorer[name]
+                        score = func(y_holdout_meta, y_pred_holdout)
+                        meta_targets[name].append(score)
+                elif callable(self.scorer):
+                    score = self.scorer(y_holdout_meta, y_pred_holdout)
+                    meta_targets['score'].append(score)
 
         meta_features = np.array(meta_features)
         self.meta_regressors_ = {}
 
-        for name in scorers:
+        for name in scorers_names:
             meta_y = np.array(meta_targets[name])
             reg = clone(self.meta_regressor)
             reg.fit(meta_features, meta_y)
@@ -129,17 +134,17 @@ class RegressionBasedEvaluator(BaseEvaluator):
         return self
 
 
-    def estimate(self, X):
+    def estimate(self, X_eval):
         """Estimates the performance of the current model on unlabeled data.
 
         The model assigned to `self.model` must already be a fitted classifier
         (manually trained by the user). This method extracts meta-features from
-        its predictions on the unlabeled data `X` and uses the pre-trained
+        its predictions on the unlabeled data `X_eval` and uses the pre-trained
         meta-regressor(s) to predict the performance scores.
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
+        X_eval : array-like of shape (n_samples, n_features)
             The unlabeled input data.
 
         Returns
@@ -156,10 +161,12 @@ class RegressionBasedEvaluator(BaseEvaluator):
         ValueError
             If `self.model` does not implement `predict_proba`.
         """
+        check_is_fitted(self.model)
+        
         if not hasattr(self, "meta_regressors_"):
             raise RuntimeError("The evaluator has not been fitted yet. Call 'fit' before 'estimate'.")
             
-        feats = self.__extract_metafeatures(self.model, X)
+        feats = self.__extract_metafeatures(self.model, X_eval)
         scores = {}
         
         for name, reg in self.meta_regressors_.items():
@@ -209,23 +216,3 @@ class RegressionBasedEvaluator(BaseEvaluator):
             "std_entropy": np.std(entropy)
         }
         return np.array(list(features.values())).reshape(1, -1)
-
-    def __get_scorer_names(self):
-        """Internal helper to standardize the scorer format to a dictionary.
-
-        Returns
-        -------
-        dict
-            The scorer(s) in a standardized dictionary format.
-        
-        Raises
-        ------
-        ValueError
-            If `self.scorer` is not a callable or a dictionary of callables.
-        """
-        if callable(self.scorer):
-            return {'score': self.scorer}
-        elif isinstance(self.scorer, dict):
-            return self.scorer
-        else:
-            raise ValueError("'scorer' must be a callable or a dict of callables.")

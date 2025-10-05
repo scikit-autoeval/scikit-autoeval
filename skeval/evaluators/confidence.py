@@ -2,8 +2,11 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import numpy as np
 from sklearn.metrics import accuracy_score
+from sklearn.utils.validation import check_is_fitted
+from sklearn.exceptions import NotFittedError
 
-from skeval.base import BaseEvaluator
+
+from ..base import BaseEvaluator
 
 class ConfidenceThresholdEvaluator(BaseEvaluator):
     """
@@ -73,12 +76,11 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
     recall: 1.00
     """
     
-    def __init__(self, model, scorer=accuracy_score, threshold=0.8, limit_to_top_class=True, verbose=False):
-        self.model = model
-        self.scorer = scorer
+    def __init__(self, model, scorer=accuracy_score, verbose=False, threshold=0.6, limit_to_top_class=True):
+        super().__init__(model=model, scorer=scorer, verbose=verbose)
+        
         self.threshold = threshold
         self.limit_to_top_class = limit_to_top_class
-        self.verbose = verbose
 
     def fit(self, X, y):
         """
@@ -101,7 +103,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         self.model.fit(X, y)
         return self
 
-    def estimate(self, X):
+    def estimate(self, X_eval):
         """
         Estimates scores based on the confidence threshold.
 
@@ -111,7 +113,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
+        X_eval : array-like of shape (n_samples, n_features)
             Input data for which to estimate scores.
 
         Returns
@@ -121,7 +123,9 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
 
             If no predictions pass the threshold, it returns 0.0 for each scorer.
         """
-        conf, correct = self.__get_confidences_and_correct(X)
+        check_is_fitted(self.model)
+   
+        conf, correct = self._get_confidences_and_correct(X_eval)
         
         if self.verbose:
             print("[INFO] Confidences:", conf)
@@ -132,7 +136,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
                 print("[INFO] No predictions passed the threshold.")
             return {name: 0.0 for name in self.__get_scorer_names()}
 
-        y_pred = self.model.predict(X)
+        y_pred = self.model.predict(X_eval)
         y_estimated = [y_pred[i] if c == 1 else (y_pred[i]+1)%2 for i, c in enumerate(correct)]
         y_estimated = [int(y) for y in y_estimated]
 
@@ -195,24 +199,3 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         
         correct = conf >= self.threshold
         return conf, correct
-
-        
-    def __get_scorer_names(self):
-        """
-        Returns the names of the scorers.
-        
-        This helper method gets the names of the scoring functions to be used
-        as keys in the results dictionary.
-
-        Returns
-        -------
-        list
-            A list containing the names of the scorers. If the scorer is a
-            single callable, it returns `['score']`.
-        """
-        if isinstance(self.scorer, dict):
-            return list(self.scorer.keys())
-        elif callable(self.scorer):
-            return ['score']
-        else:
-            return []
