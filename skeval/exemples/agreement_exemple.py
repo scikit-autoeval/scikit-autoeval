@@ -1,70 +1,96 @@
+# Authors: The scikit-autoeval developers
+# SPDX-License-Identifier: BSD-3-Clause
+
+# ==============================================================
+# AgreementEvaluator Example
+# Comparing estimated vs. real agreement with cross-validation
+# ==============================================================
+
+import numpy as np
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
-from sklearn.impute import SimpleImputer
-from ..evaluators.agreement import AgreementEvaluator
+from sklearn.model_selection import KFold
+from sklearn.metrics import accuracy_score, f1_score
+from sklearn.impute import KNNImputer
+from sklearn.pipeline import make_pipeline
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import accuracy_score
 
-# Carregar datasets
-df_geriatria = pd.read_csv('./skeval/datasets/geriatria-controle-alzheimerLabel.csv')
-df_neurologia = pd.read_csv('./skeval/datasets/neurologia-controle-alzheimerLabel.csv')
+from ..evaluators.agreement import AgreementEvaluator
 
-# Coluna alvo
-target_col = 'Alzheimer'
 
-def preprocess(df):
-    X = df.drop(columns=[target_col])
-    y = df[target_col]
-    
-    # Converter categóricas para numéricas
-    for col in X.select_dtypes(include='object').columns:
-        le = LabelEncoder()
-        X[col] = le.fit_transform(X[col].astype(str))
-    
-    # Preencher NaNs com a média da coluna
-    imputer = SimpleImputer(strategy='mean')
-    X = imputer.fit_transform(X)
-    
-    return X, y.values
+# ======================
+# 1. Load datasets
+# ======================
+df_geriatrics = pd.read_csv('./skeval/datasets/geriatria-controle-alzheimerLabel.csv')
 
-# Preprocessar datasets
-X_ger, y_ger = preprocess(df_geriatria)
-X_neu, y_neu = preprocess(df_neurologia)
+# ======================
+# 2. Separate features and target
+# ======================
+X1, y1 = df_geriatrics.drop(columns=['Alzheimer']).values, df_geriatrics['Alzheimer'].values
 
-# Inicializar o AgreementEvaluator
-main_model = GaussianNB()
-evaluator = AgreementEvaluator(model=main_model, verbose=1)
+# ======================
+# 3. Define model pipelines
+# ======================
+model = make_pipeline(
+    KNNImputer(n_neighbors=5),
+    RandomForestClassifier(n_estimators=300, random_state=42)
+)
 
-# ===== FIT GERIATRIA =====
-print("===== FIT GERIATRIA =====")
-evaluator.fit(X_ger, y_ger)
+sec_model = make_pipeline(
+    KNNImputer(n_neighbors=5),
+    GaussianNB()
+)
 
-# Métrica real: acurácia do modelo principal
-main_model.fit(X_ger, y_ger)
-y_pred_main = main_model.predict(X_ger)
-accuracy_real_ger = accuracy_score(y_ger, y_pred_main)
-print("Real accuracy (geriatria):", accuracy_real_ger)
+# ======================
+# 4. Define scorers and evaluator
+# ======================
+scorers = {
+    'accuracy': accuracy_score,
+    'f1_macro': lambda y, p: f1_score(y, p, average='macro')
+}
 
-# Estimativa pelo AgreementEvaluator
-agreement_score_ger = evaluator.estimate(X_ger)
-print("Estimated agreement score (geriatria):", agreement_score_ger)
+evaluator = AgreementEvaluator(
+    model=model,
+    sec_model=sec_model,
+    scorer=scorers,
+    verbose=True
+)
 
-# Comparação direta
-print(f"Difference (real - estimated): {accuracy_real_ger - agreement_score_ger}")
+# ======================
+# 5. Fit evaluator and estimate agreement
+# ======================
+evaluator.fit(X1, y1)
+estimated_scores = evaluator.estimate(X1)
 
-# ===== FIT NEUROLOGIA =====
-print("\n===== FIT NEUROLOGIA =====")
-evaluator.fit(X_neu, y_neu)
+# ======================
+# 6. Compute real agreement via cross-validation
+# ======================
+cv = KFold(n_splits=5, shuffle=True, random_state=42)
+real_scores = {m: [] for m in scorers.keys()}
 
-# Métrica real
-main_model.fit(X_neu, y_neu)
-y_pred_main = main_model.predict(X_neu)
-accuracy_real_neu = accuracy_score(y_neu, y_pred_main)
-print("Real accuracy (neurologia):", accuracy_real_neu)
+for train_idx, test_idx in cv.split(X1):
+    X_train, X_test = X1[train_idx], X1[test_idx]
+    y_train, y_test = y1[train_idx], y1[test_idx]
 
-# Estimativa pelo AgreementEvaluator
-agreement_score_neu = evaluator.estimate(X_neu)
-print("Estimated agreement score (neurologia):", agreement_score_neu)
+    m1 = model.fit(X_train, y_train)
+    m2 = sec_model.fit(X_train, y_train)
 
-# Comparação direta
-print(f"Difference (real - estimated): {accuracy_real_neu - agreement_score_neu}")
+    pred1 = m1.predict(X_test)
+    pred2 = m2.predict(X_test)
+
+    # Agreement vector: 1 when predictions match, 0 otherwise
+    agreement = (pred1 == pred2).astype(int)
+    true = np.ones_like(agreement)  # ideal perfect agreement = all ones
+
+    for name, fn in scorers.items():
+        real_scores[name].append(fn(true, agreement))
+
+# Average over folds
+real_scores = {k: np.mean(v) for k, v in real_scores.items()}
+
+# ======================
+# 7. Side-by-side comparison
+# ======================
+print("\n===== Estimated vs. Real Agreement =====")
+for metric in scorers.keys():
+    print(f"{metric:<10} -> Real (CV): {real_scores[metric]:.4f} | Estimated: {estimated_scores[metric]:.4f}")

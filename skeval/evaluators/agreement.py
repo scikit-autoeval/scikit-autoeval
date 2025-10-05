@@ -1,12 +1,11 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
-import numpy as np
-from sklearn.base import clone
-from sklearn.model_selection import KFold
+
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
+from sklearn.utils.validation import check_is_fitted
 
-from skeval.base import BaseEvaluator
+from ..base import BaseEvaluator
 
 
 class AgreementEvaluator(BaseEvaluator):
@@ -28,28 +27,10 @@ class AgreementEvaluator(BaseEvaluator):
         scorer=accuracy_score,
         verbose=False,
         sec_model=None,
-        n_splits=10,
-        use_train=True,
     ):
         super().__init__(model=model, scorer=scorer, verbose=verbose)
 
         self.sec_model = sec_model if sec_model is not None else GaussianNB()
-        self.n_splits = n_splits
-        self.use_train = use_train
-
-    def _cross_val_predict(self, model, X, y):
-        kf = KFold(n_splits=self.n_splits, shuffle=False)
-        preds = np.zeros(len(y), dtype=np.int64)
-
-        for fold, (train_idx, test_idx) in enumerate(kf.split(X), 1):
-            clone_model = clone(model)
-            clone_model.fit(X[train_idx], y[train_idx])
-            preds[test_idx] = clone_model.predict(X[test_idx])
-
-            if self.verbose:
-                print(f"[AgreementEvaluator] Fold {fold}/{self.n_splits} completed.")
-
-        return preds
 
     def fit(self, X, y):
         """
@@ -67,7 +48,7 @@ class AgreementEvaluator(BaseEvaluator):
         self.sec_model.fit(X, y)
         
         if self.verbose:
-            print("[AgreementEvaluator] Fit completed.")
+            print("[INFO] Fit completed.")
 
         return self
 
@@ -86,16 +67,16 @@ class AgreementEvaluator(BaseEvaluator):
             Agreement score(s) computed using the provided scorer(s).
         """
         
-        # COLOCAR VALIDAÇÃO DO FIT ANTES
+        check_is_fitted(self.model)
+        check_is_fitted(self.sec_model)
         
-        _pred_main = self.model.predict(X_eval)
-        _pred_secondary = self.sec_model.predict(X_eval)
+        pred_main = self.model.predict(X_eval)
+        pred_secondary = self.sec_model.predict(X_eval)
 
-        agreement = (self._pred_main == _pred_secondary).astype(int)
-        y_agreement = [p if a else 1 - p for p, a in zip(_pred_main, agreement)]
+        agreement = (pred_main == pred_secondary).astype(int)
+        y_agreement = [p if a else 1 - p for p, a in zip(pred_main, agreement)]
         
         if isinstance(self.scorer, dict):
             return {name: metric(y_agreement, agreement) for name, metric in self.scorer.items()}
         else:
             return self.scorer(y_agreement, agreement)
-
