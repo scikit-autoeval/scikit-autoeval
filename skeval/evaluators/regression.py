@@ -166,7 +166,7 @@ class RegressionEvaluator(BaseEvaluator):
         if not hasattr(self, "meta_regressors_"):
             raise RuntimeError("The evaluator has not been fitted yet. Call 'fit' before 'estimate'.")
             
-        feats = self.__extract_metafeatures(self.model, X_eval)
+        feats = self._extract_metafeatures(self.model, X_eval)
         scores = {}
         
         for name, reg in self.meta_regressors_.items():
@@ -176,7 +176,7 @@ class RegressionEvaluator(BaseEvaluator):
                 print(f"[INFO] Estimated {name}: {estimated_score:.4f}")
         return scores
 
-    def __extract_metafeatures(self, estimator, X):
+    def _extract_metafeatures(self, estimator, X):
         """Extracts meta-features from a fitted model's predicted probabilities.
 
         The extracted features include the mean and standard deviation of the

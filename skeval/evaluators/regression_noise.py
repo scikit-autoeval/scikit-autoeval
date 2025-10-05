@@ -109,7 +109,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
 
                 est.fit(X_train_meta, y_train_meta)
 
-                feats = self.__extract_metafeatures(est, X_holdout_meta)
+                feats = self._extract_metafeatures(est, X_holdout_meta)
 
                 for p in range(start_noise, (end_noise+1), step_noise):
                     n_noisy = int(len(X_holdout_meta) * (p / 100.0))
@@ -127,7 +127,6 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
                         X_noisy_part[c] = rng.permutation(X_noisy_part[c])
                         
                         X_concat = pd.concat([X_noisy_part, X_clean_part], axis=0)
-                        y_concat = np.concatenate([y_noisy_part, y_clean_part])
 
                         y_pred_holdout = est.predict(X_concat)
 

@@ -1,25 +1,35 @@
+# Authors: The scikit-autoeval developers
+# SPDX-License-Identifier: BSD-3-Clause
+
+# ==============================================================
+# ConfidenceThresholdEvaluator Example
+# Comparing estimated vs. real performance with cross-validation
+# ==============================================================
+
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.impute import KNNImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.ensemble import RandomForestClassifier
+
 from skeval.evaluators.confidence import ConfidenceThresholdEvaluator
 
-# ======================
-# 1. Carregar datasets
-# ======================
-df_geriatria = pd.read_csv('./skeval/datasets/geriatria-controle-alzheimerLabel.csv')
-df_neurologia = pd.read_csv('./skeval/datasets/neurologia-controle-alzheimerLabel.csv')
 
 # ======================
-# 2. Separar features e target
+# 1. Load datasets
 # ======================
-X1, y1 = df_geriatria.drop(columns=['Alzheimer']), df_geriatria['Alzheimer']
-X2, y2 = df_neurologia.drop(columns=['Alzheimer']), df_neurologia['Alzheimer']
+df_geriatrics = pd.read_csv('./skeval/datasets/geriatria-controle-alzheimerLabel.csv')
+df_neurology = pd.read_csv('./skeval/datasets/neurologia-controle-alzheimerLabel.csv')
 
 # ======================
-# 3. Definir pipeline (KNNImputer + RandomForestClassifier)
+# 2. Separate features and target
+# ======================
+X1, y1 = df_geriatrics.drop(columns=['Alzheimer']), df_geriatrics['Alzheimer']
+X2, y2 = df_neurology.drop(columns=['Alzheimer']), df_neurology['Alzheimer']
+
+# ======================
+# 3. Define model pipeline
 # ======================
 model = make_pipeline(
     KNNImputer(n_neighbors=5),
@@ -27,7 +37,7 @@ model = make_pipeline(
 )
 
 # ======================
-# 4. Instanciar avaliador baseado em confiança
+# 4. Initialize ConfidenceThresholdEvaluator
 # ======================
 scorers = {
     'accuracy': accuracy_score,
@@ -37,39 +47,41 @@ scorers = {
 evaluator = ConfidenceThresholdEvaluator(
     model=model,
     scorer=scorers,
-    threshold=0.6,
+    threshold=0.65,
     verbose=False
 )
 
 # ======================
-# 5. Divisão treino/teste no dataset de geriatria
+# 5. Train/test split for Geriatrics dataset
 # ======================
 X_train, X_test, y_train, y_test = train_test_split(
     X1, y1, test_size=0.5, random_state=42, stratify=y1
 )
 
 # ======================
-# 6. Treinar modelo e avaliador
+# 6. Fit model and evaluator
 # ======================
 evaluator.fit(X_train, y_train)
 
 # ======================
-# 7. Estimar desempenho no conjunto de teste
+# 7. Estimate performance using evaluator
 # ======================
 estimated_scores = evaluator.estimate(X_test)
 
 # ======================
-# 8. Calcular desempenho real
+# 8. Compute real performance using cross-validation
 # ======================
-y_pred = model.fit(X_train, y_train).predict(X_test)
-real_scores = {
-    'accuracy': accuracy_score(y_test, y_pred),
-    'f1_macro': f1_score(y_test, y_pred, average='macro')
-}
+real_scores = {}
+for metric_name, scorer_fn in scorers.items():
+    cv_score = cross_val_score(
+        model, X1, y1, scoring='accuracy' if metric_name == 'accuracy' else 'f1_macro',
+        cv=5
+    ).mean()
+    real_scores[metric_name] = cv_score
 
 # ======================
-# 9. Comparação lado a lado
+# 9. Side-by-side comparison
 # ======================
-print("\nComparação entre resultados reais e estimados:")
+print("\n===== Estimated vs. Real Performance =====")
 for metric in scorers.keys():
-    print(f"{metric} -> Real: {real_scores[metric]:.4f} | Estimado: {estimated_scores[metric]:.4f}")
+    print(f"{metric:<10} -> Real (CV): {real_scores[metric]:.4f} | Estimated: {estimated_scores[metric]:.4f}")

@@ -76,7 +76,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
     recall: 1.00
     """
     
-    def __init__(self, model, scorer=accuracy_score, verbose=False, threshold=0.6, limit_to_top_class=True):
+    def __init__(self, model, scorer=accuracy_score, verbose=False, threshold=0.65, limit_to_top_class=True):
         super().__init__(model=model, scorer=scorer, verbose=verbose)
         
         self.threshold = threshold
@@ -125,7 +125,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         """
         check_is_fitted(self.model)
    
-        conf, correct = self._get_confidences_and_correct(X_eval)
+        conf, correct = self.__get_confidences_and_correct(X_eval)
         
         if self.verbose:
             print("[INFO] Confidences:", conf)
