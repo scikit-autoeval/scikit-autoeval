@@ -1,29 +1,45 @@
 evaluators package
 ==================
 
-.. Submodules
-.. ----------
+Submodules
+----------
 
-.. evaluators.confidence module
-.. ----------------------------
+evaluators.confidence module
+----------------------------
 
-.. .. automodule:: evaluators.confidence
-..    :members:
-..    :show-inheritance:
-..    :undoc-members:
-
-.. evaluators.regression module
-.. ----------------------------
-
-.. .. automodule:: evaluators.regression
-..    :members:
-..    :show-inheritance:
-..    :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: evaluators
+.. automodule:: evaluators.confidence
    :members:
    :show-inheritance:
    :undoc-members:
+
+evaluators.regression module
+----------------------------
+
+.. automodule:: evaluators.regression
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+evaluators.regression_noise module
+----------------------------
+
+.. automodule:: evaluators.regression_noise
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+evaluators.agreement module
+----------------------------
+
+.. automodule:: evaluators.agreement
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+.. Module contents
+.. ---------------
+
+.. .. automodule:: evaluators
+..    :members:
+..    :show-inheritance:
+..    :undoc-members:
