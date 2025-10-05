@@ -245,6 +245,7 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for skeval.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
 
 <div class="viewcode-block" id="BaseEvaluator">
 <a class="viewcode-back" href="../../base.html#skeval.base.BaseEvaluator">[docs]</a>
@@ -256,25 +257,11 @@
 <span class="sd">    This class also inherits from `sklearn.base.BaseEstimator` to ensure compatibility</span>
 <span class="sd">    with scikit-learn utilities like `get_params` and `set_params`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="BaseEvaluator.estimate">
-<a class="viewcode-back" href="../../base.html#skeval.base.BaseEvaluator.estimate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Abstract method to estimate the model&#39;s performance on the given data.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
-<span class="sd">            Test data.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        scores : dict</span>
-<span class="sd">            A dictionary containing the evaluation scores.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
-
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span> <span class="o">=</span> <span class="n">scorer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
     
 <div class="viewcode-block" id="BaseEvaluator.fit">
 <a class="viewcode-back" href="../../base.html#skeval.base.BaseEvaluator.fit">[docs]</a>
@@ -295,9 +282,46 @@
 <span class="sd">            Returns the instance itself.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
-</div>
 
 
+<div class="viewcode-block" id="BaseEvaluator.estimate">
+<a class="viewcode-back" href="../../base.html#skeval.base.BaseEvaluator.estimate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_eval</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method to estimate the model&#39;s performance on the given data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X_eval : array-like of shape (n_samples, n_features)</span>
+<span class="sd">            Test data.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scores : dict</span>
+<span class="sd">            A dictionary containing the evaluation scores.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_scorer_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the names of the scorers.</span>
+<span class="sd">        </span>
+<span class="sd">        This helper method gets the names of the scoring functions to be used</span>
+<span class="sd">        as keys in the results dictionary.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            A list containing the names of the scorers. If the scorer is a</span>
+<span class="sd">            single callable, it returns `[&#39;score&#39;]`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span></div>
 
 </pre></div>
         </article>
