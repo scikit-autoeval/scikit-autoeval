@@ -259,17 +259,914 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 </section>
-<section id="evaluators-confidence-module">
-<h2>evaluators.confidence module<a class="headerlink" href="#evaluators-confidence-module" title="Link to this heading">¶</a></h2>
+<section id="module-evaluators.confidence">
+<span id="evaluators-confidence-module"></span><h2>evaluators.confidence module<a class="headerlink" href="#module-evaluators.confidence" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.confidence.</span></span><span class="sig-name descname"><span class="pre">ConfidenceThresholdEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold=0.65</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_to_top_class=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
+<p>Confidence-based evaluator for classification models.</p>
+<p>This evaluator filters the predictions of a classification model based on a
+confidence threshold. Only predictions with a confidence greater than or
+equal to the specified threshold are considered for scoring.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>object</em>) – Any model with <cite>fit</cite>, <cite>predict</cite>, and <cite>predict_proba</cite> or
+<cite>decision_function</cite> methods.</p></li>
+<li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – An evaluation function or a dictionary of multiple evaluation functions.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>default=0.8</em>) – The minimum confidence required to include a prediction in the calculation.</p></li>
+<li><p><strong>limit_to_top_class</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, uses only the probability of the top class as the confidence score.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints additional information during evaluation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.model" title="Link to this definition">¶</a></dt>
+<dd><p>The model passed in the constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.scorer">
+<span class="sig-name descname"><span class="pre">scorer</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.scorer" title="Link to this definition">¶</a></dt>
+<dd><p>The scoring function(s) passed in the constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>callable or dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.threshold" title="Link to this definition">¶</a></dt>
+<dd><p>The confidence threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.limit_to_top_class">
+<span class="sig-name descname"><span class="pre">limit_to_top_class</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.limit_to_top_class" title="Link to this definition">¶</a></dt>
+<dd><p>Indicates if confidence is based solely on the highest probability class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.verbose">
+<span class="sig-name descname"><span class="pre">verbose</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.verbose" title="Link to this definition">¶</a></dt>
+<dd><p>The verbosity level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Sample data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">5.5</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 1. Create and train a standard classifier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">classifier</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;liblinear&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="go">LogisticRegression(random_state=0, solver=&#39;liblinear&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 2. Create the evaluator with the trained classifier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scorings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="n">precision_score</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">:</span> <span class="n">recall_score</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_eval</span> <span class="o">=</span> <span class="n">ConfidenceThresholdEvaluator</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">classifier</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">scorer</span><span class="o">=</span><span class="n">scorings</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">threshold</span><span class="o">=</span><span class="mf">0.9</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 3. The fit method is for compatibility, not strictly needed here</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#    since the model is already trained.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_eval</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="go">ConfidenceThresholdEvaluator(...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 4. Estimate the performance on the test set</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#    The evaluator will internally call classifier.predict_proba(X_test)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scores</span> <span class="o">=</span> <span class="n">conf_eval</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">score_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">score_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">precision: 1.00</span>
+<span class="go">recall: 1.00</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_eval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.estimate" title="Link to this definition">¶</a></dt>
+<dd><p>Estimates scores based on the confidence threshold.</p>
+<p>This method calculates the prediction confidences, filters out those
+that do not meet the threshold, and then computes the score(s)
+specified in the <cite>scorer</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X_eval</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data for which to estimate scores.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A dictionary with estimated scores for each scorer.</p>
+<p>If no predictions pass the threshold, it returns 0.0 for each scorer.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Fits the model to the training data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The training input samples.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The target labels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – Returns the instance itself.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="evaluators-regression-module">
-<h2>evaluators.regression module<a class="headerlink" href="#evaluators-regression-module" title="Link to this heading">¶</a></h2>
+<section id="module-evaluators.regression">
+<span id="evaluators-regression-module"></span><h2>evaluators.regression module<a class="headerlink" href="#module-evaluators.regression" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="evaluators.regression.RegressionEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.regression.</span></span><span class="sig-name descname"><span class="pre">RegressionEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_regressor=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_splits=5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/regression.html#RegressionEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.regression.RegressionEvaluator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
+<p>Regression-based evaluator for classification models.</p>
+<p>This evaluator estimates the performance of a classification model (e.g.,
+accuracy, precision) without requiring labeled test data. It works by
+training a meta-regressor (e.g., Random Forest) that learns to map
+meta-features, extracted from a classifier’s probability distributions,
+to its true performance score on unseen data.</p>
+<p>To use this evaluator, it must first be fitted on a collection of diverse
+datasets using the same model type to learn this mapping robustly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>object</em>) – An unfitted classifier instance that will be used as the base model.
+Clones of this model will be trained during the <cite>fit</cite> process and
+the same model type must later be fitted manually before <cite>estimate</cite>.</p></li>
+<li><p><strong>meta_regressor</strong> (<em>object</em><em>, </em><em>default=None</em>) – A regression model implementing <cite>fit</cite> and <cite>predict</cite>. If None, a
+<cite>RandomForestRegressor</cite> with 500 trees is used for each scorer.</p></li>
+<li><p><strong>n_splits</strong> (<em>int</em><em>, </em><em>default=5</em>) – Number of random splits per dataset to generate multiple meta-examples.</p></li>
+<li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – The performance metric(s) to estimate. If a dictionary is provided, a
+separate meta-regressor will be trained to estimate each metric.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints informational messages during the training of the
+meta-regressors and during estimation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.regression.RegressionEvaluator.meta_regressors_">
+<span class="sig-name descname"><span class="pre">meta_regressors_</span></span><a class="headerlink" href="#evaluators.regression.RegressionEvaluator.meta_regressors_" title="Link to this definition">¶</a></dt>
+<dd><p>A dictionary mapping each scorer’s name to its fitted meta-regressor
+instance. This attribute is populated after the <cite>fit</cite> method is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_iris</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.regression</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegressionEvaluator</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">],</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">RegressionEvaluator</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span><span class="p">)</span>
+<span class="go">RegressionEvaluator(...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train a final model manually</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">final_model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">final_model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">estimated_scores</span><span class="p">)</span>
+<span class="go">{&#39;score&#39;: ...}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.regression.RegressionEvaluator.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_eval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/regression.html#RegressionEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.regression.RegressionEvaluator.estimate" title="Link to this definition">¶</a></dt>
+<dd><p>Estimates the performance of the current model on unlabeled data.</p>
+<p>The model assigned to <cite>self.model</cite> must already be a fitted classifier
+(manually trained by the user). This method extracts meta-features from
+its predictions on the unlabeled data <cite>X_eval</cite> and uses the pre-trained
+meta-regressor(s) to predict the performance scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X_eval</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The unlabeled input data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with the estimated scores, where keys are the names
+of the scorers and values are the predicted performance scores.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>RuntimeError</strong> – If the <cite>estimate</cite> method is called before the evaluator has been
+    fitted with the <cite>fit</cite> method.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>self.model</cite> does not implement <cite>predict_proba</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.regression.RegressionEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/regression.html#RegressionEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.regression.RegressionEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Trains the internal meta-regressor(s) using a single model type.</p>
+<p>This method builds a meta-dataset to train the evaluator. For each dataset,
+it performs multiple random splits to increase the number of meta-examples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of datasets (features) used to train the meta-model.</p></li>
+<li><p><strong>y</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of labels corresponding to <cite>X</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The fitted evaluator instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="evaluators-regression-noise-module">
 <h2>evaluators.regression_noise module<a class="headerlink" href="#evaluators-regression-noise-module" title="Link to this heading">¶</a></h2>
+<dl class="py class" id="module-evaluators.regression_noise">
+<dt class="sig sig-object py" id="evaluators.regression_noise.RegressionNoiseEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.regression_noise.</span></span><span class="sig-name descname"><span class="pre">RegressionNoiseEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_regressor=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_splits=5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/regression_noise.html#RegressionNoiseEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.regression_noise.RegressionNoiseEvaluator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RegressionEvaluator</span></code></p>
+<p>Regression-based evaluator for classification models.</p>
+<p>This evaluator estimates the performance of a classification model (e.g.,
+accuracy, precision) without requiring labeled test data. It works by
+training a meta-regressor (e.g., Random Forest) that learns to map
+meta-features, extracted from a classifier’s probability distributions,
+to its true performance score on unseen data.</p>
+<p>To use this evaluator, it must first be fitted on a collection of diverse
+datasets using the same model type to learn this mapping robustly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>object</em>) – An unfitted classifier instance that will be used as the base model.
+Clones of this model will be trained during the <cite>fit</cite> process and
+the same model type must later be fitted manually before <cite>estimate</cite>.</p></li>
+<li><p><strong>meta_regressor</strong> (<em>object</em><em>, </em><em>default=None</em>) – A regression model implementing <cite>fit</cite> and <cite>predict</cite>. If None, a
+<cite>RandomForestRegressor</cite> with 500 trees is used for each scorer.</p></li>
+<li><p><strong>n_splits</strong> (<em>int</em><em>, </em><em>default=5</em>) – Number of random splits per dataset to generate multiple meta-examples.</p></li>
+<li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – The performance metric(s) to estimate. If a dictionary is provided, a
+separate meta-regressor will be trained to estimate each metric.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints informational messages during the training of the
+meta-regressors and during estimation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.regression_noise.RegressionNoiseEvaluator.meta_regressors_">
+<span class="sig-name descname"><span class="pre">meta_regressors_</span></span><a class="headerlink" href="#evaluators.regression_noise.RegressionNoiseEvaluator.meta_regressors_" title="Link to this definition">¶</a></dt>
+<dd><p>A dictionary mapping each scorer’s name to its fitted meta-regressor
+instance. This attribute is populated after the <cite>fit</cite> method is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_iris</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.regression</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegressionBasedEvaluator</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">],</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">RegressionBasedEvaluator</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span><span class="p">)</span>
+<span class="go">RegressionBasedEvaluator(...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train a final model manually</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">final_model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">final_model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">estimated_scores</span><span class="p">)</span>
+<span class="go">{&#39;score&#39;: ...}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.regression_noise.RegressionNoiseEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/regression_noise.html#RegressionNoiseEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.regression_noise.RegressionNoiseEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Trains the internal meta-regressor(s) using a single model type.</p>
+<p>This method builds a meta-dataset to train the evaluator. For each dataset,
+it performs multiple random splits to increase the number of meta-examples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of datasets (features) used to train the meta-model.</p></li>
+<li><p><strong>y</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of labels corresponding to <cite>X</cite>.</p></li>
+<li><p><strong>start_noise</strong> (<em>int</em><em>, </em><em>default=10</em>) – The starting percentage of label noise to introduce in the holdout set.</p></li>
+<li><p><strong>end_noise</strong> (<em>int</em><em>, </em><em>default=100</em>) – The ending percentage of label noise to introduce in the holdout set.</p></li>
+<li><p><strong>step_noise</strong> (<em>int</em><em>, </em><em>default=10</em>) – The step size for increasing the percentage of label noise.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The fitted evaluator instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.regression_noise.RegressionNoiseEvaluator.set_fit_request">
+<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#evaluators.regression_noise.RegressionNoiseEvaluator" title="evaluators.regression_noise.RegressionNoiseEvaluator"><span class="pre">RegressionNoiseEvaluator</span></a></span></span><a class="headerlink" href="#evaluators.regression_noise.RegressionNoiseEvaluator.set_fit_request" title="Link to this definition">¶</a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>end_noise</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">end_noise</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+<li><p><strong>start_noise</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">start_noise</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+<li><p><strong>step_noise</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">step_noise</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="evaluators-agreement-module">
-<h2>evaluators.agreement module<a class="headerlink" href="#evaluators-agreement-module" title="Link to this heading">¶</a></h2>
+<section id="module-evaluators.agreement">
+<span id="evaluators-agreement-module"></span><h2>evaluators.agreement module<a class="headerlink" href="#module-evaluators.agreement" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="evaluators.agreement.AgreementEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.agreement.</span></span><span class="sig-name descname"><span class="pre">AgreementEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sec_model=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/agreement.html#AgreementEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.agreement.AgreementEvaluator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
+<p>Evaluator based on agreement/disagreement between the target model (M)
+and a secondary model (M’).</p>
+<dl class="simple">
+<dt>The agreement is computed as:</dt><dd><p>1 if the prediction of M equals the prediction of M’ for an instance,
+0 otherwise.</p>
+</dd>
+</dl>
+<p>The secondary model is set to Naive Bayes by default, but can be replaced
+by any other classifier.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.agreement.AgreementEvaluator.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_eval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/agreement.html#AgreementEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.agreement.AgreementEvaluator.estimate" title="Link to this definition">¶</a></dt>
+<dd><p>Estimate the agreement score between the main and secondary models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X_eval</strong> (<em>array-like</em>) – Feature matrix (not used, kept for interface consistency).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>scores</strong> – Agreement score(s) computed using the provided scorer(s).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict or float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.agreement.AgreementEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/agreement.html#AgreementEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.agreement.AgreementEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Fit the evaluator by generating predictions from both models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array-like</em>) – Feature matrix.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – Target vector.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-evaluators">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-evaluators" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="evaluators.AgreementEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.</span></span><span class="sig-name descname"><span class="pre">AgreementEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sec_model=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/agreement.html#AgreementEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.AgreementEvaluator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
+<p>Evaluator based on agreement/disagreement between the target model (M)
+and a secondary model (M’).</p>
+<dl class="simple">
+<dt>The agreement is computed as:</dt><dd><p>1 if the prediction of M equals the prediction of M’ for an instance,
+0 otherwise.</p>
+</dd>
+</dl>
+<p>The secondary model is set to Naive Bayes by default, but can be replaced
+by any other classifier.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.AgreementEvaluator.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_eval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/agreement.html#AgreementEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.AgreementEvaluator.estimate" title="Link to this definition">¶</a></dt>
+<dd><p>Estimate the agreement score between the main and secondary models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X_eval</strong> (<em>array-like</em>) – Feature matrix (not used, kept for interface consistency).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>scores</strong> – Agreement score(s) computed using the provided scorer(s).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict or float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.AgreementEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/agreement.html#AgreementEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.AgreementEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Fit the evaluator by generating predictions from both models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array-like</em>) – Feature matrix.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – Target vector.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.</span></span><span class="sig-name descname"><span class="pre">ConfidenceThresholdEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold=0.65</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_to_top_class=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
+<p>Confidence-based evaluator for classification models.</p>
+<p>This evaluator filters the predictions of a classification model based on a
+confidence threshold. Only predictions with a confidence greater than or
+equal to the specified threshold are considered for scoring.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>object</em>) – Any model with <cite>fit</cite>, <cite>predict</cite>, and <cite>predict_proba</cite> or
+<cite>decision_function</cite> methods.</p></li>
+<li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – An evaluation function or a dictionary of multiple evaluation functions.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>default=0.8</em>) – The minimum confidence required to include a prediction in the calculation.</p></li>
+<li><p><strong>limit_to_top_class</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, uses only the probability of the top class as the confidence score.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints additional information during evaluation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator.model" title="Link to this definition">¶</a></dt>
+<dd><p>The model passed in the constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator.scorer">
+<span class="sig-name descname"><span class="pre">scorer</span></span><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator.scorer" title="Link to this definition">¶</a></dt>
+<dd><p>The scoring function(s) passed in the constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>callable or dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator.threshold" title="Link to this definition">¶</a></dt>
+<dd><p>The confidence threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator.limit_to_top_class">
+<span class="sig-name descname"><span class="pre">limit_to_top_class</span></span><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator.limit_to_top_class" title="Link to this definition">¶</a></dt>
+<dd><p>Indicates if confidence is based solely on the highest probability class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator.verbose">
+<span class="sig-name descname"><span class="pre">verbose</span></span><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator.verbose" title="Link to this definition">¶</a></dt>
+<dd><p>The verbosity level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Sample data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">5.5</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 1. Create and train a standard classifier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">classifier</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;liblinear&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="go">LogisticRegression(random_state=0, solver=&#39;liblinear&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 2. Create the evaluator with the trained classifier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scorings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="n">precision_score</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">:</span> <span class="n">recall_score</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_eval</span> <span class="o">=</span> <span class="n">ConfidenceThresholdEvaluator</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">classifier</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">scorer</span><span class="o">=</span><span class="n">scorings</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">threshold</span><span class="o">=</span><span class="mf">0.9</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 3. The fit method is for compatibility, not strictly needed here</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#    since the model is already trained.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_eval</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="go">ConfidenceThresholdEvaluator(...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 4. Estimate the performance on the test set</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#    The evaluator will internally call classifier.predict_proba(X_test)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scores</span> <span class="o">=</span> <span class="n">conf_eval</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">score_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">score_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">precision: 1.00</span>
+<span class="go">recall: 1.00</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_eval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator.estimate" title="Link to this definition">¶</a></dt>
+<dd><p>Estimates scores based on the confidence threshold.</p>
+<p>This method calculates the prediction confidences, filters out those
+that do not meet the threshold, and then computes the score(s)
+specified in the <cite>scorer</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X_eval</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data for which to estimate scores.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A dictionary with estimated scores for each scorer.</p>
+<p>If no predictions pass the threshold, it returns 0.0 for each scorer.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.ConfidenceThresholdEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.ConfidenceThresholdEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Fits the model to the training data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The training input samples.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The target labels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – Returns the instance itself.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="evaluators.RegressionEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.</span></span><span class="sig-name descname"><span class="pre">RegressionEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_regressor=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_splits=5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/regression.html#RegressionEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.RegressionEvaluator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
+<p>Regression-based evaluator for classification models.</p>
+<p>This evaluator estimates the performance of a classification model (e.g.,
+accuracy, precision) without requiring labeled test data. It works by
+training a meta-regressor (e.g., Random Forest) that learns to map
+meta-features, extracted from a classifier’s probability distributions,
+to its true performance score on unseen data.</p>
+<p>To use this evaluator, it must first be fitted on a collection of diverse
+datasets using the same model type to learn this mapping robustly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>object</em>) – An unfitted classifier instance that will be used as the base model.
+Clones of this model will be trained during the <cite>fit</cite> process and
+the same model type must later be fitted manually before <cite>estimate</cite>.</p></li>
+<li><p><strong>meta_regressor</strong> (<em>object</em><em>, </em><em>default=None</em>) – A regression model implementing <cite>fit</cite> and <cite>predict</cite>. If None, a
+<cite>RandomForestRegressor</cite> with 500 trees is used for each scorer.</p></li>
+<li><p><strong>n_splits</strong> (<em>int</em><em>, </em><em>default=5</em>) – Number of random splits per dataset to generate multiple meta-examples.</p></li>
+<li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – The performance metric(s) to estimate. If a dictionary is provided, a
+separate meta-regressor will be trained to estimate each metric.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints informational messages during the training of the
+meta-regressors and during estimation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.RegressionEvaluator.meta_regressors_">
+<span class="sig-name descname"><span class="pre">meta_regressors_</span></span><a class="headerlink" href="#evaluators.RegressionEvaluator.meta_regressors_" title="Link to this definition">¶</a></dt>
+<dd><p>A dictionary mapping each scorer’s name to its fitted meta-regressor
+instance. This attribute is populated after the <cite>fit</cite> method is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_iris</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.regression</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegressionEvaluator</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">],</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">RegressionEvaluator</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span><span class="p">)</span>
+<span class="go">RegressionEvaluator(...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train a final model manually</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">final_model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">final_model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">estimated_scores</span><span class="p">)</span>
+<span class="go">{&#39;score&#39;: ...}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.RegressionEvaluator.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_eval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/regression.html#RegressionEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.RegressionEvaluator.estimate" title="Link to this definition">¶</a></dt>
+<dd><p>Estimates the performance of the current model on unlabeled data.</p>
+<p>The model assigned to <cite>self.model</cite> must already be a fitted classifier
+(manually trained by the user). This method extracts meta-features from
+its predictions on the unlabeled data <cite>X_eval</cite> and uses the pre-trained
+meta-regressor(s) to predict the performance scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X_eval</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The unlabeled input data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with the estimated scores, where keys are the names
+of the scorers and values are the predicted performance scores.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>RuntimeError</strong> – If the <cite>estimate</cite> method is called before the evaluator has been
+    fitted with the <cite>fit</cite> method.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>self.model</cite> does not implement <cite>predict_proba</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.RegressionEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/regression.html#RegressionEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.RegressionEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Trains the internal meta-regressor(s) using a single model type.</p>
+<p>This method builds a meta-dataset to train the evaluator. For each dataset,
+it performs multiple random splits to increase the number of meta-examples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of datasets (features) used to train the meta-model.</p></li>
+<li><p><strong>y</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of labels corresponding to <cite>X</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The fitted evaluator instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="evaluators.RegressionNoiseEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.</span></span><span class="sig-name descname"><span class="pre">RegressionNoiseEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_regressor=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_splits=5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/regression_noise.html#RegressionNoiseEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.RegressionNoiseEvaluator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RegressionEvaluator</span></code></p>
+<p>Regression-based evaluator for classification models.</p>
+<p>This evaluator estimates the performance of a classification model (e.g.,
+accuracy, precision) without requiring labeled test data. It works by
+training a meta-regressor (e.g., Random Forest) that learns to map
+meta-features, extracted from a classifier’s probability distributions,
+to its true performance score on unseen data.</p>
+<p>To use this evaluator, it must first be fitted on a collection of diverse
+datasets using the same model type to learn this mapping robustly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>object</em>) – An unfitted classifier instance that will be used as the base model.
+Clones of this model will be trained during the <cite>fit</cite> process and
+the same model type must later be fitted manually before <cite>estimate</cite>.</p></li>
+<li><p><strong>meta_regressor</strong> (<em>object</em><em>, </em><em>default=None</em>) – A regression model implementing <cite>fit</cite> and <cite>predict</cite>. If None, a
+<cite>RandomForestRegressor</cite> with 500 trees is used for each scorer.</p></li>
+<li><p><strong>n_splits</strong> (<em>int</em><em>, </em><em>default=5</em>) – Number of random splits per dataset to generate multiple meta-examples.</p></li>
+<li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – The performance metric(s) to estimate. If a dictionary is provided, a
+separate meta-regressor will be trained to estimate each metric.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints informational messages during the training of the
+meta-regressors and during estimation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.RegressionNoiseEvaluator.meta_regressors_">
+<span class="sig-name descname"><span class="pre">meta_regressors_</span></span><a class="headerlink" href="#evaluators.RegressionNoiseEvaluator.meta_regressors_" title="Link to this definition">¶</a></dt>
+<dd><p>A dictionary mapping each scorer’s name to its fitted meta-regressor
+instance. This attribute is populated after the <cite>fit</cite> method is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_iris</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.regression</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegressionBasedEvaluator</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">],</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">RegressionBasedEvaluator</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span><span class="p">)</span>
+<span class="go">RegressionBasedEvaluator(...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train a final model manually</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">final_model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">final_model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">estimated_scores</span><span class="p">)</span>
+<span class="go">{&#39;score&#39;: ...}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.RegressionNoiseEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/regression_noise.html#RegressionNoiseEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.RegressionNoiseEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Trains the internal meta-regressor(s) using a single model type.</p>
+<p>This method builds a meta-dataset to train the evaluator. For each dataset,
+it performs multiple random splits to increase the number of meta-examples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of datasets (features) used to train the meta-model.</p></li>
+<li><p><strong>y</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of labels corresponding to <cite>X</cite>.</p></li>
+<li><p><strong>start_noise</strong> (<em>int</em><em>, </em><em>default=10</em>) – The starting percentage of label noise to introduce in the holdout set.</p></li>
+<li><p><strong>end_noise</strong> (<em>int</em><em>, </em><em>default=100</em>) – The ending percentage of label noise to introduce in the holdout set.</p></li>
+<li><p><strong>step_noise</strong> (<em>int</em><em>, </em><em>default=10</em>) – The step size for increasing the percentage of label noise.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The fitted evaluator instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="evaluators.RegressionNoiseEvaluator.set_fit_request">
+<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#evaluators.regression_noise.RegressionNoiseEvaluator" title="evaluators.regression_noise.RegressionNoiseEvaluator"><span class="pre">RegressionNoiseEvaluator</span></a></span></span><a class="headerlink" href="#evaluators.RegressionNoiseEvaluator.set_fit_request" title="Link to this definition">¶</a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>end_noise</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">end_noise</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+<li><p><strong>start_noise</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">start_noise</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+<li><p><strong>step_noise</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">step_noise</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 
@@ -330,10 +1227,75 @@
             <ul>
 <li><a class="reference internal" href="#">evaluators package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#evaluators-confidence-module">evaluators.confidence module</a></li>
-<li><a class="reference internal" href="#evaluators-regression-module">evaluators.regression module</a></li>
-<li><a class="reference internal" href="#evaluators-regression-noise-module">evaluators.regression_noise module</a></li>
-<li><a class="reference internal" href="#evaluators-agreement-module">evaluators.agreement module</a></li>
+<li><a class="reference internal" href="#module-evaluators.confidence">evaluators.confidence module</a><ul>
+<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.model"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.model</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.scorer"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.scorer</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.threshold"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.threshold</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.limit_to_top_class"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.limit_to_top_class</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.verbose"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.verbose</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.estimate()</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.fit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-evaluators.regression">evaluators.regression module</a><ul>
+<li><a class="reference internal" href="#evaluators.regression.RegressionEvaluator"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#evaluators.regression.RegressionEvaluator.meta_regressors_"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.meta_regressors_</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.regression.RegressionEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.estimate()</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.regression.RegressionEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.fit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#evaluators-regression-noise-module">evaluators.regression_noise module</a><ul>
+<li><a class="reference internal" href="#evaluators.regression_noise.RegressionNoiseEvaluator"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#evaluators.regression_noise.RegressionNoiseEvaluator.meta_regressors_"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.meta_regressors_</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.regression_noise.RegressionNoiseEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.fit()</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.regression_noise.RegressionNoiseEvaluator.set_fit_request"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.set_fit_request()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-evaluators.agreement">evaluators.agreement module</a><ul>
+<li><a class="reference internal" href="#evaluators.agreement.AgreementEvaluator"><code class="docutils literal notranslate"><span class="pre">AgreementEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#evaluators.agreement.AgreementEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">AgreementEvaluator.estimate()</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.agreement.AgreementEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">AgreementEvaluator.fit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-evaluators">Module contents</a><ul>
+<li><a class="reference internal" href="#evaluators.AgreementEvaluator"><code class="docutils literal notranslate"><span class="pre">AgreementEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#evaluators.AgreementEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">AgreementEvaluator.estimate()</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.AgreementEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">AgreementEvaluator.fit()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.model"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.model</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.scorer"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.scorer</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.threshold"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.threshold</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.limit_to_top_class"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.limit_to_top_class</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.verbose"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.verbose</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.estimate()</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.ConfidenceThresholdEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.fit()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#evaluators.RegressionEvaluator"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#evaluators.RegressionEvaluator.meta_regressors_"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.meta_regressors_</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.RegressionEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.estimate()</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.RegressionEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.fit()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#evaluators.RegressionNoiseEvaluator"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#evaluators.RegressionNoiseEvaluator.meta_regressors_"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.meta_regressors_</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.RegressionNoiseEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.fit()</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.RegressionNoiseEvaluator.set_fit_request"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.set_fit_request()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

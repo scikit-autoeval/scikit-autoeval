@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
-        <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/evaluators/regression.html" />
+        <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/evaluators/regression_noise.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>evaluators.regression - scikit-autoeval 0.1.1 documentation</title>
+        <title>evaluators.regression_noise - scikit-autoeval 0.1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -243,21 +243,19 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <h1>Source code for evaluators.regression</h1><div class="highlight"><pre>
+          <h1>Source code for evaluators.regression_noise</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Authors: The scikit-autoeval developers</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">clone</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestRegressor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">skeval.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEvaluator</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.regression</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegressionEvaluator</span>
 
-<div class="viewcode-block" id="RegressionEvaluator">
-<a class="viewcode-back" href="../../evaluators.html#evaluators.regression.RegressionEvaluator">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">RegressionEvaluator</span><span class="p">(</span><span class="n">BaseEvaluator</span><span class="p">):</span>
+<div class="viewcode-block" id="RegressionNoiseEvaluator">
+<a class="viewcode-back" href="../../evaluators.html#evaluators.regression_noise.RegressionNoiseEvaluator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RegressionNoiseEvaluator</span><span class="p">(</span><span class="n">RegressionEvaluator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Regression-based evaluator for classification models.</span>
 
 <span class="sd">    This evaluator estimates the performance of a classification model (e.g.,</span>
@@ -298,17 +296,17 @@
 <span class="sd">    &gt;&gt;&gt; from sklearn.datasets import load_iris</span>
 <span class="sd">    &gt;&gt;&gt; from sklearn.linear_model import LogisticRegression</span>
 <span class="sd">    &gt;&gt;&gt; from sklearn.metrics import accuracy_score</span>
-<span class="sd">    &gt;&gt;&gt; from skeval.evaluators.regression import RegressionEvaluator</span>
+<span class="sd">    &gt;&gt;&gt; from skeval.evaluators.regression import RegressionBasedEvaluator</span>
 <span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &gt;&gt;&gt; iris = load_iris()</span>
 <span class="sd">    &gt;&gt;&gt; X_list, y_list = [iris.data], [iris.target]</span>
-<span class="sd">    &gt;&gt;&gt; evaluator = RegressionEvaluator(</span>
+<span class="sd">    &gt;&gt;&gt; evaluator = RegressionBasedEvaluator(</span>
 <span class="sd">    ...     model=LogisticRegression(max_iter=1000),</span>
 <span class="sd">    ...     scorer=accuracy_score,</span>
 <span class="sd">    ...     verbose=False</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; evaluator.fit(X_list, y_list)</span>
-<span class="sd">    RegressionEvaluator(...)</span>
+<span class="sd">    RegressionBasedEvaluator(...)</span>
 <span class="sd">    &gt;&gt;&gt; # Train a final model manually</span>
 <span class="sd">    &gt;&gt;&gt; final_model = LogisticRegression(max_iter=1000).fit(iris.data, iris.target)</span>
 <span class="sd">    &gt;&gt;&gt; evaluator.model = final_model</span>
@@ -316,15 +314,10 @@
 <span class="sd">    &gt;&gt;&gt; print(estimated_scores)</span>
 <span class="sd">    {&#39;score&#39;: ...}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">meta_regressor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">scorer</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">meta_regressor</span> <span class="o">=</span> <span class="n">meta_regressor</span> <span class="ow">or</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_splits</span> <span class="o">=</span> <span class="n">n_splits</span>
-
-<div class="viewcode-block" id="RegressionEvaluator.fit">
-<a class="viewcode-back" href="../../evaluators.html#evaluators.regression.RegressionEvaluator.fit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    
+<div class="viewcode-block" id="RegressionNoiseEvaluator.fit">
+<a class="viewcode-back" href="../../evaluators.html#evaluators.regression_noise.RegressionNoiseEvaluator.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">start_noise</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">end_noise</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">step_noise</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Trains the internal meta-regressor(s) using a single model type.</span>
 
 <span class="sd">        This method builds a meta-dataset to train the evaluator. For each dataset,</span>
@@ -336,16 +329,25 @@
 <span class="sd">            A list of datasets (features) used to train the meta-model.</span>
 <span class="sd">        y : list of array-like</span>
 <span class="sd">            A list of labels corresponding to `X`.</span>
+<span class="sd">        start_noise : int, default=10</span>
+<span class="sd">            The starting percentage of label noise to introduce in the holdout set.</span>
+<span class="sd">        end_noise : int, default=100</span>
+<span class="sd">            The ending percentage of label noise to introduce in the holdout set.</span>
+<span class="sd">        step_noise : int, default=10</span>
+<span class="sd">            The step size for increasing the percentage of label noise.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        self : object</span>
 <span class="sd">            The fitted evaluator instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">start_noise</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">end_noise</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="ow">or</span> <span class="n">step_noise</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Noise parameters must satisfy: 0 &lt;= start_noise &lt;= end_noise &lt;= 100 and step_noise &gt; 0.&quot;</span><span class="p">)</span>
+        
         <span class="n">scorers_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scorer_names</span><span class="p">()</span>
         <span class="n">meta_features</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">meta_targets</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">scorers_names</span><span class="p">}</span>
-
+        
         <span class="k">for</span> <span class="n">X_i</span><span class="p">,</span> <span class="n">y_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">split</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_splits</span><span class="p">):</span>
                 <span class="n">est</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
@@ -356,19 +358,36 @@
                 <span class="p">)</span>
 
                 <span class="n">est</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_meta</span><span class="p">,</span> <span class="n">y_train_meta</span><span class="p">)</span>
+
                 <span class="n">feats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_metafeatures</span><span class="p">(</span><span class="n">est</span><span class="p">,</span> <span class="n">X_holdout_meta</span><span class="p">)</span>
-                <span class="n">y_pred_holdout</span> <span class="o">=</span> <span class="n">est</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_holdout_meta</span><span class="p">)</span>
 
-                <span class="n">meta_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feats</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_noise</span><span class="p">,</span> <span class="p">(</span><span class="n">end_noise</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">step_noise</span><span class="p">):</span>
+                    <span class="n">n_noisy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_holdout_meta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">))</span>
 
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">scorers_names</span><span class="p">:</span>
-                        <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-                        <span class="n">score</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">y_holdout_meta</span><span class="p">,</span> <span class="n">y_pred_holdout</span><span class="p">)</span>
-                        <span class="n">meta_targets</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">):</span>
-                    <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">(</span><span class="n">y_holdout_meta</span><span class="p">,</span> <span class="n">y_pred_holdout</span><span class="p">)</span>
-                    <span class="n">meta_targets</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+                    <span class="n">X_noisy_part</span> <span class="o">=</span> <span class="n">X_holdout_meta</span><span class="p">[:</span><span class="n">n_noisy</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                    <span class="n">X_clean_part</span> <span class="o">=</span> <span class="n">X_holdout_meta</span><span class="p">[</span><span class="n">n_noisy</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                    <span class="c1"># set noise</span>
+                    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span> <span class="o">+</span> <span class="n">p</span> <span class="o">+</span> <span class="n">split</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">X_holdout_meta</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                        
+                        <span class="n">X_noisy_part</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">X_noisy_part</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+                        
+                        <span class="n">X_concat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X_noisy_part</span><span class="p">,</span> <span class="n">X_clean_part</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+                        <span class="n">y_pred_holdout</span> <span class="o">=</span> <span class="n">est</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_concat</span><span class="p">)</span>
+
+                        <span class="n">meta_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feats</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+                        
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">scorers_names</span><span class="p">:</span>
+                                <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                                <span class="n">score</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">y_holdout_meta</span><span class="p">,</span> <span class="n">y_pred_holdout</span><span class="p">)</span>
+                                <span class="n">meta_targets</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">):</span>
+                            <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">(</span><span class="n">y_holdout_meta</span><span class="p">,</span> <span class="n">y_pred_holdout</span><span class="p">)</span>
+                            <span class="n">meta_targets</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
 
         <span class="n">meta_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">meta_features</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meta_regressors_</span> <span class="o">=</span> <span class="p">{}</span>
@@ -384,94 +403,7 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">return</span> <span class="bp">self</span></div>
-
-
-
-<div class="viewcode-block" id="RegressionEvaluator.estimate">
-<a class="viewcode-back" href="../../evaluators.html#evaluators.regression.RegressionEvaluator.estimate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_eval</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Estimates the performance of the current model on unlabeled data.</span>
-
-<span class="sd">        The model assigned to `self.model` must already be a fitted classifier</span>
-<span class="sd">        (manually trained by the user). This method extracts meta-features from</span>
-<span class="sd">        its predictions on the unlabeled data `X_eval` and uses the pre-trained</span>
-<span class="sd">        meta-regressor(s) to predict the performance scores.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        X_eval : array-like of shape (n_samples, n_features)</span>
-<span class="sd">            The unlabeled input data.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        dict</span>
-<span class="sd">            A dictionary with the estimated scores, where keys are the names</span>
-<span class="sd">            of the scorers and values are the predicted performance scores.</span>
-<span class="sd">        </span>
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        RuntimeError</span>
-<span class="sd">            If the `estimate` method is called before the evaluator has been</span>
-<span class="sd">            fitted with the `fit` method.</span>
-<span class="sd">        ValueError</span>
-<span class="sd">            If `self.model` does not implement `predict_proba`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;meta_regressors_&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The evaluator has not been fitted yet. Call &#39;fit&#39; before &#39;estimate&#39;.&quot;</span><span class="p">)</span>
-            
-        <span class="n">feats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_metafeatures</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">X_eval</span><span class="p">)</span>
-        <span class="n">scores</span> <span class="o">=</span> <span class="p">{}</span>
-        
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">reg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_regressors_</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">estimated_score</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">feats</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">scores</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">estimated_score</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[INFO] Estimated </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">estimated_score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">scores</span></div>
-
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_extract_metafeatures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts meta-features from a fitted model&#39;s predicted probabilities.</span>
-
-<span class="sd">        The extracted features include the mean and standard deviation of the</span>
-<span class="sd">        maximum prediction probabilities (confidence) and the mean and standard</span>
-<span class="sd">        deviation of the entropy of the probability distributions.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        estimator : fitted classifier</span>
-<span class="sd">            The classifier from which to extract prediction probabilities.</span>
-<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
-<span class="sd">            The input data.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ndarray</span>
-<span class="sd">            A 2D numpy array of shape (1, n_meta_features) containing the</span>
-<span class="sd">            extracted features.</span>
-<span class="sd">        </span>
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        ValueError</span>
-<span class="sd">            If the provided estimator does not have a `predict_proba` method.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="s2">&quot;predict_proba&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The estimator must implement predict_proba.&quot;</span><span class="p">)</span>
-            
-        <span class="n">probas</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">max_probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">probas</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-12</span>
-        <span class="n">entropy</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">probas</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">probas</span> <span class="o">+</span> <span class="n">eps</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        
-        <span class="n">features</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;mean_conf&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">max_probs</span><span class="p">),</span>
-            <span class="s2">&quot;std_conf&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">max_probs</span><span class="p">),</span>
-            <span class="s2">&quot;mean_entropy&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">entropy</span><span class="p">),</span>
-            <span class="s2">&quot;std_entropy&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">entropy</span><span class="p">)</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
         </article>
