@@ -61,12 +61,12 @@ X_train, X_test, y_train, y_test = train_test_split(
 # ======================
 # 6. Fit model and evaluator
 # ======================
-evaluator.fit(X_train, y_train)
+evaluator.fit(X1, y1)
 
 # ======================
 # 7. Estimate performance using evaluator
 # ======================
-estimated_scores = evaluator.estimate(X_test)
+estimated_scores = evaluator.estimate(X2)
 
 # ======================
 # 8. Compute real performance using cross-validation

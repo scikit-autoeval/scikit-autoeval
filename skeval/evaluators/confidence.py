@@ -2,11 +2,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import numpy as np
 from sklearn.metrics import accuracy_score
-from sklearn.utils.validation import check_is_fitted
-from sklearn.exceptions import NotFittedError
-
 
 from ..base import BaseEvaluator
+from ..utils import check_is_fitted
 
 class ConfidenceThresholdEvaluator(BaseEvaluator):
     """

@@ -22,6 +22,7 @@ from ..evaluators.agreement import AgreementEvaluator
 # 1. Load datasets
 # ======================
 df_geriatrics = pd.read_csv('./skeval/datasets/geriatria-controle-alzheimerLabel.csv')
+df_neurology = pd.read_csv('./skeval/datasets/neurologia-controle-alzheimerLabel.csv')
 
 # ======================
 # 2. Separate features and target

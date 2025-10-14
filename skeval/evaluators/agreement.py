@@ -1,12 +1,10 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
-
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
-from sklearn.utils.validation import check_is_fitted
 
 from ..base import BaseEvaluator
-
+from ..utils import check_is_fitted
 
 class AgreementEvaluator(BaseEvaluator):
     """
