@@ -36,10 +36,10 @@ evaluators.agreement module
    :show-inheritance:
    :undoc-members:
 
-Module contents
----------------
+.. Module contents
+.. ---------------
 
-.. automodule:: evaluators
-   :members:
-   :show-inheritance:
-   :undoc-members:
+.. .. automodule:: evaluators
+..    :members:
+..    :show-inheritance:
+..    :undoc-members:
