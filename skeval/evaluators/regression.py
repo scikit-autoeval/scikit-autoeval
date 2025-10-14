@@ -106,7 +106,7 @@ class RegressionEvaluator(BaseEvaluator):
                 )
 
                 est.fit(X_train_meta, y_train_meta)
-                feats = self.__extract_metafeatures(est, X_holdout_meta)
+                feats = self._extract_metafeatures(est, X_holdout_meta)
                 y_pred_holdout = est.predict(X_holdout_meta)
 
                 meta_features.append(feats.flatten())
@@ -131,6 +131,8 @@ class RegressionEvaluator(BaseEvaluator):
 
             if self.verbose:
                 print(f"[INFO] Meta-regressor for '{name}' has been trained.")
+        
+        self.model.fit(X[0], y[0])
         return self
 
 

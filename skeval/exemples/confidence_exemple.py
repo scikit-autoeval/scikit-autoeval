@@ -3,24 +3,22 @@
 
 # ==============================================================
 # ConfidenceThresholdEvaluator Example
-# Comparing estimated vs. real performance with cross-validation
 # ==============================================================
 
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
-from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.impute import KNNImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.ensemble import RandomForestClassifier
 
-from skeval.evaluators.confidence import ConfidenceThresholdEvaluator
-
+from ..evaluators.confidence import ConfidenceThresholdEvaluator
+from ..utils import get_CV_and_real_scores
 
 # ======================
 # 1. Load datasets
 # ======================
 df_geriatrics = pd.read_csv('./skeval/datasets/geriatria-controle-alzheimerLabel.csv')
-df_neurology = pd.read_csv('./skeval/datasets/neurologia-controle-alzheimerLabel.csv')
+df_neurology  = pd.read_csv('./skeval/datasets/neurologia-controle-alzheimerLabel.csv')
 
 # ======================
 # 2. Separate features and target
@@ -52,36 +50,42 @@ evaluator = ConfidenceThresholdEvaluator(
 )
 
 # ======================
-# 5. Train/test split for Geriatrics dataset
-# ======================
-X_train, X_test, y_train, y_test = train_test_split(
-    X1, y1, test_size=0.5, random_state=42, stratify=y1
-)
-
-# ======================
-# 6. Fit model and evaluator
+# 5. Fit evaluator on geriatrics dataset (learn internal behavior)
 # ======================
 evaluator.fit(X1, y1)
 
 # ======================
-# 7. Estimate performance using evaluator
+# 6. Estimated performance (apply evaluator to neurology)
 # ======================
 estimated_scores = evaluator.estimate(X2)
 
 # ======================
-# 8. Compute real performance using cross-validation
+# 7. Cross-Validation and Real Performance
+#  
 # ======================
-real_scores = {}
-for metric_name, scorer_fn in scorers.items():
-    cv_score = cross_val_score(
-        model, X1, y1, scoring='accuracy' if metric_name == 'accuracy' else 'f1_macro',
-        cv=5
-    ).mean()
-    real_scores[metric_name] = cv_score
+scores_dict = get_CV_and_real_scores(model=model, scorers=scorers, X_train=X1, y_train=y1, X_test=X2, y_test=y2)
+cv_scores = scores_dict['cv_scores']
+real_scores = scores_dict['real_scores']
 
 # ======================
-# 9. Side-by-side comparison
+# 8. Side-by-side comparison
 # ======================
-print("\n===== Estimated vs. Real Performance =====")
+print("\n===== CV (intra-domain) vs. Estimated vs. Real (train Geriatrics -> test Neurology) =====")
 for metric in scorers.keys():
-    print(f"{metric:<10} -> Real (CV): {real_scores[metric]:.4f} | Estimated: {estimated_scores[metric]:.4f}")
+    print(
+        f"{metric:<10} -> CV: {cv_scores[metric]:.4f} | "
+        f"Estimated: {estimated_scores[metric]:.4f} | "
+        f"Real: {real_scores[metric]:.4f}"
+    )
+
+# ======================
+# 9. Absolute error comparison (distance to Real)
+# ======================
+print("\n===== Absolute Error w.r.t. Real Performance =====")
+for metric in scorers.keys():
+    err_est = abs(real_scores[metric] - estimated_scores[metric])
+    err_cv  = abs(real_scores[metric] - cv_scores[metric])
+    print(
+        f"{metric:<10} -> |Real - Estimated|: {err_est:.4f} | "
+        f"|Real - CV|: {err_cv:.4f}"
+    )

@@ -115,10 +115,8 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
                     n_noisy = int(len(X_holdout_meta) * (p / 100.0))
 
                     X_noisy_part = X_holdout_meta[:n_noisy].copy()
-                    y_noisy_part = y_holdout_meta[:n_noisy].copy()
 
                     X_clean_part = X_holdout_meta[n_noisy:].copy()
-                    y_clean_part = y_holdout_meta[n_noisy:].copy()
 
                     # set noise
                     rng = np.random.default_rng(42 + p + split)
@@ -152,4 +150,6 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
 
             if self.verbose:
                 print(f"[INFO] Meta-regressor for '{name}' has been trained.")
+        
+        self.model.fit(X[0], y[0])
         return self

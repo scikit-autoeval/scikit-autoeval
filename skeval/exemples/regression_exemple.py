@@ -3,16 +3,15 @@
 
 # ==============================================================
 # RegressionEvaluator Example
-# Comparing estimated vs. real performance with cross-validation
 # ==============================================================
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
-from sklearn.model_selection import StratifiedKFold, cross_validate
 from sklearn.impute import KNNImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.ensemble import RandomForestClassifier
 
 from ..evaluators import RegressionEvaluator
+from ..utils import get_CV_and_real_scores
 
 # =====================================
 # 1. Load datasets
@@ -46,37 +45,47 @@ evaluator = RegressionEvaluator(
     model=model,
     scorer=scorers,
     n_splits=4,
-    verbose=True
+    verbose=False
 )
 
 # =====================================
 # 5. Fit evaluator using multiple datasets
 # =====================================
 evaluator.fit([X1, X2], [y1, y2])
-final_model = model.fit(X1, y1)
+# final_model = model.fit(X1, y1)
 
 # =====================================
 # 6. Estimate scores for new dataset
 # =====================================
-estimated_scores = evaluator.estimate(X1)
+estimated_scores = evaluator.estimate(X2)
 
-# =====================================
-# 7. Compute real scores via cross-validation
-# =====================================
-cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-cv_results = cross_validate(
-    model, X1, y1, cv=cv,
-    scoring={'accuracy': 'accuracy', 'f1_macro': 'f1_macro'},
-    return_train_score=False
-)
-real_scores = {
-    'accuracy': cv_results['test_accuracy'].mean(),
-    'f1_macro': cv_results['test_f1_macro'].mean()
-}
+# ======================
+# 7. Cross-Validation and Real Performance
+#  
+# ======================
+scores_dict = get_CV_and_real_scores(model=model, scorers=scorers, X_train=X1, y_train=y1, X_test=X2, y_test=y2)
+cv_scores = scores_dict['cv_scores']
+real_scores = scores_dict['real_scores']
 
-# =====================================
-# 8. Compare estimated vs. real cross-validation results
-# =====================================
-print("\n=== Comparison: Estimated vs. Real Cross-Validation Scores ===")
+# ======================
+# 8. Side-by-side comparison
+# ======================
+print("\n===== CV (intra-domain) vs. Estimated vs. Real (train Geriatrics -> test Neurology) =====")
 for metric in scorers.keys():
-    print(f"{metric:<10} | Estimated: {estimated_scores[metric]:.4f} | Real (CV): {real_scores[metric]:.4f}")
+    print(
+        f"{metric:<10} -> CV: {cv_scores[metric]:.4f} | "
+        f"Estimated: {estimated_scores[metric]:.4f} | "
+        f"Real: {real_scores[metric]:.4f}"
+    )
+
+# ======================
+# 9. Absolute error comparison (distance to Real)
+# ======================
+print("\n===== Absolute Error w.r.t. Real Performance =====")
+for metric in scorers.keys():
+    err_est = abs(real_scores[metric] - estimated_scores[metric])
+    err_cv  = abs(real_scores[metric] - cv_scores[metric])
+    print(
+        f"{metric:<10} -> |Real - Estimated|: {err_est:.4f} | "
+        f"|Real - CV|: {err_cv:.4f}"
+    )
