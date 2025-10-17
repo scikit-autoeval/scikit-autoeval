@@ -108,7 +108,7 @@ class ShapEvaluator(BaseEvaluator):
         shap_train_arr = self._choose_class_shap(shap_train, self.model)
         shap_eval_arr = self._choose_class_shap(shap_eval, self.model)
 
-        # --- Correção: converter arrays SHAP 3D para 2D ---
+        # converter arrays SHAP 3D para 2D
         if shap_train_arr.ndim == 3:
             shap_train_arr = shap_train_arr.mean(axis=0)
         if shap_eval_arr.ndim == 3:
