@@ -107,37 +107,37 @@ class ShapEvaluator(BaseEvaluator):
 
         shap_train_arr = self._choose_class_shap(shap_train, self.model)
         shap_eval_arr = self._choose_class_shap(shap_eval, self.model)
-        
-        # --- Correção: converter SHAP arrays 3D para 2D ---
+
+        # --- Correção: converter arrays SHAP 3D para 2D ---
         if shap_train_arr.ndim == 3:
             shap_train_arr = shap_train_arr.mean(axis=0)
         if shap_eval_arr.ndim == 3:
             shap_eval_arr = shap_eval_arr.mean(axis=0)
 
-        # Predictions on train and eval by the original classifier
+        # Predições no treino e avaliação pelo classificador original
         pred_train = self.model.predict(X_train)
         pred_eval = self.model.predict(X_eval)
 
-        # Build target for inner classifier: 1 if original prediction was correct, 0 otherwise
+        # Construir alvo para o classificador interno: 1 se a previsão original estava correta, 0 caso contrário
         y_right = np.array([1 if y_train[i] == pred_train[i] else 0 for i in range(len(pred_train))])
 
-        # Fit inner classifier on SHAP(train) -> correctness
+        # Treina o classificador interno em SHAP(train) -> acerto
         min_len = min(len(shap_train_arr), len(y_right))
         shap_train_arr = shap_train_arr[:min_len]
         y_right = y_right[:min_len]
         clf = clone(self.inner_clf)
         clf.fit(shap_train_arr, y_right)
 
-        # Predict which eval instances are correctly predicted by the original model
+        # Prediz quais instâncias de avaliação foram corretamente previstas pelo modelo original
         pred_right = clf.predict(shap_eval_arr)
         min_len = min(len(pred_eval), len(pred_right))
         pred_eval = pred_eval[:min_len]
         pred_right = pred_right[:min_len]
 
-        # Build expected labels: if predicted correct keep model prediction, else flip binary class
-        # (assumes binary classification with classes {0,1})
+        # Construir labels esperadas: se previsto como correto, mantém a previsão do modelo, caso contrário inverte a classe binária
+        # (assume classificação binária com classes {0,1})
         expected_y = np.array([pred_eval[i] if pred_right[i] == 1 else ((pred_eval[i] + 1) % 2)
-                               for i in range(len(pred_eval))])
+                            for i in range(len(pred_eval))])
 
         if isinstance(self.scorer, dict):
             return {name: fn(expected_y, pred_eval) for name, fn in self.scorer.items()}
