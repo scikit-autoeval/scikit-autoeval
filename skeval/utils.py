@@ -1,9 +1,8 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
-import numpy as np
 from sklearn.utils.validation import check_is_fitted as sklearn_check_is_fitted
-from sklearn.metrics import accuracy_score, f1_score
-from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_validate
+from sklearn.metrics import make_scorer
 
 def check_is_fitted(model):
     """Check if the model has been fitted.
@@ -22,8 +21,9 @@ def check_is_fitted(model):
 def get_CV_and_real_scores(model, scorers, X_train, y_train, X_test, y_test):
     """Compute cross-validation and real scores for a given model and datasets.
 
-    This function computes the cross-validation scores on the training dataset
-    and the real scores on the test dataset using the provided evaluator and model.
+    This function computes the cross-validation scores on the test dataset
+    (using cross_validate) and the real scores on the test dataset after
+    fitting the model on X_train/y_train.
 
     Parameters
     ----------
@@ -50,19 +50,19 @@ def get_CV_and_real_scores(model, scorers, X_train, y_train, X_test, y_test):
     # 1. Cross-Validation (intra-domain)
     #  This is the standard CV estimate: train/validate 
     # ======================
-    cv_scores = {metric: [] for metric in scorers.keys()}
-    kf = KFold(n_splits=5, shuffle=True, random_state=42)
-
-    for train_idx, _ in kf.split(X_train):
-        X_train_fold, y_train_fold = X_train.iloc[train_idx], y_train.iloc[train_idx]
-        
-        model.fit(X_train_fold, y_train_fold)
-        y_pred_fold = model.predict(X_test) 
-        
-        for metric in scorers.keys():
-            cv_scores[metric].append(scorers[metric](y_test, y_pred_fold))
-
-    cv_scores = {metric: np.mean(values) for metric, values in cv_scores.items()}
+    cv_scores = {}
+    scoring = {name: make_scorer(fn) for name, fn in scorers.items()}
+    cv_result = cross_validate(
+        model,
+        X_test,
+        y_test,
+        scoring=scoring,
+        cv=5,
+        return_train_score=False
+    )
+    for metric_name in scorers.keys():
+        cv_key = f"test_{metric_name}"
+        cv_scores[metric_name] = cv_result[cv_key].mean()
 
     # ======================
     # 2. Real performance (train on geriatrics -> test on neurology)

@@ -6,8 +6,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
-from ..base import BaseEvaluator
-from ..utils import check_is_fitted
+from skeval.base import BaseEvaluator
+from skeval.utils import check_is_fitted
 
 class RegressionEvaluator(BaseEvaluator):
     """Regression-based evaluator for classification models.

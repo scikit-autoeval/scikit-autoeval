@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.base import clone
 from sklearn.model_selection import train_test_split
 
-from ..evaluators.regression import RegressionEvaluator
+from skeval.evaluators.regression import RegressionEvaluator
 
 class RegressionNoiseEvaluator(RegressionEvaluator):
     """Regression-based evaluator for classification models.

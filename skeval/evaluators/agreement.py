@@ -3,8 +3,8 @@
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 
-from ..base import BaseEvaluator
-from ..utils import check_is_fitted
+from skeval.base import BaseEvaluator
+from skeval.utils import check_is_fitted
 
 class AgreementEvaluator(BaseEvaluator):
     """
