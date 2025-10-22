@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from ..exemples.confidence_exemple import run_confidence_eval
 from ..exemples.regression_exemple import run_regression_eval
 from ..exemples.regression_noise_exemple import run_regression_noise_eval
+from ..exemples.agreement_exemple import run_agreement_eval
 from ..exemples.shap_exemple import run_shap_eval
 
 def plot_eval(eval, eval_name="", file_name=""):
@@ -52,4 +53,5 @@ def plot_eval(eval, eval_name="", file_name=""):
 plot_eval(run_confidence_eval, eval_name="Confidence Threshold Evaluator", file_name="confidence_eval")
 plot_eval(run_regression_eval, eval_name="Regression Evaluator", file_name="regression_eval")
 plot_eval(run_regression_noise_eval, eval_name="Regression Noise Evaluator", file_name="regression_noise_eval")
+plot_eval(run_agreement_eval, eval_name="Agreement Evaluator", file_name="agreement_eval")
 plot_eval(run_shap_eval, eval_name="SHAP Evaluator", file_name="shap_eval")
