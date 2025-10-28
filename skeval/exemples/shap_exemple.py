@@ -9,7 +9,7 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.impute import KNNImputer
 from sklearn.pipeline import make_pipeline
-from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 
 from skeval.evaluators.shap import ShapEvaluator
 from skeval.utils import get_CV_and_real_scores 
@@ -32,7 +32,7 @@ def run_shap_eval(verbose=False):
     # =====================================
     model = make_pipeline(
         KNNImputer(n_neighbors=5),
-        RandomForestClassifier(n_estimators=300, random_state=42)
+        XGBClassifier()
     )
 
     # =====================================
@@ -46,24 +46,30 @@ def run_shap_eval(verbose=False):
     evaluator = ShapEvaluator(
         model=model,
         scorer=scorers,
-        verbose=False
+        verbose=False,
+        inner_clf = XGBClassifier(),
+        X_train=X1,
+        y_train=y1
     )
 
     # =====================================
     # 5. Fit evaluator on geriatrics data
     # =====================================
+    # model.fit(X1, y1)
     evaluator.fit(X1, y1)
 
     # =====================================
     # 6. Estimate performance (train on X1, estimate on X2)
     # =====================================
     # Transform data using only the preprocessing part of the pipeline
-    imputer = evaluator.model.named_steps["knnimputer"]
-    X1_proc = evaluator.model[:-1].transform(X1.values)
-    X2_proc = evaluator.model[:-1].transform(X2.values)
+    # imputer = evaluator.model.named_steps["knnimputer"]
+    # X1_proc = evaluator.model[:-1].transform(X1.values)
+    # X2_proc = evaluator.model[:-1].transform(X2.values)
 
-    final_model = evaluator.model[-1]
-    estimated_scores = evaluator.estimate(X2_proc, X_train=X1_proc, y_train=y1)
+    # final_model = evaluator.model[-1]
+    # estimated_scores = evaluator.estimate(X2_proc, X_train=X1, y_train=y1)
+    
+    estimated_scores = evaluator.estimate(X2)
 
     # =====================================
     # 7. Compute real and CV performance
