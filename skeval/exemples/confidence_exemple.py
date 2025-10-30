@@ -27,7 +27,7 @@ def run_confidence_eval(verbose=False):
     # 3. Define model pipeline
     # ======================
     model = make_pipeline(
-        KNNImputer(n_neighbors=5),
+        KNNImputer(n_neighbors=4),
         RandomForestClassifier(n_estimators=300, random_state=42)
     )
 

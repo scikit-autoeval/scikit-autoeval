@@ -43,7 +43,7 @@ class ShapEvaluator(BaseEvaluator):
 
     def __init__(self, model, scorer=accuracy_score, verbose=False, inner_clf=None, X_train=None, y_train=None):
         super().__init__(model=model, scorer=scorer, verbose=verbose)
-        self.inner_clf = inner_clf or XGBClassifier()
+        self.inner_clf = inner_clf or XGBClassifier(random_state=42)
         self.explainer = None
         self.X_train = X_train
         self.y_train = y_train

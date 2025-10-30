@@ -10,6 +10,8 @@ from sklearn.metrics import accuracy_score, f1_score
 from sklearn.impute import KNNImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 from sklearn.svm import SVC
 
 from ..evaluators.agreement import AgreementEvaluator
@@ -32,14 +34,17 @@ def run_agreement_eval(verbose=False):
     # 3. Define model pipelines
     # ======================
     model = make_pipeline(
-        KNNImputer(n_neighbors=5),
-        GradientBoostingClassifier(n_estimators=200, learning_rate=0.05, random_state=42)
+        KNNImputer(n_neighbors=10),
+        RandomForestClassifier(n_estimators=50, random_state=42)
     )
+    # model = RandomForestClassifier(n_estimators=50, random_state=42)
 
     sec_model = make_pipeline(
-        KNNImputer(n_neighbors=5),
-        SVC(C=1.0, kernel='rbf', gamma='scale', probability=True, random_state=42)
+        KNNImputer(n_neighbors=10),
+        RandomForestClassifier(n_estimators=100, random_state=42)
     )
+    # sec_model = RandomForestClassifier(n_estimators=100, random_state=42)
+    
     # ======================
     # 4. Define scorers and evaluator
     # ======================

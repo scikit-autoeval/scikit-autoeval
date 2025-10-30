@@ -47,7 +47,7 @@ def run_shap_eval(verbose=False):
         model=model,
         scorer=scorers,
         verbose=False,
-        inner_clf = XGBClassifier(),
+        inner_clf = XGBClassifier(random_state=42),
         X_train=X1,
         y_train=y1
     )
@@ -55,19 +55,11 @@ def run_shap_eval(verbose=False):
     # =====================================
     # 5. Fit evaluator on geriatrics data
     # =====================================
-    # model.fit(X1, y1)
     evaluator.fit(X1, y1)
 
     # =====================================
     # 6. Estimate performance (train on X1, estimate on X2)
     # =====================================
-    # Transform data using only the preprocessing part of the pipeline
-    # imputer = evaluator.model.named_steps["knnimputer"]
-    # X1_proc = evaluator.model[:-1].transform(X1.values)
-    # X2_proc = evaluator.model[:-1].transform(X2.values)
-
-    # final_model = evaluator.model[-1]
-    # estimated_scores = evaluator.estimate(X2_proc, X_train=X1, y_train=y1)
     
     estimated_scores = evaluator.estimate(X2)
 

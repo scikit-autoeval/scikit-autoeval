@@ -6,8 +6,6 @@
 # ==============================================================
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
-from sklearn.impute import KNNImputer
-from sklearn.pipeline import make_pipeline
 from sklearn.ensemble import RandomForestClassifier
 
 from ..evaluators import RegressionEvaluator
@@ -29,10 +27,7 @@ def run_regression_eval(verbose=False):
     # =====================================
     # 3. Define pipeline (KNNImputer + RandomForest)
     # =====================================
-    model = make_pipeline(
-        KNNImputer(n_neighbors=5),
-        RandomForestClassifier(n_estimators=300, random_state=42)
-    )
+    model = RandomForestClassifier(n_estimators=180, random_state=42)
 
     # =====================================
     # 4. Define scorers and evaluator
