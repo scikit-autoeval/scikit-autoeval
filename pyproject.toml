@@ -1,0 +1,26 @@
+[project]
+name = "scikit-autoeval"
+version = "1.0.0"
+description = "AutoEval library for automatic evaluation of supervised models"
+authors = [
+    {name = "Lucas Santos Rodrigues", email = "lucasantos2003@gmail.com"},
+    {name = "Ismael Santana Silva", email = "ismaelsantana@cefetmg.br"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "scikit-learn>=1.0",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "shap",
+    "xgboost",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/scikit-autoeval/scikit-autoeval"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
