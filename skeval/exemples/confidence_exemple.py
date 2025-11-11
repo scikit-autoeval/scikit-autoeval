@@ -7,8 +7,8 @@ from sklearn.impute import KNNImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.ensemble import RandomForestClassifier
 
-from ..evaluators.confidence import ConfidenceThresholdEvaluator
-from ..utils import get_CV_and_real_scores
+from skeval.evaluators.confidence import ConfidenceThresholdEvaluator
+from skeval.utils import get_CV_and_real_scores
 
 def run_confidence_eval(verbose=False):
     # ======================

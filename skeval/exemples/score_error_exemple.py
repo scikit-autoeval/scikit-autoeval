@@ -5,8 +5,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, mean_absolute_error, mean_squared_error
 
-from ..evaluators.confidence import ConfidenceThresholdEvaluator
-from ..metrics.comparison import score_error
+from skeval.evaluators.confidence import ConfidenceThresholdEvaluator
+from skeval.metrics.comparison import score_error
 
 def load_dataset(path):
     df = pd.read_csv(path)

@@ -8,8 +8,8 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.ensemble import RandomForestClassifier
 
-from ..evaluators import RegressionEvaluator
-from ..utils import get_CV_and_real_scores
+from skeval.evaluators import RegressionEvaluator
+from skeval.utils import get_CV_and_real_scores
 
 def run_regression_eval(verbose=False):
     # =====================================

@@ -4,7 +4,7 @@ import unittest
 import numpy as np
 from sklearn.metrics import f1_score, precision_score
 
-from ..scorers import make_scorer
+from skeval.metrics.scorers import make_scorer
 
 class TestMakeScorer(unittest.TestCase):
 

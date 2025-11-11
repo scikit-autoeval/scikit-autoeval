@@ -5,7 +5,7 @@ import io
 from contextlib import redirect_stdout
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-from ..comparison import score_error
+from skeval.metrics.comparison import score_error
 
 class TestScoreError(unittest.TestCase):
 

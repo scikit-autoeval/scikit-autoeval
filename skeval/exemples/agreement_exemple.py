@@ -14,8 +14,8 @@ from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 from sklearn.svm import SVC
 
-from ..evaluators.agreement import AgreementEvaluator
-from ..utils import get_CV_and_real_scores
+from skeval.evaluators.agreement import AgreementEvaluator
+from skeval.utils import get_CV_and_real_scores
 
 def run_agreement_eval(verbose=False):
     # ======================

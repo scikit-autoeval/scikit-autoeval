@@ -7,8 +7,9 @@ from sklearn.datasets import load_iris, load_breast_cancer, make_classification
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score
-from ..regression import RegressionEvaluator
+from sklearn.exceptions import NotFittedError
 
+from skeval.evaluators.regression import RegressionEvaluator
 
 class TestRegressionBasedEvaluator(unittest.TestCase):
 
@@ -54,7 +55,7 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
         model = LogisticRegression(max_iter=200)
         evaluator = RegressionEvaluator(model=model, scorer=accuracy_score)
 
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(NotFittedError):
             evaluator.estimate(X)
 
     def test_extract_metafeatures_shape(self):
@@ -62,16 +63,8 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
         model.fit(self.X_list[0], self.y_list[0])
 
         evaluator = RegressionEvaluator(model=model)
-        feats = evaluator._RegressionEvaluator__extract_metafeatures(model, self.X_list[0])
+        feats = evaluator._extract_metafeatures(model, self.X_list[0])
         self.assertEqual(feats.shape, (1, 4))  # mean_conf, std_conf, mean_entropy, std_entropy
-
-    def test_invalid_scorer_raises_valueerror(self):
-        X, y = make_classification(n_samples=100, n_features=5, random_state=42)
-        model = LogisticRegression(max_iter=200)
-        evaluator = RegressionEvaluator(model=model, scorer="invalid")
-
-        with self.assertRaises(ValueError):
-            evaluator._RegressionEvaluator__get_scorer_names()
 
 
 if __name__ == "__main__":

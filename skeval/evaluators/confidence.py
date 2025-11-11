@@ -132,7 +132,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         if not np.any(correct):
             if self.verbose:
                 print("[INFO] No predictions passed the threshold.")
-            return {name: 0.0 for name in self.__get_scorer_names()}
+            return {name: 0.0 for name in self._get_scorer_names()}
 
         y_pred = self.model.predict(X_eval)
         y_estimated = [y_pred[i] if c == 1 else (y_pred[i]+1)%2 for i, c in enumerate(correct)]
@@ -186,6 +186,9 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
             If the model does not implement `predict_proba` or
             `decision_function` methods.
         """
+        if not (hasattr(self.model, 'predict_proba') or hasattr(self.model, 'decision_function')):
+            raise ValueError("The model must implement predict_proba or decision_function.")
+        
         if hasattr(self.model, "predict_proba"):
             probas = self.model.predict_proba(X)
             conf = np.max(probas, axis=1) if self.limit_to_top_class else probas

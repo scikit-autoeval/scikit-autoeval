@@ -6,17 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, precision_score
 
-# --- Mock base class to allow for isolated testing ---
-class BaseEvaluator:
-    pass
-# ----------------------------------------------------
-
-# Add the mock to the module's scope so the import works
-import sys
-sys.modules['base'] = type('module', (object,), {'BaseEvaluator': BaseEvaluator})()
-
-# Now we can import the class to be tested
-from ..confidence import ConfidenceThresholdEvaluator
+from skeval.evaluators.confidence import ConfidenceThresholdEvaluator
 
 class TestConfidenceThresholdEvaluator(unittest.TestCase):
 
@@ -101,7 +91,10 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
             def predict(self, X):
                 return np.zeros(len(X))
 
-        evaluator = ConfidenceThresholdEvaluator(DummyEstimator())
+        dummy = DummyEstimator()
+        X_dummy, y_dummy = np.array([[0], [1]]), np.array([0, 1]) 
+        dummy.fit(X_dummy, y_dummy)
+        evaluator = ConfidenceThresholdEvaluator(dummy)
         with self.assertRaisesRegex(ValueError, "The model must implement predict_proba or decision_function."):
             evaluator.estimate(self.X_test)
 
