@@ -153,4 +153,12 @@ class ShapEvaluator(BaseEvaluator):
             except Exception:
                 idx = -1
             return np.array(shap_vals[idx])
+
+
+        if isinstance(shap_vals, np.ndarray) and shap_vals.ndim == 3:
+            try:
+                idx = list(model.classes_).index(1)
+            except Exception:
+                idx = -1
+            return shap_vals[:, :, idx]
         return np.array(shap_vals)

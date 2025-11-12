@@ -16,7 +16,9 @@ def check_is_fitted(model):
     RuntimeError
         If the model has not been fitted yet.
     """
-    return sklearn_check_is_fitted(model)
+    if not hasattr(model, "predict_proba") and not hasattr(model, "decision_function"):
+        raise ValueError("The model must implement predict_proba or decision_function.")
+    sklearn_check_is_fitted(model)
 
 def get_CV_and_real_scores(model, scorers, X_train, y_train, X_test, y_test):
     """Compute cross-validation and real scores for a given model and datasets.

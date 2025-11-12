@@ -3,3 +3,4 @@ dist/
 docs/_build
 skeval/console_tests
 pyproject.toml
+.coverage

@@ -31,7 +31,7 @@ class BaseEvaluator(BaseEstimator):
         self : object
             Returns the instance itself.
         """
-        pass
+        return self
 
     def estimate(self, X_eval):
         """

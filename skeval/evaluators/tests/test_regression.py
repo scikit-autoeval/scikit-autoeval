@@ -1,4 +1,3 @@
-# test_regression_evaluator.py
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
 
