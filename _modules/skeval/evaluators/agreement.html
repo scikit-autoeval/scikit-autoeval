@@ -1,15 +1,15 @@
 <!doctype html>
-<html class="no-js" lang="en" data-content_root="../../">
+<html class="no-js" lang="en" data-content_root="../../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
-        <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/skeval/base.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+        <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/skeval/evaluators/agreement.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>skeval.base - scikit-autoeval 0.1.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
+        <title>skeval.evaluators.agreement - scikit-autoeval 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
     
     
 
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">scikit-autoeval 0.1.1 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">scikit-autoeval 0.1.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,15 +187,15 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   <div class="sidebar-logo-container">
-    <img class="sidebar-logo only-light" src="../../_static/logo-light.png" alt="Light Logo"/>
-    <img class="sidebar-logo only-dark" src="../../_static/logo-dark.png" alt="Dark Logo"/>
+    <img class="sidebar-logo only-light" src="../../../_static/logo-light.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../../_static/logo-dark.png" alt="Dark Logo"/>
   </div>
   
   
-</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
@@ -203,10 +203,10 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">skeval</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../base.html">base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../evaluators.html">evaluators package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../metrics.html">metrics package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../modules.html">skeval</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../base.html">base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../evaluators.html">evaluators package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../metrics.html">metrics package</a></li>
 </ul>
 </li>
 </ul>
@@ -243,85 +243,95 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <h1>Source code for skeval.base</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span>
+          <h1>Source code for skeval.evaluators.agreement</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Authors: The scikit-autoeval developers</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.naive_bayes</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianNB</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
 
-<div class="viewcode-block" id="BaseEvaluator">
-<a class="viewcode-back" href="../../base.html#skeval.base.BaseEvaluator">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">BaseEvaluator</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base abstract class for all evaluators in scikit-autoeval.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skeval.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEvaluator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_is_fitted</span>
 
-<span class="sd">    All evaluators should inherit from this class and implement the `estimate` method.</span>
-<span class="sd">    This class also inherits from `sklearn.base.BaseEstimator` to ensure compatibility</span>
-<span class="sd">    with scikit-learn utilities like `get_params` and `set_params`.</span>
+<div class="viewcode-block" id="AgreementEvaluator">
+<a class="viewcode-back" href="../../../evaluators.html#evaluators.AgreementEvaluator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AgreementEvaluator</span><span class="p">(</span><span class="n">BaseEvaluator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluator based on agreement/disagreement between the target model (M)</span>
+<span class="sd">    and a secondary model (M&#39;).</span>
+
+<span class="sd">    The agreement is computed as:</span>
+<span class="sd">        1 if the prediction of M equals the prediction of M&#39; for an instance,</span>
+<span class="sd">        0 otherwise.</span>
+
+<span class="sd">    The secondary model is set to Naive Bayes by default, but can be replaced</span>
+<span class="sd">    by any other classifier.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span> <span class="o">=</span> <span class="n">scorer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
-    
-<div class="viewcode-block" id="BaseEvaluator.fit">
-<a class="viewcode-back" href="../../base.html#skeval.base.BaseEvaluator.fit">[docs]</a>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">sec_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">scorer</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span> <span class="o">=</span> <span class="n">sec_model</span> <span class="k">if</span> <span class="n">sec_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">GaussianNB</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AgreementEvaluator.fit">
+<a class="viewcode-back" href="../../../evaluators.html#evaluators.AgreementEvaluator.fit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Fit the evaluator to the training data.</span>
+<span class="sd">        Fit the evaluator by generating predictions from both models.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
-<span class="sd">            Training data.</span>
-<span class="sd">        y : array-like of shape (n_samples,)</span>
-<span class="sd">            Target labels.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        self : object</span>
-<span class="sd">            Returns the instance itself.</span>
+<span class="sd">        X : array-like</span>
+<span class="sd">            Feature matrix.</span>
+<span class="sd">        y : array-like</span>
+<span class="sd">            Target vector.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Fit completed.&quot;</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="BaseEvaluator.estimate">
-<a class="viewcode-back" href="../../base.html#skeval.base.BaseEvaluator.estimate">[docs]</a>
+<div class="viewcode-block" id="AgreementEvaluator.estimate">
+<a class="viewcode-back" href="../../../evaluators.html#evaluators.AgreementEvaluator.estimate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_eval</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Abstract method to estimate the model&#39;s performance on the given data.</span>
+<span class="sd">        Estimate the agreement score between the main and secondary models.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X_eval : array-like of shape (n_samples, n_features)</span>
-<span class="sd">            Test data.</span>
+<span class="sd">        X_eval : array-like</span>
+<span class="sd">            Feature matrix (not used, kept for interface consistency).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        scores : dict</span>
-<span class="sd">            A dictionary containing the evaluation scores.</span>
+<span class="sd">        scores : dict or float</span>
+<span class="sd">            Agreement score(s) computed using the provided scorer(s).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+        
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span><span class="p">)</span>
+        
+        <span class="n">pred_main</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_eval</span><span class="p">)</span>
+        <span class="n">pred_secondary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_eval</span><span class="p">)</span>
 
-    
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_scorer_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the names of the scorers.</span>
-<span class="sd">        </span>
-<span class="sd">        This helper method gets the names of the scoring functions to be used</span>
-<span class="sd">        as keys in the results dictionary.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        list</span>
-<span class="sd">            A list containing the names of the scorers. If the scorer is a</span>
-<span class="sd">            single callable, it returns `[&#39;score&#39;]`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">agreement</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred_main</span> <span class="o">==</span> <span class="n">pred_secondary</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">y_agreement</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">if</span> <span class="n">a</span> <span class="k">else</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pred_main</span><span class="p">,</span> <span class="n">agreement</span><span class="p">)]</span>
+        
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_agreement</span><span class="p">,</span> <span class="n">agreement</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">(</span><span class="n">y_agreement</span><span class="p">,</span> <span class="n">agreement</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
         </article>
@@ -355,9 +365,9 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=91f6191e"></script>
-    <script src="../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
+</div><script src="../../../_static/documentation_options.js?v=91f6191e"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>
     </body>
 </html>
