@@ -1,5 +1,21 @@
-Welcome to scikit-autoeval's documentation!
-===========================================
+scikit-autoeval: Documentation and User Guide
+=============================================
+
+**scikit-autoeval** is an open-source Python library designed to automate the evaluation of supervised machine learning models.  
+It provides standardized interfaces and metrics for model validation, ensuring compatibility with the Scikit-learn ecosystem.  
+The library simplifies the benchmarking process and supports the development of robust and reproducible experiments.
+
+Installation
+------------
+
+To install the library from PyPI, run:
+
+.. code-block:: bash
+
+   pip install scikit-autoeval
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
@@ -13,3 +29,4 @@ Welcome to scikit-autoeval's documentation!
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
