@@ -1,7 +1,7 @@
-Utility Funtions
+skeval.utils
 ===========
 
 .. automodule:: skeval.utils
    :members:
+   :show-inheritance:
    :undoc-members:
-   .. :show-inheritance:

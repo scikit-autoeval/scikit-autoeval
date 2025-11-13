@@ -6,40 +6,40 @@ ConfidenceThresholdEvaluator
 
 .. automodule:: evaluators.confidence
    :members:
+   :show-inheritance:
    :undoc-members:
-   .. :show-inheritance:
 
 RegressionEvaluator
 ----------------------------
 
 .. automodule:: evaluators.regression
    :members:
+   :show-inheritance:
    :undoc-members:
-   .. :show-inheritance:
 
 RegressionNoiseEvaluator
 ----------------------------
 
 .. automodule:: evaluators.regression_noise
    :members:
+   :show-inheritance:
    :undoc-members:
-   .. :show-inheritance:
 
 AgreementEvaluator
 ----------------------------
 
 .. automodule:: evaluators.agreement
    :members:
+   :show-inheritance:
    :undoc-members:
-   .. :show-inheritance:
 
 ShapEvaluator
 ----------------------------
 
 .. automodule:: evaluators.shap
    :members:
+   :show-inheritance:
    :undoc-members:
-   .. :show-inheritance:
 
 .. Module contents
 .. ---------------

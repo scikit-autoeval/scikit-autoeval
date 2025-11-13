@@ -1,15 +1,15 @@
 <!doctype html>
-<html class="no-js" lang="en" data-content_root="../">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
-        <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/index.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+        <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/skeval/utils.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Overview: module code - scikit-autoeval 0.1.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+        <title>skeval.utils - scikit-autoeval 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
     
     
 
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">scikit-autoeval 0.1.1 documentation</div></a>
+      <a href="../../index.html"><div class="brand">scikit-autoeval 0.1.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,15 +187,15 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   <div class="sidebar-logo-container">
-    <img class="sidebar-logo only-light" src="../_static/logo-light.png" alt="Light Logo"/>
-    <img class="sidebar-logo only-dark" src="../_static/logo-dark.png" alt="Dark Logo"/>
+    <img class="sidebar-logo only-light" src="../../_static/logo-light.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo-dark.png" alt="Dark Logo"/>
   </div>
   
   
-</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
@@ -203,11 +203,11 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">skeval</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../base.html">skeval.base</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../evaluators.html">skeval.evaluators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../metrics.html">skeval.metrics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">skeval.utils</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">skeval</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../base.html">skeval.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../evaluators.html">skeval.evaluators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../metrics.html">skeval.metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils.html">skeval.utils</a></li>
 </ul>
 </li>
 </ul>
@@ -244,17 +244,97 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <h1>All modules for which code is available</h1>
-<ul><li><a href="evaluators/agreement.html">evaluators.agreement</a></li>
-<li><a href="evaluators/confidence.html">evaluators.confidence</a></li>
-<li><a href="evaluators/regression.html">evaluators.regression</a></li>
-<li><a href="evaluators/regression_noise.html">evaluators.regression_noise</a></li>
-<li><a href="evaluators/shap.html">evaluators.shap</a></li>
-<li><a href="metrics/comparison.html">metrics.comparison</a></li>
-<li><a href="metrics/scorers.html">metrics.scorers</a></li>
-<li><a href="skeval/base.html">skeval.base</a></li>
-<li><a href="skeval/utils.html">skeval.utils</a></li>
-</ul>
+          <h1>Source code for skeval.utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Authors: The scikit-autoeval developers</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_is_fitted</span> <span class="k">as</span> <span class="n">sklearn_check_is_fitted</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_validate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_scorer</span>
+
+<div class="viewcode-block" id="check_is_fitted">
+<a class="viewcode-back" href="../../utils.html#skeval.utils.check_is_fitted">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_is_fitted</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the model has been fitted.</span>
+
+<span class="sd">    This method uses `sklearn.utils.validation.check_is_fitted` to verify</span>
+<span class="sd">    that the underlying model has been fitted. It raises a `RuntimeError`</span>
+<span class="sd">    if the model is not fitted.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    RuntimeError</span>
+<span class="sd">        If the model has not been fitted yet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;predict_proba&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;decision_function&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The model must implement predict_proba or decision_function.&quot;</span><span class="p">)</span>
+    <span class="n">sklearn_check_is_fitted</span><span class="p">(</span><span class="n">model</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_CV_and_real_scores">
+<a class="viewcode-back" href="../../utils.html#skeval.utils.get_CV_and_real_scores">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_CV_and_real_scores</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">scorers</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute cross-validation and real scores for a given model and datasets.</span>
+
+<span class="sd">    This function computes the cross-validation scores on the test dataset</span>
+<span class="sd">    (using cross_validate) and the real scores on the test dataset after</span>
+<span class="sd">    fitting the model on X_train/y_train.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    evaluator : object</span>
+<span class="sd">        An evaluator instance with an `estimate` method.</span>
+<span class="sd">    model : object</span>
+<span class="sd">        A fitted model with `fit` and `predict` methods.</span>
+<span class="sd">    X_train : array-like</span>
+<span class="sd">        The training features.</span>
+<span class="sd">    y_train : array-like</span>
+<span class="sd">        The training target labels.</span>
+<span class="sd">    X_test : array-like</span>
+<span class="sd">        The test features.</span>
+<span class="sd">    y_test : array-like</span>
+<span class="sd">        The test target labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary containing &#39;cv_scores&#39; and &#39;real_scores&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># ======================</span>
+    <span class="c1"># 1. Cross-Validation (intra-domain)</span>
+    <span class="c1">#  This is the standard CV estimate: train/validate </span>
+    <span class="c1"># ======================</span>
+    <span class="n">cv_scores</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">scoring</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">scorers</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">cv_result</span> <span class="o">=</span> <span class="n">cross_validate</span><span class="p">(</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">X_test</span><span class="p">,</span>
+        <span class="n">y_test</span><span class="p">,</span>
+        <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">,</span>
+        <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">return_train_score</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">metric_name</span> <span class="ow">in</span> <span class="n">scorers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">cv_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;test_</span><span class="si">{</span><span class="n">metric_name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">cv_scores</span><span class="p">[</span><span class="n">metric_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cv_result</span><span class="p">[</span><span class="n">cv_key</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="c1"># ======================</span>
+    <span class="c1"># 2. Real performance (train on geriatrics -&gt; test on neurology)</span>
+    <span class="c1"># ======================</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_pred_real</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+    <span class="n">real_scores</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">metric_name</span><span class="p">:</span> <span class="n">scorer_fn</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_real</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">scorer_fn</span> <span class="ow">in</span> <span class="n">scorers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;cv_scores&#39;</span><span class="p">:</span> <span class="n">cv_scores</span><span class="p">,</span>
+        <span class="s1">&#39;real_scores&#39;</span><span class="p">:</span> <span class="n">real_scores</span>
+    <span class="p">}</span></div>
+
+</pre></div>
         </article>
       </div>
       <footer>
@@ -286,9 +366,9 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=91f6191e"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
+</div><script src="../../_static/documentation_options.js?v=91f6191e"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
     </body>
 </html>
