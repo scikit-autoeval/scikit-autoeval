@@ -7,8 +7,8 @@ Welcome to scikit-autoeval's documentation!
 
    modules
 
-Indices and tables
-==================
+.. Indices
+.. ==================
 
 * :ref:`genindex`
 * :ref:`modindex`

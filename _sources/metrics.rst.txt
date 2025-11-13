@@ -1,29 +1,26 @@
-metrics package
+skeval.metrics
 ===============
 
-Submodules
-----------
-
-metrics.comparison module
+comparison module
 -------------------------
 
 .. automodule:: metrics.comparison
    :members:
-   :show-inheritance:
    :undoc-members:
+   .. :show-inheritance:
 
-metrics.scorers module
+scorers module
 ----------------------
 
 .. automodule:: metrics.scorers
    :members:
-   :show-inheritance:
    :undoc-members:
+   .. :show-inheritance:
 
-Module contents
----------------
+.. Module contents
+.. ---------------
 
-.. automodule:: metrics
-   :members:
-   :show-inheritance:
-   :undoc-members:
+.. .. automodule:: metrics
+..    :members:
+..    :show-inheritance:
+..    :undoc-members:

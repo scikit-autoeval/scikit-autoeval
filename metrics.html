@@ -3,11 +3,11 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="evaluators package" href="evaluators.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Utility Funtions" href="utils.html" /><link rel="prev" title="skeval.evaluators" href="evaluators.html" />
         <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/metrics.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>metrics package - scikit-autoeval 0.1.1 documentation</title>
+        <title>skeval.metrics - scikit-autoeval 0.1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -205,9 +205,10 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">skeval</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="base.html">base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evaluators.html">evaluators package</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">metrics package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">BaseEvaluator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluators.html">skeval.evaluators</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">skeval.metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utility Funtions</a></li>
 </ul>
 </li>
 </ul>
@@ -254,134 +255,13 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="metrics-package">
-<h1>metrics package<a class="headerlink" href="#metrics-package" title="Link to this heading">¶</a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+          <section id="skeval-metrics">
+<h1>skeval.metrics<a class="headerlink" href="#skeval-metrics" title="Link to this heading">¶</a></h1>
+<section id="comparison-module">
+<h2>comparison module<a class="headerlink" href="#comparison-module" title="Link to this heading">¶</a></h2>
 </section>
-<section id="module-metrics.comparison">
-<span id="metrics-comparison-module"></span><h2>metrics.comparison module<a class="headerlink" href="#module-metrics.comparison" title="Link to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="metrics.comparison.score_error">
-<span class="sig-prename descclassname"><span class="pre">metrics.comparison.</span></span><span class="sig-name descname"><span class="pre">score_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimated_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comparator=&lt;function</span> <span class="pre">mean_absolute_error&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics/comparison.html#score_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics.comparison.score_error" title="Link to this definition">¶</a></dt>
-<dd><p>Compares estimated and real scores using a user-defined comparison function.</p>
-<p>This function iterates through the metrics present in both <cite>real_scores</cite> and
-<cite>estimated_scores</cite> dictionaries and computes the error between them using
-the provided comparator function(s).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>real_scores</strong> (<em>dict</em>) – A dictionary of scores computed with true labels.
-Example: <cite>{‘accuracy’: 0.9, ‘f1’: 0.85}</cite></p></li>
-<li><p><strong>estimated_scores</strong> (<em>dict</em>) – A dictionary of scores estimated without true labels.
-Example: <cite>{‘accuracy’: 0.88, ‘f1’: 0.82}</cite></p></li>
-<li><p><strong>comparator</strong> (<em>callable</em><em> or </em><em>dict</em><em>, </em><em>default=mean_absolute_error</em>) – The function or dictionary of functions used to compare the real and
-estimated scores.
-- If callable, it’s applied to all common metrics.
-- If dict, it maps a metric name to a specific comparator function.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints the real score, estimated score, and the resulting
-error for each metric.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dictionary containing the comparison results (errors) for each
-common metric.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If <cite>comparator</cite> is not a callable or a dictionary of callables.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">real</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">,</span> <span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="mf">0.90</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">estimated</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="mf">0.91</span><span class="p">,</span> <span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="mf">0.92</span><span class="p">,</span> <span class="s1">&#39;f1_score&#39;</span><span class="p">:</span> <span class="mf">0.88</span><span class="p">}</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Example 1: Using the default comparator (mean_absolute_error)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">errors</span> <span class="o">=</span> <span class="n">score_error</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">estimated</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">error</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">errors</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="go">accuracy: 0.0400</span>
-<span class="go">precision: 0.0200</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Example 2: Using a dictionary of different comparators</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">comparators</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">mean_absolute_error</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="n">mean_squared_error</span>
-<span class="gp">... </span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">errors_custom</span> <span class="o">=</span> <span class="n">score_error</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">estimated</span><span class="p">,</span> <span class="n">comparator</span><span class="o">=</span><span class="n">comparators</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="go">[accuracy] Real: 0.95, Estimated: 0.91, Error: 0.040000000000000036</span>
-<span class="go">[precision] Real: 0.9, Estimated: 0.92, Error: 0.0004000000000000003</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">error</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">errors_custom</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="go">accuracy: 0.0400</span>
-<span class="go">precision: 0.0004</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</section>
-<section id="module-metrics.scorers">
-<span id="metrics-scorers-module"></span><h2>metrics.scorers module<a class="headerlink" href="#module-metrics.scorers" title="Link to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="metrics.scorers.make_scorer">
-<span class="sig-prename descclassname"><span class="pre">metrics.scorers.</span></span><span class="sig-name descname"><span class="pre">make_scorer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics/scorers.html#make_scorer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics.scorers.make_scorer" title="Link to this definition">¶</a></dt>
-<dd><p>Wraps a metric function with fixed keyword arguments into a simple scorer.</p>
-<p>This utility is useful for creating a unified scorer interface from metric
-functions that require specific arguments (like <cite>average=’macro’</cite> for f1_score).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>callable</em>) – A metric function from a library like scikit-learn, such as
-<cite>accuracy_score</cite>, <cite>f1_score</cite>, etc.</p></li>
-<li><p><strong>**kwargs</strong> (<em>dict</em>) – Keyword arguments to be permanently passed to the metric function
-whenever the scorer is called.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new scorer function that accepts only <cite>y_true</cite> and <cite>y_pred</cite> as arguments.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>callable</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">f1_score</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Ground truth and predictions for a multi-class problem</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a scorer for F1-score with &#39;macro&#39; averaging</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">macro_f1_scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">f1_score</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Use the new scorer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">score</span> <span class="o">=</span> <span class="n">macro_f1_scorer</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Macro F1 Score: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="go">Macro F1 Score: 0.2667</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># The result is identical to calling f1_score directly with the argument</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">direct_call_score</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Direct call F1 Score: </span><span class="si">{</span><span class="n">direct_call_score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="go">Direct call F1 Score: 0.2667</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">direct_call_score</span><span class="p">)</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</section>
-<section id="module-metrics">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-metrics" title="Link to this heading">¶</a></h2>
+<section id="scorers-module">
+<h2>scorers module<a class="headerlink" href="#scorers-module" title="Link to this heading">¶</a></h2>
 </section>
 </section>
 
@@ -390,7 +270,15 @@ whenever the scorer is called.</p></li>
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="utils.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Utility Funtions</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="evaluators.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -398,7 +286,7 @@ whenever the scorer is called.</p></li>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">evaluators package</div>
+                <div class="title">skeval.evaluators</div>
                 
               </div>
             </a>
@@ -432,17 +320,9 @@ whenever the scorer is called.</p></li>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">metrics package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-metrics.comparison">metrics.comparison module</a><ul>
-<li><a class="reference internal" href="#metrics.comparison.score_error"><code class="docutils literal notranslate"><span class="pre">score_error()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-metrics.scorers">metrics.scorers module</a><ul>
-<li><a class="reference internal" href="#metrics.scorers.make_scorer"><code class="docutils literal notranslate"><span class="pre">make_scorer()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-metrics">Module contents</a></li>
+<li><a class="reference internal" href="#">skeval.metrics</a><ul>
+<li><a class="reference internal" href="#comparison-module">comparison module</a></li>
+<li><a class="reference internal" href="#scorers-module">scorers module</a></li>
 </ul>
 </li>
 </ul>

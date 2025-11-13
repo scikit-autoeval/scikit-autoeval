@@ -1,7 +1,7 @@
-BaseEvaluator
+Utility Funtions
 ===========
 
-.. automodule:: skeval.base
+.. automodule:: skeval.utils
    :members:
    :undoc-members:
    .. :show-inheritance:

@@ -3,11 +3,11 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="evaluators package" href="evaluators.html" /><link rel="prev" title="skeval" href="modules.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="skeval.evaluators" href="evaluators.html" /><link rel="prev" title="skeval" href="modules.html" />
         <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/base.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>base module - scikit-autoeval 0.1.1 documentation</title>
+        <title>BaseEvaluator - scikit-autoeval 0.1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -179,7 +179,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -205,9 +205,10 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">skeval</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evaluators.html">evaluators package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="metrics.html">metrics package</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">BaseEvaluator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluators.html">skeval.evaluators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">skeval.metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utility Funtions</a></li>
 </ul>
 </li>
 </ul>
@@ -248,61 +249,14 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-skeval.base">
-<span id="base-module"></span><h1>base module<a class="headerlink" href="#module-skeval.base" title="Link to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="skeval.base.BaseEvaluator">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skeval.base.</span></span><span class="sig-name descname"><span class="pre">BaseEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skeval/base.html#BaseEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.base.BaseEvaluator" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEstimator</span></code></p>
-<p>Base abstract class for all evaluators in scikit-autoeval.</p>
-<p>All evaluators should inherit from this class and implement the <cite>estimate</cite> method.
-This class also inherits from <cite>sklearn.base.BaseEstimator</cite> to ensure compatibility
-with scikit-learn utilities like <cite>get_params</cite> and <cite>set_params</cite>.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="skeval.base.BaseEvaluator.estimate">
-<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_eval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skeval/base.html#BaseEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.base.BaseEvaluator.estimate" title="Link to this definition">¶</a></dt>
-<dd><p>Abstract method to estimate the model’s performance on the given data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>X_eval</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Test data.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>scores</strong> – A dictionary containing the evaluation scores.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="skeval.base.BaseEvaluator.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skeval/base.html#BaseEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.base.BaseEvaluator.fit" title="Link to this definition">¶</a></dt>
-<dd><p>Fit the evaluator to the training data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Training data.</p></li>
-<li><p><strong>y</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Target labels.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>self</strong> – Returns the instance itself.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>object</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+          <section id="baseevaluator">
+<h1>BaseEvaluator<a class="headerlink" href="#baseevaluator" title="Link to this heading">¶</a></h1>
 </section>
 
         </article>
@@ -315,7 +269,7 @@ with scikit-learn utilities like <cite>get_params</cite> and <cite>set_params</c
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">evaluators package</div>
+                <div class="title">skeval.evaluators</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -348,31 +302,8 @@ with scikit-learn utilities like <cite>get_params</cite> and <cite>set_params</c
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">base module</a><ul>
-<li><a class="reference internal" href="#skeval.base.BaseEvaluator"><code class="docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a><ul>
-<li><a class="reference internal" href="#skeval.base.BaseEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">BaseEvaluator.estimate()</span></code></a></li>
-<li><a class="reference internal" href="#skeval.base.BaseEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">BaseEvaluator.fit()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>

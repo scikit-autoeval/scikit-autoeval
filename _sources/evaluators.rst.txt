@@ -1,53 +1,50 @@
-evaluators package
+skeval.evaluators
 ==================
 
-.. Submodules
-.. ----------
+ConfidenceThresholdEvaluator
+----------------------------
 
-.. evaluators.confidence module
-.. ----------------------------
-
-.. .. automodule:: evaluators.confidence
-..    :members:
-..    :show-inheritance:
-..    :undoc-members:
-
-.. evaluators.regression module
-.. ----------------------------
-
-.. .. automodule:: evaluators.regression
-..    :members:
-..    :show-inheritance:
-..    :undoc-members:
-
-.. evaluators.regression_noise module
-.. ----------------------------
-
-.. .. automodule:: evaluators.regression_noise
-..    :members:
-..    :show-inheritance:
-..    :undoc-members:
-
-.. evaluators.agreement module
-.. ----------------------------
-
-.. .. automodule:: evaluators.agreement
-..    :members:
-..    :show-inheritance:
-..    :undoc-members:
-
-.. evaluators.agreement module
-.. ----------------------------
-
-.. .. automodule:: evaluators.agreement
-..    :members:
-..    :show-inheritance:
-..    :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: evaluators
+.. automodule:: evaluators.confidence
    :members:
-   :show-inheritance:
    :undoc-members:
+   .. :show-inheritance:
+
+RegressionEvaluator
+----------------------------
+
+.. automodule:: evaluators.regression
+   :members:
+   :undoc-members:
+   .. :show-inheritance:
+
+RegressionNoiseEvaluator
+----------------------------
+
+.. automodule:: evaluators.regression_noise
+   :members:
+   :undoc-members:
+   .. :show-inheritance:
+
+AgreementEvaluator
+----------------------------
+
+.. automodule:: evaluators.agreement
+   :members:
+   :undoc-members:
+   .. :show-inheritance:
+
+ShapEvaluator
+----------------------------
+
+.. automodule:: evaluators.shap
+   :members:
+   :undoc-members:
+   .. :show-inheritance:
+
+.. Module contents
+.. ---------------
+
+.. .. automodule:: evaluators
+..    :members:
+..    :show-inheritance:
+..    :undoc-members:
