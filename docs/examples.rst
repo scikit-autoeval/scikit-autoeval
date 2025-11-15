@@ -1,42 +1,50 @@
-skeval.evaluators
+skeval.examples
 ==================
 
-ConfidenceThresholdEvaluator
+ConfidenceThresholdEvaluator Example
 ----------------------------
 
-.. automodule:: evaluators.confidence
+.. automodule:: examples.confidence_example
    :members:
    :show-inheritance:
    :undoc-members:
 
-RegressionEvaluator
+RegressionEvaluator Example
 ----------------------------
 
-.. automodule:: evaluators.regression
+.. automodule:: examples.regression_example
    :members:
    :show-inheritance:
    :undoc-members:
 
-RegressionNoiseEvaluator
+RegressionNoiseEvaluator Example
 ----------------------------
 
-.. automodule:: evaluators.regression_noise
+.. automodule:: examples.regression_noise_example
    :members:
    :show-inheritance:
    :undoc-members:
 
-AgreementEvaluator
+AgreementEvaluator Example
 ----------------------------
 
-.. automodule:: evaluators.agreement
+.. automodule:: examples.agreement_example
    :members:
    :show-inheritance:
    :undoc-members:
 
-ShapEvaluator
+ShapEvaluator Example
 ----------------------------
 
-.. automodule:: evaluators.shap
+.. automodule:: examples.shap_example
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Score Error Example
+----------------------------
+
+.. automodule:: examples.score_error_example
    :members:
    :show-inheritance:
    :undoc-members:

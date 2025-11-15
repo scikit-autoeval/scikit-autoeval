@@ -54,5 +54,5 @@ html_context = {
     "conf_py_path": "/docs/",
 }
 
-html_theme_options["relbar"] = False
+# html_theme_options["relbar"] = False
 

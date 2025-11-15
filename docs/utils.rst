@@ -1,7 +1,7 @@
-skeval.base
-===========
+skeval.utils
+============
 
-.. automodule:: skeval.base
+.. automodule:: skeval.utils
    :members:
    :show-inheritance:
    :undoc-members:

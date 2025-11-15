@@ -7,3 +7,5 @@ skeval
    base
    evaluators
    metrics
+   utils
+   examples

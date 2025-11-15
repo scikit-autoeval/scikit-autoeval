@@ -29,7 +29,6 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
 
     def test_initialization(self):
         """Test if attributes are set correctly in the constructor."""
-        # Test com threshold e limit_to_top_class (parâmetros do __init__)
         evaluator = ConfidenceThresholdEvaluator(
             self.classifier, 
             scorer=accuracy_score, 
@@ -51,12 +50,6 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
 
     def test_estimate_with_single_scorer(self):
         """Test the estimate method with a single scorer."""
-        # Probas for X_test: [[0.71, 0.28], [0.49, 0.50], [0.50, 0.49], [0.22, 0.77]]
-        # Confidences: [0.71, 0.50, 0.50, 0.77]
-        # y_pred: [0, 1, 0, 1]
-        # threshold=0.75 -> correct=[False, False, False, True]
-        # y_estimated will be [1, 0, 1, 1] (y_pred inverted for those that don't pass)
-        # accuracy(y_estimated, y_pred) -> 1/4 = 0.25
         evaluator = ConfidenceThresholdEvaluator(self.classifier, scorer=accuracy_score, threshold=0.75)
         scores = evaluator.estimate(self.X_test)
         self.assertIn('score', scores)
@@ -69,10 +62,6 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
 
         scores = evaluator.estimate(self.X_test)
 
-        # y_pred = [0, 1, 0, 1]
-        # y_estimated = [1, 0, 1, 1]
-        # accuracy = 0.25
-        # precision(y_estimated, y_pred) = P(1) = 1 / (1+1+1) = 0.333
         expected_accuracy = 0.25
         expected_precision = 0.3333333333333333
         

@@ -4,11 +4,11 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from skeval.exemples.confidence_exemple import run_confidence_eval
-from skeval.exemples.regression_exemple import run_regression_eval
-from skeval.exemples.regression_noise_exemple import run_regression_noise_eval
-from skeval.exemples.agreement_exemple import run_agreement_eval
-from skeval.exemples.shap_exemple import run_shap_eval
+from skeval.examples.confidence_example import run_confidence_eval
+from skeval.examples.regression_example import run_regression_eval
+from skeval.examples.regression_noise_example import run_regression_noise_eval
+from skeval.examples.agreement_example import run_agreement_eval
+from skeval.examples.shap_example import run_shap_eval
 
 def plot_eval(eval, eval_name="", file_name=""):
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "plots", "graphics"))
