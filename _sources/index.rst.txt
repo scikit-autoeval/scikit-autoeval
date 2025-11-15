@@ -22,11 +22,10 @@ Contents
    :caption: Contents:
 
    modules
+   evaluators/index
 
 .. Indices
-.. ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

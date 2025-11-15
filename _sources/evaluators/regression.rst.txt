@@ -1,0 +1,7 @@
+RegressionEvaluator
+----------------------------
+
+.. automodule:: evaluators.regression
+   :members:
+   :show-inheritance:
+   :undoc-members:

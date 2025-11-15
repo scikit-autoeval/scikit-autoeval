@@ -5,7 +5,6 @@ skeval
    :maxdepth: 4
 
    base
-   evaluators
    metrics
    utils
    examples

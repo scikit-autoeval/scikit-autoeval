@@ -1,0 +1,7 @@
+RegressionNoiseEvaluator
+----------------------------
+
+.. automodule:: evaluators.regression_noise
+   :members:
+   :show-inheritance:
+   :undoc-members:
