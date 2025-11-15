@@ -209,6 +209,7 @@
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">skeval.evaluators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="metrics.html">skeval.metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">skeval.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html">skeval.examples</a></li>
 </ul>
 </li>
 </ul>
@@ -722,46 +723,150 @@ by any other classifier.</p>
 <dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.shap.</span></span><span class="sig-name descname"><span class="pre">ShapEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_clf=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_train=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/shap.html#ShapEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.shap.ShapEvaluator" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
-<p>SHAP-based evaluator.</p>
-<p>The evaluator uses SHAP values extracted from a (tree) classifier to train
-a secondary classifier that predicts whether the original classifier’s
-predictions are correct. The predicted “correctness” on the evaluation set
-is then used to build an expected label vector; that vector is compared
-against the original model predictions to produce estimated metrics.</p>
+<p>SHAP-based evaluator for supervised classification models.</p>
+<p>This evaluator uses SHAP values computed from a tree-based classifier to
+train a secondary model that predicts the correctness of the original
+classifier’s predictions. The predicted correctness on the evaluation set
+is used to generate an expected label vector, which is then compared with
+the model predictions to estimate the chosen metric(s).</p>
+<p>The evaluation process follows four steps:
+(1) compute SHAP values on the training and evaluation sets,
+(2) train a correctness classifier using SHAP values as input,
+(3) predict correctness for evaluation samples,
+(4) flip labels where the model is predicted to be wrong, generating an
+“expected label” vector used to estimate metrics.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>estimator</em>) – A trained (or to-be-trained) classifier. For SHAP TreeExplainer a
-tree-based model (e.g. RandomForest, GradientBoosting) is expected.</p></li>
-<li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em>, </em><em>default=accuracy_score</em>) – Single scoring function or dictionary of name-&gt;callable to compute
-estimated metrics.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Enable informational prints.</p></li>
-<li><p><strong>inner_clf</strong> (<em>estimator</em><em>, </em><em>optional</em>) – Classifier used to learn “correctness” from SHAP values. If None a
-RandomForestClassifier is used.</p></li>
+<li><p><strong>model</strong> (<em>estimator</em>) – A classification model implementing <code class="docutils literal notranslate"><span class="pre">fit</span></code> and <code class="docutils literal notranslate"><span class="pre">predict</span></code>. For SHAP
+computation using <code class="docutils literal notranslate"><span class="pre">TreeExplainer</span></code>. Compatible with <code class="docutils literal notranslate"><span class="pre">sklearn.make_pipeline</span></code>.</p></li>
+<li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – A scoring function or a dictionary mapping metric names to scoring
+functions. Scorers must follow the signature <code class="docutils literal notranslate"><span class="pre">scorer(y_true,</span> <span class="pre">y_pred)</span></code>.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints additional progress information.</p></li>
+<li><p><strong>inner_clf</strong> (<em>estimator</em><em>, </em><em>optional</em>) – Classifier trained on SHAP values to estimate correctness. If None,
+defaults to <code class="docutils literal notranslate"><span class="pre">XGBClassifier(random_state=42)</span></code>.</p></li>
+<li><p><strong>X_train</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Training features used to compute SHAP values.</p></li>
+<li><p><strong>y_train</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Training labels used to compute SHAP values.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#evaluators.shap.ShapEvaluator.model" title="Link to this definition">¶</a></dt>
+<dd><p>The model provided at initialization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>estimator</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.inner_clf">
+<span class="sig-name descname"><span class="pre">inner_clf</span></span><a class="headerlink" href="#evaluators.shap.ShapEvaluator.inner_clf" title="Link to this definition">¶</a></dt>
+<dd><p>The classifier used to model correctness from SHAP values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>estimator</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.explainer">
+<span class="sig-name descname"><span class="pre">explainer</span></span><a class="headerlink" href="#evaluators.shap.ShapEvaluator.explainer" title="Link to this definition">¶</a></dt>
+<dd><p>Object responsible for computing SHAP values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>shap.TreeExplainer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.X_train">
+<span class="sig-name descname"><span class="pre">X_train</span></span><a class="headerlink" href="#evaluators.shap.ShapEvaluator.X_train" title="Link to this definition">¶</a></dt>
+<dd><p>Feature matrix used to compute SHAP values for correctness learning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray of shape (n_samples, n_features)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.y_train">
+<span class="sig-name descname"><span class="pre">y_train</span></span><a class="headerlink" href="#evaluators.shap.ShapEvaluator.y_train" title="Link to this definition">¶</a></dt>
+<dd><p>Ground-truth labels corresponding to <code class="docutils literal notranslate"><span class="pre">X_train</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray of shape (n_samples,)</p>
+</dd>
+</dl>
+</dd></dl>
+
 <p class="rubric">Notes</p>
-<p>estimate requires both a training set (X_train, y_train) and an
-evaluation set (X_eval, optionally y_eval for debugging). The method
-signature follows estimate(X_eval, X_train=None, y_train=None, y_eval=None).</p>
+<p><em>SHAP computation requirement:</em>
+The final estimator in <code class="docutils literal notranslate"><span class="pre">model</span></code> (or the estimator itself, if not a
+pipeline) must be compatible with <code class="docutils literal notranslate"><span class="pre">shap.TreeExplainer</span></code>.</p>
+<p><em>Estimate method:</em>
+The method performs multiple correctness predictions and averages the
+resulting estimated metrics. This introduces stochasticity and aims to
+approximate uncertainty in the correctness model.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShapEvaluator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">XGBClassifier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;dataset_train.csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_test</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;dataset_test.csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">df_train</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]),</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_test</span> <span class="o">=</span> <span class="n">df_test</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">XGBClassifier</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">ShapEvaluator</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+<span class="go">0.84</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.estimate">
 <span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_eval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_pred</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/shap.html#ShapEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.shap.ShapEvaluator.estimate" title="Link to this definition">¶</a></dt>
-<dd><p>Estimate metrics using SHAP-based correctness prediction.</p>
+<dd><p>Estimate metric values using SHAP-based correctness prediction.</p>
+<p>This method computes SHAP values for the training set and the evaluation
+set, trains a correctness classifier on the training SHAP values, and
+predicts correctness for evaluation samples. Labels predicted as
+incorrect are flipped to produce an expected label vector, which is
+compared against the model’s predictions to estimate the target metrics.</p>
+<p>Multiple iterations are performed to model uncertainty, and the final
+metric is obtained by averaging scores across all iterations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X_eval</strong> (<em>array-like</em>) – The evaluation features (used as X_test in the pseudo-code).</p></li>
-<li><p><strong>n_pred</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of predictions to generate. If None, uses 30.</p></li>
+<li><p><strong>X_eval</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_eval_samples</em><em>, </em><em>n_features</em><em>)</em>) – Evaluation feature matrix used to generate predictions and SHAP
+values.</p></li>
+<li><p><strong>n_pred</strong> (<em>int</em><em>, </em><em>default=30</em>) – Number of estimation iterations. In each iteration, a correctness
+classifier is retrained and used to produce an estimated metric.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Estimated metric(s). If <cite>scorer</cite> is a dict, returns mapping name-&gt;value,
-otherwise returns {‘score’: value}.</p>
+<dd class="field-even"><p>A dictionary mapping metric names to averaged estimated values.
+If a single scorer was provided, the dictionary contains a single
+entry with key <code class="docutils literal notranslate"><span class="pre">'score'</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If training data (<cite>X_train</cite>, <cite>y_train</cite>) is missing, preventing SHAP
+    computation.</p></li>
+<li><p><strong>ValueError</strong> – If the provided scorer is neither a callable nor a dictionary of
+    callables.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -769,13 +874,28 @@ otherwise returns {‘score’: value}.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.fit">
 <span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluators/shap.html#ShapEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.shap.ShapEvaluator.fit" title="Link to this definition">¶</a></dt>
-<dd><p>Fit the evaluator’s model.</p>
+<dd><p>Fit the model used by the evaluator.</p>
+<p>If <cite>X_train</cite> and <cite>y_train</cite> were provided during initialization, they
+take precedence. Otherwise, the provided <cite>X</cite> and <cite>y</cite> are stored and
+used for computing SHAP values during the estimation step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em>) – Training features.</p></li>
-<li><p><strong>y</strong> (<em>array-like</em>) – Training labels.</p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em><em>, </em><em>optional</em>) – Feature matrix used to fit the original model and to compute SHAP
+values if <cite>X_train</cite> is not already defined.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Labels corresponding to <cite>X</cite>. Required if no training data was
+provided at initialization.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The fitted evaluator instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#evaluators.shap.ShapEvaluator" title="evaluators.shap.ShapEvaluator">ShapEvaluator</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If no training data is available (neither from initialization nor
+    from arguments), preventing the underlying model from being fitted.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -882,6 +1002,11 @@ otherwise returns {‘score’: value}.</p>
 </li>
 <li><a class="reference internal" href="#module-evaluators.shap">ShapEvaluator</a><ul>
 <li><a class="reference internal" href="#evaluators.shap.ShapEvaluator"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.model"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.model</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.inner_clf"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.inner_clf</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.explainer"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.explainer</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.X_train"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.X_train</span></code></a></li>
+<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.y_train"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.y_train</span></code></a></li>
 <li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.estimate()</span></code></a></li>
 <li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.fit()</span></code></a></li>
 </ul>

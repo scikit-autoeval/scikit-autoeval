@@ -208,6 +208,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../evaluators.html">skeval.evaluators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../metrics.html">skeval.metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../utils.html">skeval.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html">skeval.examples</a></li>
 </ul>
 </li>
 </ul>
@@ -261,33 +262,81 @@
 <a class="viewcode-back" href="../../evaluators.html#evaluators.shap.ShapEvaluator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ShapEvaluator</span><span class="p">(</span><span class="n">BaseEvaluator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    SHAP-based evaluator.</span>
+<span class="sd">    SHAP-based evaluator for supervised classification models.</span>
 
-<span class="sd">    The evaluator uses SHAP values extracted from a (tree) classifier to train</span>
-<span class="sd">    a secondary classifier that predicts whether the original classifier&#39;s</span>
-<span class="sd">    predictions are correct. The predicted &quot;correctness&quot; on the evaluation set</span>
-<span class="sd">    is then used to build an expected label vector; that vector is compared</span>
-<span class="sd">    against the original model predictions to produce estimated metrics.</span>
+<span class="sd">    This evaluator uses SHAP values computed from a tree-based classifier to</span>
+<span class="sd">    train a secondary model that predicts the correctness of the original</span>
+<span class="sd">    classifier&#39;s predictions. The predicted correctness on the evaluation set</span>
+<span class="sd">    is used to generate an expected label vector, which is then compared with</span>
+<span class="sd">    the model predictions to estimate the chosen metric(s).</span>
+
+<span class="sd">    The evaluation process follows four steps:</span>
+<span class="sd">    (1) compute SHAP values on the training and evaluation sets,</span>
+<span class="sd">    (2) train a correctness classifier using SHAP values as input,</span>
+<span class="sd">    (3) predict correctness for evaluation samples,</span>
+<span class="sd">    (4) flip labels where the model is predicted to be wrong, generating an</span>
+<span class="sd">    &quot;expected label&quot; vector used to estimate metrics.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    model : estimator</span>
-<span class="sd">        A trained (or to-be-trained) classifier. For SHAP TreeExplainer a</span>
-<span class="sd">        tree-based model (e.g. RandomForest, GradientBoosting) is expected.</span>
-<span class="sd">    scorer : callable or dict, default=accuracy_score</span>
-<span class="sd">        Single scoring function or dictionary of name-&gt;callable to compute</span>
-<span class="sd">        estimated metrics.</span>
+<span class="sd">        A classification model implementing ``fit`` and ``predict``. For SHAP</span>
+<span class="sd">        computation using ``TreeExplainer``. Compatible with ``sklearn.make_pipeline``.</span>
+<span class="sd">    scorer : callable or dict of str -&gt; callable, default=accuracy_score</span>
+<span class="sd">        A scoring function or a dictionary mapping metric names to scoring</span>
+<span class="sd">        functions. Scorers must follow the signature ``scorer(y_true, y_pred)``.</span>
 <span class="sd">    verbose : bool, default=False</span>
-<span class="sd">        Enable informational prints.</span>
+<span class="sd">        If True, prints additional progress information.</span>
 <span class="sd">    inner_clf : estimator, optional</span>
-<span class="sd">        Classifier used to learn &quot;correctness&quot; from SHAP values. If None a</span>
-<span class="sd">        RandomForestClassifier is used.</span>
+<span class="sd">        Classifier trained on SHAP values to estimate correctness. If None,</span>
+<span class="sd">        defaults to ``XGBClassifier(random_state=42)``.</span>
+<span class="sd">    X_train : array-like, optional</span>
+<span class="sd">        Training features used to compute SHAP values.</span>
+<span class="sd">    y_train : array-like, optional</span>
+<span class="sd">        Training labels used to compute SHAP values.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : estimator</span>
+<span class="sd">        The model provided at initialization.</span>
+<span class="sd">    inner_clf : estimator</span>
+<span class="sd">        The classifier used to model correctness from SHAP values.</span>
+<span class="sd">    explainer : shap.TreeExplainer</span>
+<span class="sd">        Object responsible for computing SHAP values.</span>
+<span class="sd">    X_train : ndarray of shape (n_samples, n_features)</span>
+<span class="sd">        Feature matrix used to compute SHAP values for correctness learning.</span>
+<span class="sd">    y_train : ndarray of shape (n_samples,)</span>
+<span class="sd">        Ground-truth labels corresponding to ``X_train``.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    estimate requires both a training set (X_train, y_train) and an</span>
-<span class="sd">    evaluation set (X_eval, optionally y_eval for debugging). The method</span>
-<span class="sd">    signature follows estimate(X_eval, X_train=None, y_train=None, y_eval=None).</span>
+<span class="sd">    *SHAP computation requirement:*  </span>
+<span class="sd">    The final estimator in ``model`` (or the estimator itself, if not a</span>
+<span class="sd">    pipeline) must be compatible with ``shap.TreeExplainer``.</span>
+
+<span class="sd">    *Estimate method:*  </span>
+<span class="sd">    The method performs multiple correctness predictions and averages the</span>
+<span class="sd">    resulting estimated metrics. This introduces stochasticity and aims to</span>
+<span class="sd">    approximate uncertainty in the correctness model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from skeval.evaluators import ShapEvaluator</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.metrics import accuracy_score</span>
+<span class="sd">    &gt;&gt;&gt; from xgboost import XGBClassifier</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; df_train = pd.read_csv(&quot;dataset_train.csv&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; df_test = pd.read_csv(&quot;dataset_test.csv&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; X_train, y_train = df_train.drop(columns=[&quot;label&quot;]), df_train[&quot;label&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; X_test = df_test.drop(columns=[&quot;label&quot;])</span>
+<span class="sd">    &gt;&gt;&gt; model = XGBClassifier()</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; evaluator = ShapEvaluator(model, scorer=accuracy_score)</span>
+<span class="sd">    &gt;&gt;&gt; evaluator.fit(X_train, y_train)</span>
+<span class="sd">    &gt;&gt;&gt; scores = evaluator.estimate(X_test)</span>
+<span class="sd">    &gt;&gt;&gt; print(scores)</span>
+<span class="sd">    0.84</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inner_clf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">X_train</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_train</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -301,14 +350,31 @@
 <a class="viewcode-back" href="../../evaluators.html#evaluators.shap.ShapEvaluator.fit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Fit the evaluator&#39;s model.</span>
+<span class="sd">        Fit the model used by the evaluator.</span>
+
+<span class="sd">        If `X_train` and `y_train` were provided during initialization, they</span>
+<span class="sd">        take precedence. Otherwise, the provided `X` and `y` are stored and</span>
+<span class="sd">        used for computing SHAP values during the estimation step.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : array-like</span>
-<span class="sd">            Training features.</span>
-<span class="sd">        y : array-like</span>
-<span class="sd">            Training labels.</span>
+<span class="sd">        X : array-like of shape (n_samples, n_features), optional</span>
+<span class="sd">            Feature matrix used to fit the original model and to compute SHAP</span>
+<span class="sd">            values if `X_train` is not already defined.</span>
+<span class="sd">        y : array-like of shape (n_samples,), optional</span>
+<span class="sd">            Labels corresponding to `X`. Required if no training data was</span>
+<span class="sd">            provided at initialization.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : ShapEvaluator</span>
+<span class="sd">            The fitted evaluator instance.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If no training data is available (neither from initialization nor</span>
+<span class="sd">            from arguments), preventing the underlying model from being fitted.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
@@ -328,20 +394,41 @@
 <a class="viewcode-back" href="../../evaluators.html#evaluators.shap.ShapEvaluator.estimate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_eval</span><span class="p">,</span> <span class="n">n_pred</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Estimate metrics using SHAP-based correctness prediction.</span>
+<span class="sd">        Estimate metric values using SHAP-based correctness prediction.</span>
+
+<span class="sd">        This method computes SHAP values for the training set and the evaluation</span>
+<span class="sd">        set, trains a correctness classifier on the training SHAP values, and</span>
+<span class="sd">        predicts correctness for evaluation samples. Labels predicted as</span>
+<span class="sd">        incorrect are flipped to produce an expected label vector, which is</span>
+<span class="sd">        compared against the model&#39;s predictions to estimate the target metrics.</span>
+
+<span class="sd">        Multiple iterations are performed to model uncertainty, and the final</span>
+<span class="sd">        metric is obtained by averaging scores across all iterations.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X_eval : array-like</span>
-<span class="sd">            The evaluation features (used as X_test in the pseudo-code).</span>
-<span class="sd">        n_pred : int, optional</span>
-<span class="sd">            Number of predictions to generate. If None, uses 30.</span>
+<span class="sd">        X_eval : array-like of shape (n_eval_samples, n_features)</span>
+<span class="sd">            Evaluation feature matrix used to generate predictions and SHAP</span>
+<span class="sd">            values.</span>
+<span class="sd">        n_pred : int, default=30</span>
+<span class="sd">            Number of estimation iterations. In each iteration, a correctness</span>
+<span class="sd">            classifier is retrained and used to produce an estimated metric.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
-<span class="sd">            Estimated metric(s). If `scorer` is a dict, returns mapping name-&gt;value,</span>
-<span class="sd">            otherwise returns {&#39;score&#39;: value}.</span>
+<span class="sd">            A dictionary mapping metric names to averaged estimated values.</span>
+<span class="sd">            If a single scorer was provided, the dictionary contains a single</span>
+<span class="sd">            entry with key ``&#39;score&#39;``.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If training data (`X_train`, `y_train`) is missing, preventing SHAP</span>
+<span class="sd">            computation.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the provided scorer is neither a callable nor a dictionary of</span>
+<span class="sd">            callables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
@@ -396,6 +483,38 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_choose_class_shap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shap_vals</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select the SHAP values corresponding to the positive class.</span>
+
+<span class="sd">        SHAP outputs differ depending on the model type:</span>
+<span class="sd">        - For binary classifiers, SHAP may return a list where each entry</span>
+<span class="sd">          corresponds to class-specific SHAP values.</span>
+<span class="sd">        - Some tree-based models return arrays of shape</span>
+<span class="sd">          (n_samples, n_features, n_classes).</span>
+
+<span class="sd">        This helper method extracts the SHAP values associated with the class</span>
+<span class="sd">        labeled ``1`` when possible. If class ``1`` is not found, the last class</span>
+<span class="sd">        available is used as fallback.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        shap_vals : list or ndarray</span>
+<span class="sd">            SHAP values produced by `shap.TreeExplainer`. May be a list of</span>
+<span class="sd">            per-class arrays or a 3D array with class dimension.</span>
+<span class="sd">        model : estimator</span>
+<span class="sd">            The original classification model, used to determine class ordering.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray of shape (n_samples, n_features)</span>
+<span class="sd">            SHAP value matrix associated with the selected class.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This function does not validate whether the model is binary or</span>
+<span class="sd">        multiclass. The selection logic is heuristic and assumes that class</span>
+<span class="sd">        ``1`` corresponds to the positive or target class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shap_vals</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>

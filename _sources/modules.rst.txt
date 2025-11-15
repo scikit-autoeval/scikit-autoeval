@@ -8,3 +8,4 @@ skeval
    evaluators
    metrics
    utils
+   examples
