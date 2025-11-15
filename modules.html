@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="skeval.base" href="base.html" /><link rel="prev" title="scikit-autoeval: Documentation and User Guide" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="skeval.evaluators" href="evaluators/index.html" /><link rel="prev" title="scikit-autoeval: Documentation and User Guide" href="index.html" />
         <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/modules.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
@@ -205,18 +205,18 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">skeval</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="evaluators/index.html">skeval.evaluators</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="evaluators/agreement.html">AgreementEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="evaluators/confidence.html">ConfidenceThresholdEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="evaluators/regression.html">RegressionEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="evaluators/regression_noise.html">RegressionNoiseEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="evaluators/shap.html">ShapEvaluator</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="base.html">skeval.base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="metrics.html">skeval.metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">skeval.utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html">skeval.examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="evaluators/index.html">skeval.evaluators</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="evaluators/agreement.html">AgreementEvaluator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evaluators/confidence.html">ConfidenceThresholdEvaluator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evaluators/regression.html">RegressionEvaluator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evaluators/regression_noise.html">RegressionNoiseEvaluator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evaluators/shap.html">ShapEvaluator</a></li>
 </ul>
 </li>
 </ul>
@@ -267,6 +267,61 @@
 <h1>skeval<a class="headerlink" href="#skeval" title="Link to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="evaluators/index.html">skeval.evaluators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="evaluators/agreement.html">AgreementEvaluator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="evaluators/agreement.html#evaluators.agreement.AgreementEvaluator"><code class="docutils literal notranslate"><span class="pre">AgreementEvaluator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/agreement.html#evaluators.agreement.AgreementEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">AgreementEvaluator.estimate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/agreement.html#evaluators.agreement.AgreementEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">AgreementEvaluator.fit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="evaluators/confidence.html">ConfidenceThresholdEvaluator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="evaluators/confidence.html#evaluators.confidence.ConfidenceThresholdEvaluator"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/confidence.html#evaluators.confidence.ConfidenceThresholdEvaluator.model"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/confidence.html#evaluators.confidence.ConfidenceThresholdEvaluator.scorer"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.scorer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/confidence.html#evaluators.confidence.ConfidenceThresholdEvaluator.threshold"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.threshold</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/confidence.html#evaluators.confidence.ConfidenceThresholdEvaluator.limit_to_top_class"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.limit_to_top_class</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/confidence.html#evaluators.confidence.ConfidenceThresholdEvaluator.verbose"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.verbose</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/confidence.html#evaluators.confidence.ConfidenceThresholdEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.estimate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/confidence.html#evaluators.confidence.ConfidenceThresholdEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.fit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="evaluators/regression.html">RegressionEvaluator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="evaluators/regression.html#evaluators.regression.RegressionEvaluator"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/regression.html#evaluators.regression.RegressionEvaluator.meta_regressors_"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.meta_regressors_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/regression.html#evaluators.regression.RegressionEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.estimate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/regression.html#evaluators.regression.RegressionEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.fit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="evaluators/regression_noise.html">RegressionNoiseEvaluator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="evaluators/regression_noise.html#evaluators.regression_noise.RegressionNoiseEvaluator"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/regression_noise.html#evaluators.regression_noise.RegressionNoiseEvaluator.meta_regressors_"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.meta_regressors_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/regression_noise.html#evaluators.regression_noise.RegressionNoiseEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.fit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/regression_noise.html#evaluators.regression_noise.RegressionNoiseEvaluator.set_fit_request"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.set_fit_request()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="evaluators/shap.html">ShapEvaluator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="evaluators/shap.html#evaluators.shap.ShapEvaluator"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/shap.html#evaluators.shap.ShapEvaluator.model"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/shap.html#evaluators.shap.ShapEvaluator.inner_clf"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.inner_clf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/shap.html#evaluators.shap.ShapEvaluator.explainer"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.explainer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/shap.html#evaluators.shap.ShapEvaluator.X_train"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.X_train</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/shap.html#evaluators.shap.ShapEvaluator.y_train"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.y_train</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/shap.html#evaluators.shap.ShapEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.estimate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="evaluators/shap.html#evaluators.shap.ShapEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.fit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="base.html">skeval.base</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="base.html#skeval.base.BaseEvaluator"><code class="docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="base.html#skeval.base.BaseEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">BaseEvaluator.estimate()</span></code></a></li>
@@ -323,12 +378,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="base.html">
+          <a class="next-page" href="evaluators/index.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">skeval.base</div>
+                <div class="title">skeval.evaluators</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
