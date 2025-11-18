@@ -91,65 +91,113 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
         self : object
             The fitted evaluator instance.
         """
-        if start_noise < 0 or end_noise > 100 or step_noise <= 0:
-            raise ValueError("Noise parameters must satisfy: 0 <= start_noise <= end_noise <= 100 and step_noise > 0.")
-        
-        scorers_names = self._get_scorer_names()
+        self._validate_noise_params(start_noise, end_noise, step_noise)
+
+        scorer_names = self._get_scorer_names()
         meta_features = []
-        meta_targets = {name: [] for name in scorers_names}
-        
+        meta_targets = {name: [] for name in scorer_names}
+
         for X_i, y_i in zip(X, y):
-            for split in range(self.n_splits):
-                est = clone(self.model)
+            self._process_single_dataset(
+                X_i, y_i, start_noise, end_noise, step_noise,
+                meta_features, meta_targets, scorer_names
+            )
 
-                stratify_y = y_i if len(np.unique(y_i)) > 1 else None
-                X_train_meta, X_holdout_meta, y_train_meta, y_holdout_meta = train_test_split(
-                    X_i, y_i, test_size=0.33, random_state=42 + split, stratify=stratify_y
-                )
+        self._train_meta_regressors(meta_features, meta_targets, scorer_names)
 
-                est.fit(X_train_meta, y_train_meta)
+        # Base model fit (lógica original preservada)
+        self.model.fit(X[0], y[0])
+        return self
+    
+    def _validate_noise_params(self, start_noise, end_noise, step_noise):
+        if start_noise < 0 or end_noise > 100 or step_noise <= 0:
+            raise ValueError(
+                "Noise parameters must satisfy: "
+                "0 <= start_noise <= end_noise <= 100 and step_noise > 0."
+            )
 
-                feats = self._extract_metafeatures(est, X_holdout_meta)
+    def _process_single_dataset(
+        self, X_i, y_i, start_noise, end_noise, step_noise,
+        meta_features, meta_targets, scorer_names
+    ):
+        """Processes one dataset by generating meta-examples."""
 
-                for p in range(start_noise, (end_noise+1), step_noise):
-                    n_noisy = int(len(X_holdout_meta) * (p / 100.0))
+        unique_labels = np.unique(y_i)
+        stratify_y = y_i if len(unique_labels) > 1 else None
 
-                    X_noisy_part = X_holdout_meta[:n_noisy].copy()
+        for split in range(self.n_splits):
+            self._process_single_split(
+                X_i, y_i, stratify_y, split,
+                start_noise, end_noise, step_noise,
+                meta_features, meta_targets, scorer_names
+            )
 
-                    X_clean_part = X_holdout_meta[n_noisy:].copy()
+    def _process_single_split(
+        self, X_i, y_i, stratify_y, split,
+        start_noise, end_noise, step_noise,
+        meta_features, meta_targets, scorer_names
+    ):
+        """Processes each train/holdout split."""
+        base_model = clone(self.model)
 
-                    # set noise
-                    rng = np.random.default_rng(42 + p + split)
-                    for c in X_holdout_meta.columns:
-                        
-                        X_noisy_part[c] = rng.permutation(X_noisy_part[c])
-                        
-                        X_concat = pd.concat([X_noisy_part, X_clean_part], axis=0)
+        X_train, X_holdout, y_train, y_holdout = train_test_split(
+            X_i, y_i,
+            test_size=0.33,
+            random_state=42 + split,
+            stratify=stratify_y
+        )
 
-                        y_pred_holdout = est.predict(X_concat)
+        base_model.fit(X_train, y_train)
+        metafeats = self._extract_metafeatures(base_model, X_holdout)
 
-                        meta_features.append(feats.flatten())
-                        
-                        if isinstance(self.scorer, dict):
-                            for name in scorers_names:
-                                func = self.scorer[name]
-                                score = func(y_holdout_meta, y_pred_holdout)
-                                meta_targets[name].append(score)
-                        elif callable(self.scorer):
-                            score = self.scorer(y_holdout_meta, y_pred_holdout)
-                            meta_targets['score'].append(score)
+        for noise_p in range(start_noise, end_noise + 1, step_noise):
+            self._generate_meta_example(
+                base_model, X_holdout, y_holdout,
+                metafeats, noise_p, split,
+                meta_features, meta_targets, scorer_names
+            )
 
+    def _generate_meta_example(
+        self, base_model, X_holdout, y_holdout, metafeats,
+        noise_p, split, meta_features, meta_targets, scorer_names
+    ):
+        """Adds one meta-example (metafeatures + performance target)."""
+
+        n_noisy = int(len(X_holdout) * (noise_p / 100.0))
+
+        X_noisy = X_holdout[:n_noisy].copy()
+        X_clean = X_holdout[n_noisy:].copy()
+
+        rng = np.random.default_rng(42 + noise_p + split)
+
+        for col in X_holdout.columns:
+            X_noisy[col] = rng.permutation(X_noisy[col])
+
+        X_concat = pd.concat([X_noisy, X_clean], axis=0)
+        y_pred = base_model.predict(X_concat)
+
+        meta_features.append(metafeats.flatten())
+        self._store_meta_targets(meta_targets, scorer_names, y_holdout, y_pred)
+
+    def _store_meta_targets(self, meta_targets, scorer_names, y_true, y_pred):
+        """Stores score values for one meta-example."""
+
+        if isinstance(self.scorer, dict):
+            for name in scorer_names:
+                meta_targets[name].append(self.scorer[name](y_true, y_pred))
+        else:
+            meta_targets["score"].append(self.scorer(y_true, y_pred))
+
+    def _train_meta_regressors(self, meta_features, meta_targets, scorer_names):
+        """Trains one regressor per scorer."""
         meta_features = np.array(meta_features)
         self.meta_regressors_ = {}
 
-        for name in scorers_names:
-            meta_y = np.array(meta_targets[name])
+        for name in scorer_names:
+            y_arr = np.array(meta_targets[name])
             reg = clone(self.meta_regressor)
-            reg.fit(meta_features, meta_y)
+            reg.fit(meta_features, y_arr)
             self.meta_regressors_[name] = reg
 
             if self.verbose:
                 print(f"[INFO] Meta-regressor for '{name}' has been trained.")
-        
-        self.model.fit(X[0], y[0])
-        return self

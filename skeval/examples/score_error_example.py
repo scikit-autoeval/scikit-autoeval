@@ -14,8 +14,8 @@ def load_dataset(path):
     y = df["Alzheimer"]
     return X, y
 
-X_geri, y_geri = load_dataset("skeval/datasets/geriatria-controle-alzheimerLabel.csv")
-X_neuro, y_neuro = load_dataset("skeval/datasets/neurologia-controle-alzheimerLabel.csv")
+X_geri, y_geri = load_dataset("./skeval/datasets/geriatria-controle-alzheimerLabel.csv")
+X_neuro, y_neuro = load_dataset("./skeval/datasets/neurologia-controle-alzheimerLabel.csv")
 
 model = make_pipeline(SimpleImputer(), StandardScaler(), LogisticRegression(max_iter=1000))
 evaluator = ConfidenceThresholdEvaluator(

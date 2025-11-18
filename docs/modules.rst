@@ -4,8 +4,8 @@ skeval
 .. toctree::
    :maxdepth: 4
 
+   evaluators/index
    base
-   evaluators
    metrics
    utils
    examples

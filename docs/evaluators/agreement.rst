@@ -1,0 +1,7 @@
+AgreementEvaluator
+----------------------------
+
+.. automodule:: evaluators.agreement
+   :members:
+   :show-inheritance:
+   :undoc-members:

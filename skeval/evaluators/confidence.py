@@ -122,26 +122,43 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
             If no predictions pass the threshold, it returns 0.0 for each scorer.
         """
         check_is_fitted(self.model)
-   
+
         conf, correct = self.__get_confidences_and_correct(X_eval)
-        
+        self._print_verbose_confidence_info(conf, correct)
+
+        if not np.any(correct):
+            return self._handle_no_confident_predictions()
+
+        y_pred = self.model.predict(X_eval)
+        y_estimated = self._build_estimated_labels(y_pred, correct)
+
+        self._print_verbose_label_info(y_pred, y_estimated)
+
+        return self._compute_scores(y_estimated, y_pred)
+
+    def _print_verbose_confidence_info(self, conf, correct):
         if self.verbose:
             print("[INFO] Confidences:", conf)
             print("[INFO] Passed threshold:", correct)
 
-        if not np.any(correct):
-            if self.verbose:
-                print("[INFO] No predictions passed the threshold.")
-            return {name: 0.0 for name in self._get_scorer_names()}
+    def _handle_no_confident_predictions(self):
+        if self.verbose:
+            print("[INFO] No predictions passed the threshold.")
+        return {name: 0.0 for name in self._get_scorer_names()}
 
-        y_pred = self.model.predict(X_eval)
-        y_estimated = [y_pred[i] if c == 1 else (y_pred[i]+1)%2 for i, c in enumerate(correct)]
-        y_estimated = [int(y) for y in y_estimated]
+    def _build_estimated_labels(self, y_pred, correct):
+        y_estimated = [
+            y_pred[i] if c == 1 else (y_pred[i] + 1) % 2
+            for i, c in enumerate(correct)
+        ]
+        return [int(y) for y in y_estimated]
 
+    def _print_verbose_label_info(self, y_pred, y_estimated):
         if self.verbose:
             print("[INFO] y_pred:", y_pred)
             print("[INFO] y_estimated:", y_estimated)
 
+    def _compute_scores(self, y_estimated, y_pred):
         if isinstance(self.scorer, dict):
             scores = {
                 name: func(y_estimated, y_pred)
@@ -150,41 +167,19 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
             if self.verbose:
                 print("[INFO] Estimated scores:", scores)
             return scores
+
         elif callable(self.scorer):
             score = self.scorer(y_estimated, y_pred)
             if self.verbose:
                 print("[INFO] Estimated score:", score)
-            return {'score': score}
+            return {"score": score}
+
         else:
             raise ValueError("'scorer' must be a callable or a dict of callables.")
 
     def __get_confidences_and_correct(self, X):
         """
         Computes confidence scores and applies the confidence threshold.
-
-        This private method extracts prediction confidences from the model,
-        either from `predict_proba` or `decision_function`. It then compares
-        these confidences against the `threshold` to determine which predictions
-        are considered to meet the confidence criteria.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, n_features)
-            The input data.
-
-        Returns
-        -------
-        confidences : ndarray
-            An array of confidence scores for each sample.
-        correct : ndarray of bool
-            A boolean array indicating `True` for samples where confidence
-            is greater than or equal to the `threshold`.
-        
-        Raises
-        ------
-        ValueError
-            If the model does not implement `predict_proba` or
-            `decision_function` methods.
         """
         if not (hasattr(self.model, 'predict_proba') or hasattr(self.model, 'decision_function')):
             raise ValueError("The model must implement predict_proba or decision_function.")

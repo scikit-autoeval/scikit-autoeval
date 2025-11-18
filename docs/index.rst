@@ -24,9 +24,7 @@ Contents
    modules
 
 .. Indices
-.. ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
