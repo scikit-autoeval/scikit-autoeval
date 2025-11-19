@@ -1,0 +1,82 @@
+name: Code Quality and Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install black flake8 pylint radon pytest pytest-cov
+
+      # -------------------------------
+      # Black (formatting)
+      # -------------------------------
+      - name: Run Black (check only)
+        run: |
+          black --check skeval > black_report.txt || true
+
+      # -------------------------------
+      # Flake8
+      # -------------------------------
+      - name: Run Flake8
+        run: |
+          flake8 skeval > flake8_report.txt || true
+
+      # -------------------------------
+      # Pylint
+      # -------------------------------
+      - name: Run Pylint
+        run: |
+          pylint skeval > pylint_report.txt || true
+
+      # -------------------------------
+      # Radon (cc + mi)
+      # -------------------------------
+      - name: Radon Cyclomatic Complexity
+        run: |
+          radon cc -s -a skeval > radon_cc_report.txt
+
+      - name: Radon Maintainability Index
+        run: |
+          radon mi -s skeval > radon_mi_report.txt
+
+      # -------------------------------
+      # Pytest + Coverage
+      # -------------------------------
+      - name: Run Tests
+        run: |
+          pytest --cov=skeval --cov-report=term --cov-report=html
+          mv htmlcov coverage_html
+          coverage report > coverage_report.txt
+
+      # -------------------------------
+      # Upload artifacts
+      # -------------------------------
+      - name: Upload Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-quality-reports
+          path: |
+            black_report.txt
+            flake8_report.txt
+            pylint_report.txt
+            radon_cc_report.txt
+            radon_mi_report.txt
+            coverage_report.txt
+            coverage_html
