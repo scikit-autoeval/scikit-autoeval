@@ -8,32 +8,32 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
 
-project = 'scikit-autoeval'
-copyright = '2025, scikit-autoeval developers (BSD License).'
-author = 'Lucas Santos Rodrigues and Ismael Santana Silva'
-release = '1.1.0'
+sys.path.insert(0, os.path.abspath(".."))
+
+project = "scikit-autoeval"
+copyright = "2025, scikit-autoeval developers (BSD License)."
+author = "Lucas Santos Rodrigues and Ismael Santana Silva"
+release = "1.1.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
 ]
 
-templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
+templates_path = ["_templates"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'furo'
-html_static_path = ['_static']
+html_theme = "furo"
+html_static_path = ["_static"]
 html_baseurl = "https://scikit-autoeval.github.io/scikit-autoeval/"
 
 html_theme_options = {
@@ -55,4 +55,3 @@ html_context = {
 }
 
 # html_theme_options["relbar"] = False
-

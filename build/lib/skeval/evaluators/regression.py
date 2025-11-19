@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from skeval.base import BaseEvaluator
 from skeval.utils import check_is_fitted
 
+
 class RegressionEvaluator(BaseEvaluator):
     """Regression-based evaluator for classification models.
 
@@ -44,7 +45,7 @@ class RegressionEvaluator(BaseEvaluator):
     meta_regressors_ : dict
         A dictionary mapping each scorer's name to its fitted meta-regressor
         instance. This attribute is populated after the `fit` method is called.
-    
+
     Examples
     --------
     >>> from sklearn.datasets import load_iris
@@ -68,10 +69,20 @@ class RegressionEvaluator(BaseEvaluator):
     >>> print(estimated_scores)
     {'score': ...}
     """
-    def __init__(self, model, scorer=accuracy_score, verbose=False, meta_regressor=None, n_splits=5):
+
+    def __init__(
+        self,
+        model,
+        scorer=accuracy_score,
+        verbose=False,
+        meta_regressor=None,
+        n_splits=5,
+    ):
         super().__init__(model=model, scorer=scorer, verbose=verbose)
 
-        self.meta_regressor = meta_regressor or RandomForestRegressor(n_estimators=500, random_state=42)
+        self.meta_regressor = meta_regressor or RandomForestRegressor(
+            n_estimators=500, random_state=42
+        )
         self.n_splits = n_splits
 
     def fit(self, X, y):
@@ -101,8 +112,14 @@ class RegressionEvaluator(BaseEvaluator):
                 est = clone(self.model)
 
                 stratify_y = y_i if len(np.unique(y_i)) > 1 else None
-                X_train_meta, X_holdout_meta, y_train_meta, y_holdout_meta = train_test_split(
-                    X_i, y_i, test_size=0.33, random_state=42 + split, stratify=stratify_y
+                X_train_meta, X_holdout_meta, y_train_meta, y_holdout_meta = (
+                    train_test_split(
+                        X_i,
+                        y_i,
+                        test_size=0.33,
+                        random_state=42 + split,
+                        stratify=stratify_y,
+                    )
                 )
 
                 est.fit(X_train_meta, y_train_meta)
@@ -118,7 +135,7 @@ class RegressionEvaluator(BaseEvaluator):
                         meta_targets[name].append(score)
                 elif callable(self.scorer):
                     score = self.scorer(y_holdout_meta, y_pred_holdout)
-                    meta_targets['score'].append(score)
+                    meta_targets["score"].append(score)
 
         meta_features = np.array(meta_features)
         self.meta_regressors_ = {}
@@ -131,10 +148,9 @@ class RegressionEvaluator(BaseEvaluator):
 
             if self.verbose:
                 print(f"[INFO] Meta-regressor for '{name}' has been trained.")
-        
+
         self.model.fit(X[0], y[0])
         return self
-
 
     def estimate(self, X_eval):
         """Estimates the performance of the current model on unlabeled data.
@@ -154,7 +170,7 @@ class RegressionEvaluator(BaseEvaluator):
         dict
             A dictionary with the estimated scores, where keys are the names
             of the scorers and values are the predicted performance scores.
-        
+
         Raises
         ------
         RuntimeError
@@ -164,13 +180,15 @@ class RegressionEvaluator(BaseEvaluator):
             If `self.model` does not implement `predict_proba`.
         """
         check_is_fitted(self.model)
-        
+
         if not hasattr(self, "meta_regressors_"):
-            raise RuntimeError("The evaluator has not been fitted yet. Call 'fit' before 'estimate'.")
-            
+            raise RuntimeError(
+                "The evaluator has not been fitted yet. Call 'fit' before 'estimate'."
+            )
+
         feats = self._extract_metafeatures(self.model, X_eval)
         scores = {}
-        
+
         for name, reg in self.meta_regressors_.items():
             estimated_score = reg.predict(feats)[0]
             scores[name] = estimated_score
@@ -197,7 +215,7 @@ class RegressionEvaluator(BaseEvaluator):
         ndarray
             A 2D numpy array of shape (1, n_meta_features) containing the
             extracted features.
-        
+
         Raises
         ------
         ValueError
@@ -205,16 +223,16 @@ class RegressionEvaluator(BaseEvaluator):
         """
         if not hasattr(estimator, "predict_proba"):
             raise ValueError("The estimator must implement predict_proba.")
-            
+
         probas = estimator.predict_proba(X)
         max_probs = np.max(probas, axis=1)
         eps = 1e-12
         entropy = -np.sum(probas * np.log(probas + eps), axis=1)
-        
+
         features = {
             "mean_conf": np.mean(max_probs),
             "std_conf": np.std(max_probs),
             "mean_entropy": np.mean(entropy),
-            "std_entropy": np.std(entropy)
+            "std_entropy": np.std(entropy),
         }
         return np.array(list(features.values())).reshape(1, -1)

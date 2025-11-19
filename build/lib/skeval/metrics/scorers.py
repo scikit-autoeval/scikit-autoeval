@@ -45,6 +45,8 @@ def make_scorer(func, **kwargs):
     >>> np.isclose(score, direct_call_score)
     True
     """
+
     def scorer(y_true, y_pred):
         return func(y_true, y_pred, **kwargs)
+
     return scorer

@@ -22,12 +22,8 @@ def check_is_fitted(model):
     sklearn_check_is_fitted(model)
 
 
-def get_CV_and_real_scores(model, scorers, X_train, y_train, X_test, y_test):
+def get_cv_and_real_scores(model, scorers, train_data, test_data):
     """Compute cross-validation and real scores for a given model and datasets.
-
-    This function computes the cross-validation scores on the test dataset
-    (using cross_validate) and the real scores on the test dataset after
-    fitting the model on X_train/y_train.
 
     Parameters
     ----------
@@ -35,11 +31,11 @@ def get_CV_and_real_scores(model, scorers, X_train, y_train, X_test, y_test):
         An evaluator instance with an `estimate` method.
     model : object
         A fitted model with `fit` and `predict` methods.
-    X_train : array-like
+    x_train : array-like
         The training features.
     y_train : array-like
         The training target labels.
-    X_test : array-like
+    x_test : array-like
         The test features.
     y_test : array-like
         The test target labels.
@@ -49,25 +45,18 @@ def get_CV_and_real_scores(model, scorers, X_train, y_train, X_test, y_test):
     dict
         A dictionary containing 'cv_scores' and 'real_scores'.
     """
-
-    # ======================
-    # 1. Cross-Validation (intra-domain)
-    #  This is the standard CV estimate: train/validate
-    # ======================
+    x_train, y_train = train_data
+    x_test, y_test = test_data
     cv_scores = {}
     scoring = {name: make_scorer(fn) for name, fn in scorers.items()}
     cv_result = cross_validate(
-        model, X_test, y_test, scoring=scoring, cv=5, return_train_score=False
+        model, x_test, y_test, scoring=scoring, cv=5, return_train_score=False
     )
     for metric_name in scorers.keys():
         cv_key = f"test_{metric_name}"
         cv_scores[metric_name] = cv_result[cv_key].mean()
-
-    # ======================
-    # 2. Real performance (train on geriatrics -> test on neurology)
-    # ======================
-    model.fit(X_train, y_train)
-    y_pred_real = model.predict(X_test)
+    model.fit(x_train, y_train)
+    y_pred_real = model.predict(x_test)
 
     real_scores = {
         metric_name: scorer_fn(y_test, y_pred_real)
@@ -75,3 +64,42 @@ def get_CV_and_real_scores(model, scorers, X_train, y_train, X_test, y_test):
     }
 
     return {"cv_scores": cv_scores, "real_scores": real_scores}
+
+
+def print_comparison(scorers, cv_scores, estimated_scores, real_scores):
+    """
+    Print a formatted comparison between cross-validation (intra-domain), estimated, and
+    real performance scores for a set of metrics, and display the absolute errors of the
+    CV and estimated scores with respect to the real scores.
+    Parameters
+    ----------
+    scorers : Mapping[str, Any]
+        A mapping whose keys are metric names (strings). Only the keys are used to
+        determine which metrics to display; values (e.g., scorer callables) are not
+        inspected by this function.
+    cv_scores : Mapping[str, float]
+        Mapping from metric name to the cross-validation (intra-domain) score.
+    estimated_scores : Mapping[str, float]
+        Mapping from metric name to the estimated cross-domain score.
+    real_scores : Mapping[str, float]
+        Mapping from metric name to the observed real score on the target domain.
+    Returns
+    -------
+    None
+    """
+    print("\n===== CV vs. Estimated vs. Real =====")
+    for metric in scorers.keys():
+        print(
+            f"{metric:<10} -> CV: {cv_scores[metric]:.4f} | "
+            f"Estimated: {estimated_scores[metric]:.4f} | "
+            f"Real: {real_scores[metric]:.4f}"
+        )
+
+    print("\n===== Absolute Error w.r.t. Real Performance =====")
+    for metric in scorers.keys():
+        err_est = abs(real_scores[metric] - estimated_scores[metric])
+        err_cv = abs(real_scores[metric] - cv_scores[metric])
+        print(
+            f"{metric:<10} -> |Real - Estimated|: {err_est:.4f} | "
+            f"|Real - CV|: {err_cv:.4f}"
+        )

@@ -13,7 +13,6 @@ from skeval.evaluators.confidence import ConfidenceThresholdEvaluator
 
 
 class TestConfidenceThresholdEvaluator(unittest.TestCase):
-
     def setUp(self):
         """Set up a trained model and test data."""
         self.X_train = np.array([[1], [2], [3], [4], [5], [6]])

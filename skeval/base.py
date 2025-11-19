@@ -16,13 +16,13 @@ class BaseEvaluator(BaseEstimator):
         self.scorer = scorer
         self.verbose = verbose
 
-    def fit(self, X, y):
+    def fit(self, x, y):
         """
         Fit the evaluator to the training data.
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
+        x : array-like of shape (n_samples, n_features)
             Training data.
         y : array-like of shape (n_samples,)
             Target labels.
@@ -32,15 +32,16 @@ class BaseEvaluator(BaseEstimator):
         self : object
             Returns the instance itself.
         """
+        self.model.fit(x, y)
         return self
 
-    def estimate(self, X_eval):
+    def estimate(self, x_eval):
         """
         Abstract method to estimate the model's performance on the given data.
 
         Parameters
         ----------
-        X_eval : array-like of shape (n_samples, n_features)
+        x_eval : array-like of shape (n_samples, n_features)
             Test data.
 
         Returns
@@ -48,7 +49,7 @@ class BaseEvaluator(BaseEstimator):
         scores : dict
             A dictionary containing the evaluation scores.
         """
-        pass
+        print("Please implement the 'estimate' method to estimate " + str(x_eval))
 
     def _get_scorer_names(self):
         """
@@ -65,7 +66,6 @@ class BaseEvaluator(BaseEstimator):
         """
         if isinstance(self.scorer, dict):
             return list(self.scorer.keys())
-        elif callable(self.scorer):
+        if callable(self.scorer):
             return ["score"]
-        else:
-            return []
+        return []

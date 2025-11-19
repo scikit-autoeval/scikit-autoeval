@@ -4,13 +4,13 @@ from sklearn.metrics import mean_absolute_error
 
 
 def score_error(
-    real_scores, estimated_scores, comparator=mean_absolute_error, verbose=False
+    real_scores, est_scores, comparator=mean_absolute_error, verbose=False
 ):
     """
     Compares estimated and real scores using a user-defined comparison function.
 
     This function iterates through the metrics present in both `real_scores` and
-    `estimated_scores` dictionaries and computes the error between them using
+    `est_scores` dictionaries and computes the error between them using
     the provided comparator function(s).
 
     Parameters
@@ -18,7 +18,7 @@ def score_error(
     real_scores : dict
         A dictionary of scores computed with true labels.
         Example: `{'accuracy': 0.9, 'f1': 0.85}`
-    estimated_scores : dict
+    est_scores : dict
         A dictionary of scores estimated without true labels.
         Example: `{'accuracy': 0.88, 'f1': 0.82}`
     comparator : callable or dict, default=mean_absolute_error
@@ -71,24 +71,28 @@ def score_error(
 
     if callable(comparator):
         for metric in real_scores:
-            if metric in estimated_scores:
-                error = comparator([real_scores[metric]], [estimated_scores[metric]])
+            if metric in est_scores:
+                error = comparator([real_scores[metric]], [est_scores[metric]])
                 result[metric] = error
                 if verbose:
                     print(
-                        f"[{metric}] Real: {real_scores[metric]}, Estimated: {estimated_scores[metric]}, Error: {error}"
+                        f"[{metric}] Real: {real_scores[metric]}, " +
+                        f"Estimated: {est_scores[metric]}, " +
+                        f"Error: {error}"
                     )
 
     elif isinstance(comparator, dict):
         for metric in real_scores:
-            if metric in estimated_scores and metric in comparator:
+            if metric in est_scores and metric in comparator:
                 error = comparator[metric](
-                    [real_scores[metric]], [estimated_scores[metric]]
+                    [real_scores[metric]], [est_scores[metric]]
                 )
                 result[metric] = error
                 if verbose:
                     print(
-                        f"[{metric}] Real: {real_scores[metric]}, Estimated: {estimated_scores[metric]}, Error: {error}"
+                        f"[{metric}] Real: {real_scores[metric]}, " +
+                        f"Estimated: {est_scores[metric]}, " +
+                        f"Error: {error}"
                     )
     else:
         raise ValueError("Comparator must be a callable or a dict of callables.")

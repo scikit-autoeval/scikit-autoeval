@@ -2,8 +2,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import unittest
-import numpy as np
-import shap
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
@@ -14,16 +12,14 @@ from sklearn.exceptions import NotFittedError
 # Assuming the ShapEvaluator is in this path
 from skeval.evaluators.shap import ShapEvaluator
 
-
 class TestShapEvaluator(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         # Load a binary classification dataset
         X, y = load_breast_cancer(return_X_y=True)
 
-        # Split data. ShapEvaluator needs X_train for fit() and X_eval for estimate()
-        cls.X_train, cls.X_eval, cls.y_train, cls.y_eval = train_test_split(
+        # Split data. ShapEvaluator needs x_train for fit() and X_eval for estimate()
+        cls.x_train, cls.X_eval, cls.y_train, cls.y_eval = train_test_split(
             X, y, test_size=0.3, random_state=42
         )
 
@@ -40,8 +36,8 @@ class TestShapEvaluator(unittest.TestCase):
 
         evaluator = ShapEvaluator(model=model, scorer=accuracy_score, verbose=False)
 
-        # Fit the model and set X_train/y_train inside the evaluator
-        evaluator.fit(self.X_train, self.y_train)
+        # Fit the model and set x_train/y_train inside the evaluator
+        evaluator.fit(self.x_train, self.y_train)
 
         # Estimate on the evaluation set
         estimated_scores = evaluator.estimate(self.X_eval, n_pred=self.n_pred_fast)
@@ -68,7 +64,7 @@ class TestShapEvaluator(unittest.TestCase):
 
         evaluator = ShapEvaluator(model=model, scorer=scorers, verbose=False)
 
-        evaluator.fit(self.X_train, self.y_train)
+        evaluator.fit(self.x_train, self.y_train)
 
         estimated_scores = evaluator.estimate(self.X_eval, n_pred=self.n_pred_fast)
 
@@ -91,17 +87,17 @@ class TestShapEvaluator(unittest.TestCase):
 
     def test_estimate_without_train_data_raises_error(self):
         """
-        Test that estimate() raises ValueError if X_train/y_train are missing,
+        Test that estimate() raises ValueError if x_train/y_train are missing,
         even if the model is pre-fitted.
         """
         # Fit the model *outside* the evaluator
         model = RandomForestClassifier(n_estimators=10, random_state=42)
-        model.fit(self.X_train, self.y_train)
+        model.fit(self.x_train, self.y_train)
 
-        # Init evaluator with pre-fit model, but *without* X_train/y_train
+        # Init evaluator with pre-fit model, but *without* x_train/y_train
         evaluator = ShapEvaluator(model=model)
 
-        # This checks the "if self.X_train is None..." call in estimate()
+        # This checks the "if self.x_train is None..." call in estimate()
         with self.assertRaises(ValueError):
             evaluator.estimate(self.X_eval)
 
@@ -111,11 +107,11 @@ class TestShapEvaluator(unittest.TestCase):
         and training data are provided to __init__.
         """
         model = RandomForestClassifier(n_estimators=10, random_state=42)
-        model.fit(self.X_train, self.y_train)
+        model.fit(self.x_train, self.y_train)
 
         # Provide all required components to __init__
         evaluator = ShapEvaluator(
-            model=model, X_train=self.X_train, y_train=self.y_train
+            model=model, x_train=self.x_train, y_train=self.y_train
         )
 
         # Should work without calling evaluator.fit()

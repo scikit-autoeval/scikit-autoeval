@@ -31,33 +31,33 @@ class AgreementEvaluator(BaseEvaluator):
 
         self.sec_model = sec_model if sec_model is not None else GaussianNB()
 
-    def fit(self, X, y):
+    def fit(self, x, y):
         """
         Fit the evaluator by generating predictions from both models.
 
         Parameters
         ----------
-        X : array-like
+        x : array-like
             Feature matrix.
         y : array-like
             Target vector.
         """
 
-        self.model.fit(X, y)
-        self.sec_model.fit(X, y)
+        self.model.fit(x, y)
+        self.sec_model.fit(x, y)
 
         if self.verbose:
             print("[INFO] Fit completed.")
 
         return self
 
-    def estimate(self, X_eval):
+    def estimate(self, x_eval):
         """
         Estimate the agreement score between the main and secondary models.
 
         Parameters
         ----------
-        X_eval : array-like
+        x_eval : array-like
             Feature matrix (not used, kept for interface consistency).
 
         Returns
@@ -69,8 +69,8 @@ class AgreementEvaluator(BaseEvaluator):
         check_is_fitted(self.model)
         check_is_fitted(self.sec_model)
 
-        pred_main = self.model.predict(X_eval)
-        pred_secondary = self.sec_model.predict(X_eval)
+        pred_main = self.model.predict(x_eval)
+        pred_secondary = self.sec_model.predict(x_eval)
 
         agreement = (pred_main == pred_secondary).astype(int)
         y_agreement = [p if a else 1 - p for p, a in zip(pred_main, agreement)]
@@ -80,5 +80,4 @@ class AgreementEvaluator(BaseEvaluator):
                 name: metric(y_agreement, agreement)
                 for name, metric in self.scorer.items()
             }
-        else:
-            return self.scorer(y_agreement, agreement)
+        return self.scorer(y_agreement, agreement)

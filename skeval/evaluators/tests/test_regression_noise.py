@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import unittest
-import numpy as np
 import pandas as pd
 from sklearn.datasets import load_iris, load_breast_cancer
 from sklearn.linear_model import LogisticRegression
@@ -16,7 +15,6 @@ from skeval.evaluators.regression_noise import RegressionNoiseEvaluator
 
 
 class TestRegressionNoiseEvaluator(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         iris = load_iris()
@@ -37,7 +35,7 @@ class TestRegressionNoiseEvaluator(unittest.TestCase):
         """
         Test fitting the meta-regressor with noise and estimating performance.
         """
-        model = LogisticRegression(max_iter=1000)
+        model = LogisticRegression(max_iter=2000)
 
         # Use n_splits=2 and a small noise range for a fast test
         evaluator = RegressionNoiseEvaluator(
@@ -51,7 +49,7 @@ class TestRegressionNoiseEvaluator(unittest.TestCase):
 
         # Per the example workflow, train a final model manually
         # Here we train on cancer data
-        final_model = LogisticRegression(max_iter=1000).fit(
+        final_model = LogisticRegression(max_iter=2000).fit(
             self.X_cancer_df, self.y_cancer
         )
         evaluator.model = final_model

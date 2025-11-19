@@ -9,7 +9,6 @@ from skeval.metrics.comparison import score_error
 
 
 class TestScoreError(unittest.TestCase):
-
     def setUp(self):
         """Set up the test data to be used across multiple methods."""
         self.real_scores = {"accuracy": 0.95, "precision": 0.90, "recall": 0.85}

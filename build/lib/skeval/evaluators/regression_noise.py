@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 
 from skeval.evaluators.regression import RegressionEvaluator
 
+
 class RegressionNoiseEvaluator(RegressionEvaluator):
     """Regression-based evaluator for classification models.
 
@@ -42,7 +43,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
     meta_regressors_ : dict
         A dictionary mapping each scorer's name to its fitted meta-regressor
         instance. This attribute is populated after the `fit` method is called.
-    
+
     Examples
     --------
     >>> from sklearn.datasets import load_iris
@@ -66,7 +67,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
     >>> print(estimated_scores)
     {'score': ...}
     """
-    
+
     def fit(self, X, y, start_noise=10, end_noise=100, step_noise=10):
         """Trains the internal meta-regressor(s) using a single model type.
 
@@ -92,26 +93,34 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
             The fitted evaluator instance.
         """
         if start_noise < 0 or end_noise > 100 or step_noise <= 0:
-            raise ValueError("Noise parameters must satisfy: 0 <= start_noise <= end_noise <= 100 and step_noise > 0.")
-        
+            raise ValueError(
+                "Noise parameters must satisfy: 0 <= start_noise <= end_noise <= 100 and step_noise > 0."
+            )
+
         scorers_names = self._get_scorer_names()
         meta_features = []
         meta_targets = {name: [] for name in scorers_names}
-        
+
         for X_i, y_i in zip(X, y):
             for split in range(self.n_splits):
                 est = clone(self.model)
 
                 stratify_y = y_i if len(np.unique(y_i)) > 1 else None
-                X_train_meta, X_holdout_meta, y_train_meta, y_holdout_meta = train_test_split(
-                    X_i, y_i, test_size=0.33, random_state=42 + split, stratify=stratify_y
+                X_train_meta, X_holdout_meta, y_train_meta, y_holdout_meta = (
+                    train_test_split(
+                        X_i,
+                        y_i,
+                        test_size=0.33,
+                        random_state=42 + split,
+                        stratify=stratify_y,
+                    )
                 )
 
                 est.fit(X_train_meta, y_train_meta)
 
                 feats = self._extract_metafeatures(est, X_holdout_meta)
 
-                for p in range(start_noise, (end_noise+1), step_noise):
+                for p in range(start_noise, (end_noise + 1), step_noise):
                     n_noisy = int(len(X_holdout_meta) * (p / 100.0))
 
                     X_noisy_part = X_holdout_meta[:n_noisy].copy()
@@ -121,15 +130,14 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
                     # set noise
                     rng = np.random.default_rng(42 + p + split)
                     for c in X_holdout_meta.columns:
-                        
                         X_noisy_part[c] = rng.permutation(X_noisy_part[c])
-                        
+
                         X_concat = pd.concat([X_noisy_part, X_clean_part], axis=0)
 
                         y_pred_holdout = est.predict(X_concat)
 
                         meta_features.append(feats.flatten())
-                        
+
                         if isinstance(self.scorer, dict):
                             for name in scorers_names:
                                 func = self.scorer[name]
@@ -137,7 +145,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
                                 meta_targets[name].append(score)
                         elif callable(self.scorer):
                             score = self.scorer(y_holdout_meta, y_pred_holdout)
-                            meta_targets['score'].append(score)
+                            meta_targets["score"].append(score)
 
         meta_features = np.array(meta_features)
         self.meta_regressors_ = {}
@@ -150,6 +158,6 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
 
             if self.verbose:
                 print(f"[INFO] Meta-regressor for '{name}' has been trained.")
-        
+
         self.model.fit(X[0], y[0])
         return self

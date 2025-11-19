@@ -6,6 +6,7 @@ from sklearn.metrics import accuracy_score
 from skeval.base import BaseEvaluator
 from skeval.utils import check_is_fitted
 
+
 class AgreementEvaluator(BaseEvaluator):
     """
     Evaluator based on agreement/disagreement between the target model (M)
@@ -44,7 +45,7 @@ class AgreementEvaluator(BaseEvaluator):
 
         self.model.fit(X, y)
         self.sec_model.fit(X, y)
-        
+
         if self.verbose:
             print("[INFO] Fit completed.")
 
@@ -64,17 +65,20 @@ class AgreementEvaluator(BaseEvaluator):
         scores : dict or float
             Agreement score(s) computed using the provided scorer(s).
         """
-        
+
         check_is_fitted(self.model)
         check_is_fitted(self.sec_model)
-        
+
         pred_main = self.model.predict(X_eval)
         pred_secondary = self.sec_model.predict(X_eval)
 
         agreement = (pred_main == pred_secondary).astype(int)
         y_agreement = [p if a else 1 - p for p, a in zip(pred_main, agreement)]
-        
+
         if isinstance(self.scorer, dict):
-            return {name: metric(y_agreement, agreement) for name, metric in self.scorer.items()}
+            return {
+                name: metric(y_agreement, agreement)
+                for name, metric in self.scorer.items()
+            }
         else:
             return self.scorer(y_agreement, agreement)

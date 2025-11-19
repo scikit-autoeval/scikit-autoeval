@@ -4,6 +4,7 @@ from sklearn.utils.validation import check_is_fitted as sklearn_check_is_fitted
 from sklearn.model_selection import cross_validate
 from sklearn.metrics import make_scorer
 
+
 def check_is_fitted(model):
     """Check if the model has been fitted.
 
@@ -17,6 +18,7 @@ def check_is_fitted(model):
         If the model has not been fitted yet.
     """
     return sklearn_check_is_fitted(model)
+
 
 def get_CV_and_real_scores(model, scorers, X_train, y_train, X_test, y_test):
     """Compute cross-validation and real scores for a given model and datasets.
@@ -45,20 +47,15 @@ def get_CV_and_real_scores(model, scorers, X_train, y_train, X_test, y_test):
     dict
         A dictionary containing 'cv_scores' and 'real_scores'.
     """
-    
+
     # ======================
     # 1. Cross-Validation (intra-domain)
-    #  This is the standard CV estimate: train/validate 
+    #  This is the standard CV estimate: train/validate
     # ======================
     cv_scores = {}
     scoring = {name: make_scorer(fn) for name, fn in scorers.items()}
     cv_result = cross_validate(
-        model,
-        X_test,
-        y_test,
-        scoring=scoring,
-        cv=5,
-        return_train_score=False
+        model, X_test, y_test, scoring=scoring, cv=5, return_train_score=False
     )
     for metric_name in scorers.keys():
         cv_key = f"test_{metric_name}"
@@ -74,8 +71,5 @@ def get_CV_and_real_scores(model, scorers, X_train, y_train, X_test, y_test):
         metric_name: scorer_fn(y_test, y_pred_real)
         for metric_name, scorer_fn in scorers.items()
     }
-    
-    return {
-        'cv_scores': cv_scores,
-        'real_scores': real_scores
-    }
+
+    return {"cv_scores": cv_scores, "real_scores": real_scores}

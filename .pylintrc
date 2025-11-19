@@ -1,0 +1,10 @@
+[MASTER]
+ignore = examples, plots
+ignore-patterns = .*tests*
+
+
+[MESSAGES CONTROL]
+disable =
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring

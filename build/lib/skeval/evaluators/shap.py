@@ -10,6 +10,7 @@ from xgboost import XGBClassifier
 from skeval.base import BaseEvaluator
 from skeval.utils import check_is_fitted
 
+
 class ShapEvaluator(BaseEvaluator):
     """
     SHAP-based evaluator.
@@ -41,13 +42,21 @@ class ShapEvaluator(BaseEvaluator):
     signature follows estimate(X_eval, X_train=None, y_train=None, y_eval=None).
     """
 
-    def __init__(self, model, scorer=accuracy_score, verbose=False, inner_clf=None, X_train=None, y_train=None):
+    def __init__(
+        self,
+        model,
+        scorer=accuracy_score,
+        verbose=False,
+        inner_clf=None,
+        X_train=None,
+        y_train=None,
+    ):
         super().__init__(model=model, scorer=scorer, verbose=verbose)
         self.inner_clf = inner_clf or XGBClassifier(random_state=42)
         self.explainer = None
         self.X_train = X_train
         self.y_train = y_train
-        
+
     def fit(self, X=None, y=None):
         """
         Fit the evaluator's model.
@@ -59,16 +68,16 @@ class ShapEvaluator(BaseEvaluator):
         y : array-like
             Training labels.
         """
-        
-        if (self.X_train is None and X is not None):
+
+        if self.X_train is None and X is not None:
             self.X_train = X
 
-        if (self.y_train is None and y is not None):
+        if self.y_train is None and y is not None:
             self.y_train = y
-            
+
         if self.X_train is None or self.y_train is None:
             raise ValueError("X and y must be provided to fit the model.")
-            
+
         self.model.fit(X, y)
         return self
 
@@ -92,10 +101,14 @@ class ShapEvaluator(BaseEvaluator):
 
         check_is_fitted(self.model)
         if self.X_train is None or self.y_train is None:
-            raise ValueError("X_train and y_train must be provided to compute SHAP values for the training set.")
+            raise ValueError(
+                "X_train and y_train must be provided to compute SHAP values for the training set."
+            )
 
         # Se for pipeline, pega o último estimador (modelo final)
-        model_to_explain = self.model[-1] if hasattr(self.model, "steps") else self.model
+        model_to_explain = (
+            self.model[-1] if hasattr(self.model, "steps") else self.model
+        )
         self.explainer = shap.TreeExplainer(model_to_explain)
 
         X_train_proc = self.X_train
@@ -106,7 +119,7 @@ class ShapEvaluator(BaseEvaluator):
 
         shap_train_arr = self._choose_class_shap(shap_train, self.model)
         shap_eval_arr = self._choose_class_shap(shap_eval, self.model)
-        
+
         # Predições no treino e avaliação pelo classificador original
         scores_list = []
 
@@ -115,7 +128,12 @@ class ShapEvaluator(BaseEvaluator):
             pred_eval = self.model.predict(X_eval)
 
             # Construir alvo para o classificador interno: 1 se a previsão original estava correta, 0 caso contrário
-            y_right = np.array([1 if self.y_train[i] == pred_train[i] else 0 for i in range(len(pred_train))])
+            y_right = np.array(
+                [
+                    1 if self.y_train[i] == pred_train[i] else 0
+                    for i in range(len(pred_train))
+                ]
+            )
 
             # Treina o classificador interno em SHAP(train) -> acerto
             clf = clone(self.inner_clf)
@@ -125,24 +143,31 @@ class ShapEvaluator(BaseEvaluator):
             pred_right = clf.predict(shap_eval_arr)
 
             # Construir labels esperadas: se previsto como correto, mantém a previsão do modelo, caso contrário inverte a classe binária
-            expected_y = np.array([
-                pred_eval[i] if pred_right[i] == 1 else ((pred_eval[i] + 1) % 2)
-                for i in range(len(pred_eval))
-            ])
+            expected_y = np.array(
+                [
+                    pred_eval[i] if pred_right[i] == 1 else ((pred_eval[i] + 1) % 2)
+                    for i in range(len(pred_eval))
+                ]
+            )
 
             if isinstance(self.scorer, dict):
-                iter_scores = {name: fn(expected_y, pred_eval) for name, fn in self.scorer.items()}
+                iter_scores = {
+                    name: fn(expected_y, pred_eval) for name, fn in self.scorer.items()
+                }
             elif callable(self.scorer):
-                iter_scores = {'score': self.scorer(expected_y, pred_eval)}
+                iter_scores = {"score": self.scorer(expected_y, pred_eval)}
             else:
                 raise ValueError("'scorer' must be a callable or a dict of callables.")
 
             scores_list.append(iter_scores)
 
         if isinstance(self.scorer, dict):
-            avg_scores = {name: np.mean([s[name] for s in scores_list]) for name in self.scorer.keys()}
+            avg_scores = {
+                name: np.mean([s[name] for s in scores_list])
+                for name in self.scorer.keys()
+            }
         else:
-            avg_scores = {'score': np.mean([s['score'] for s in scores_list])}
+            avg_scores = {"score": np.mean([s["score"] for s in scores_list])}
 
         return avg_scores
 

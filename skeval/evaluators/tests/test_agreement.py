@@ -15,7 +15,6 @@ from skeval.evaluators.agreement import AgreementEvaluator
 
 
 class TestAgreementEvaluator(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         # Load datasets for fitting and estimating

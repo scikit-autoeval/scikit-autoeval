@@ -41,7 +41,7 @@ class ShapEvaluator(BaseEvaluator):
     inner_clf : estimator, optional
         Classifier trained on SHAP values to estimate correctness. If None,
         defaults to ``XGBClassifier(random_state=42)``.
-    X_train : array-like, optional
+    x_train : array-like, optional
         Training features used to compute SHAP values.
     y_train : array-like, optional
         Training labels used to compute SHAP values.
@@ -54,10 +54,10 @@ class ShapEvaluator(BaseEvaluator):
         The classifier used to model correctness from SHAP values.
     explainer : shap.TreeExplainer
         Object responsible for computing SHAP values.
-    X_train : ndarray of shape (n_samples, n_features)
+    x_train : ndarray of shape (n_samples, n_features)
         Feature matrix used to compute SHAP values for correctness learning.
     y_train : ndarray of shape (n_samples,)
-        Ground-truth labels corresponding to ``X_train``.
+        Ground-truth labels corresponding to ``x_train``.
 
     Notes
     -----
@@ -79,13 +79,13 @@ class ShapEvaluator(BaseEvaluator):
     >>>
     >>> df_train = pd.read_csv("dataset_train.csv")
     >>> df_test = pd.read_csv("dataset_test.csv")
-    >>> X_train, y_train = df_train.drop(columns=["label"]), df_train["label"]
-    >>> X_test = df_test.drop(columns=["label"])
+    >>> x_train, y_train = df_train.drop(columns=["label"]), df_train["label"]
+    >>> x_test = df_test.drop(columns=["label"])
     >>> model = XGBClassifier()
     >>>
     >>> evaluator = ShapEvaluator(model, scorer=accuracy_score)
-    >>> evaluator.fit(X_train, y_train)
-    >>> scores = evaluator.estimate(X_test)
+    >>> evaluator.fit(x_train, y_train)
+    >>> scores = evaluator.estimate(x_test)
     >>> print(scores)
     0.84
     """
@@ -96,29 +96,29 @@ class ShapEvaluator(BaseEvaluator):
         scorer=accuracy_score,
         verbose=False,
         inner_clf=None,
-        X_train=None,
+        x_train=None,
         y_train=None,
     ):
         super().__init__(model=model, scorer=scorer, verbose=verbose)
         self.inner_clf = inner_clf or XGBClassifier(random_state=42)
         self.explainer = None
-        self.X_train, self.y_train = X_train, y_train
+        self.x_train, self.y_train = x_train, y_train
 
-    def fit(self, X=None, y=None):
+    def fit(self, x=None, y=None):
         """
         Fit the model used by the evaluator.
 
-        If `X_train` and `y_train` were provided during initialization, they
-        take precedence. Otherwise, the provided `X` and `y` are stored and
+        If `x_train` and `y_train` were provided during initialization, they
+        take precedence. Otherwise, the provided `x` and `y` are stored and
         used for computing SHAP values during the estimation step.
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features), optional
+        x : array-like of shape (n_samples, n_features), optional
             Feature matrix used to fit the original model and to compute SHAP
-            values if `X_train` is not already defined.
+            values if `x_train` is not already defined.
         y : array-like of shape (n_samples,), optional
-            Labels corresponding to `X`. Required if no training data was
+            Labels corresponding to `x`. Required if no training data was
             provided at initialization.
 
         Returns
@@ -133,16 +133,16 @@ class ShapEvaluator(BaseEvaluator):
             from arguments), preventing the underlying model from being fitted.
         """
 
-        self.X_train = X if X is not None else self.X_train
+        self.x_train = x if x is not None else self.x_train
         self.y_train = y if y is not None else self.y_train
 
-        if self.X_train is None or self.y_train is None:
-            raise ValueError("X and y must be provided to fit the model.")
+        if self.x_train is None or self.y_train is None:
+            raise ValueError("x and y must be provided to fit the model.")
 
-        self.model.fit(self.X_train, self.y_train)
+        self.model.fit(self.x_train, self.y_train)
         return self
 
-    def estimate(self, X_eval, n_pred=30):
+    def estimate(self, x_eval, n_pred=30):
         """
         Estimate metric values using SHAP-based correctness prediction.
 
@@ -153,7 +153,7 @@ class ShapEvaluator(BaseEvaluator):
 
         Parameters
         ----------
-        X_eval : array-like
+        x_eval : array-like
         n_pred : int
 
         Returns
@@ -162,14 +162,14 @@ class ShapEvaluator(BaseEvaluator):
             Mapping me
         """
         check_is_fitted(self.model)
-        if self.X_train is None or self.y_train is None:
+        if self.x_train is None or self.y_train is None:
             raise ValueError(
-                "X_train and y_train must be provided to compute SHAP values."
+                "x_train and y_train must be provided to compute SHAP values."
             )
 
-        shap_train_arr, shap_eval_arr = self._compute_shap_arrays(X_eval)
+        shap_train_arr, shap_eval_arr = self._compute_shap_arrays(x_eval)
 
-        pred_eval = self.model.predict(X_eval)
+        pred_eval = self.model.predict(x_eval)
         scores_list = []
 
         for _ in range(n_pred):
@@ -192,7 +192,7 @@ class ShapEvaluator(BaseEvaluator):
         """
         try:
             idx = list(model.classes_).index(1)
-        except Exception:
+        except ValueError:
             idx = -1
 
         if isinstance(shap_vals, list):
@@ -203,24 +203,19 @@ class ShapEvaluator(BaseEvaluator):
 
         return np.array(shap_vals)
 
-    def _compute_shap_arrays(self, X_eval):
+    def _compute_shap_arrays(self, x_eval):
         model_to_explain = (
             self.model[-1] if hasattr(self.model, "steps") else self.model
         )
         self.explainer = shap.TreeExplainer(model_to_explain)
 
-        shap_train = self.explainer.shap_values(self.X_train)
-        shap_eval = self.explainer.shap_values(X_eval)
+        shap_train = self.explainer.shap_values(self.x_train)
+        shap_eval = self.explainer.shap_values(x_eval)
 
         return (
             self._choose_class_shap(shap_train, self.model),
             self._choose_class_shap(shap_eval, self.model),
         )
-
-    def _train_correctness_model(self, shap_train_arr, y_right):
-        clf = clone(self.inner_clf)
-        clf.fit(shap_train_arr, y_right)
-        return clf
 
     def _train_correctness_model(self, shap_train_arr, y_right):
         clf = clone(self.inner_clf)

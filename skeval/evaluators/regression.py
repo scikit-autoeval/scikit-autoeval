@@ -83,9 +83,10 @@ class RegressionEvaluator(BaseEvaluator):
         self.meta_regressor = meta_regressor or RandomForestRegressor(
             n_estimators=500, random_state=42
         )
+        self.meta_regressors_ = {}
         self.n_splits = n_splits
 
-    def fit(self, X, y):
+    def fit(self, x, y):
         """Trains the internal meta-regressor(s) using a single model type.
 
         This method builds a meta-dataset to train the evaluator. For each dataset,
@@ -93,10 +94,10 @@ class RegressionEvaluator(BaseEvaluator):
 
         Parameters
         ----------
-        X : list of array-like
+        x : list of array-like
             A list of datasets (features) used to train the meta-model.
         y : list of array-like
-            A list of labels corresponding to `X`.
+            A list of labels corresponding to `x`.
 
         Returns
         -------
@@ -107,14 +108,14 @@ class RegressionEvaluator(BaseEvaluator):
         meta_features = []
         meta_targets = {name: [] for name in scorers_names}
 
-        for X_i, y_i in zip(X, y):
+        for x_i, y_i in zip(x, y):
             for split in range(self.n_splits):
                 est = clone(self.model)
 
                 stratify_y = y_i if len(np.unique(y_i)) > 1 else None
-                X_train_meta, X_holdout_meta, y_train_meta, y_holdout_meta = (
+                x_train_meta, x_holdout_meta, y_train_meta, y_holdout_meta = (
                     train_test_split(
-                        X_i,
+                        x_i,
                         y_i,
                         test_size=0.33,
                         random_state=42 + split,
@@ -122,9 +123,9 @@ class RegressionEvaluator(BaseEvaluator):
                     )
                 )
 
-                est.fit(X_train_meta, y_train_meta)
-                feats = self._extract_metafeatures(est, X_holdout_meta)
-                y_pred_holdout = est.predict(X_holdout_meta)
+                est.fit(x_train_meta, y_train_meta)
+                feats = self._extract_metafeatures(est, x_holdout_meta)
+                y_pred_holdout = est.predict(x_holdout_meta)
 
                 meta_features.append(feats.flatten())
 
@@ -149,20 +150,20 @@ class RegressionEvaluator(BaseEvaluator):
             if self.verbose:
                 print(f"[INFO] Meta-regressor for '{name}' has been trained.")
 
-        self.model.fit(X[0], y[0])
+        self.model.fit(x[0], y[0])
         return self
 
-    def estimate(self, X_eval):
+    def estimate(self, x_eval):
         """Estimates the performance of the current model on unlabeled data.
 
         The model assigned to `self.model` must already be a fitted classifier
         (manually trained by the user). This method extracts meta-features from
-        its predictions on the unlabeled data `X_eval` and uses the pre-trained
+        its predictions on the unlabeled data `x_eval` and uses the pre-trained
         meta-regressor(s) to predict the performance scores.
 
         Parameters
         ----------
-        X_eval : array-like of shape (n_samples, n_features)
+        x_eval : array-like of shape (n_samples, n_features)
             The unlabeled input data.
 
         Returns
@@ -186,7 +187,7 @@ class RegressionEvaluator(BaseEvaluator):
                 "The evaluator has not been fitted yet. Call 'fit' before 'estimate'."
             )
 
-        feats = self._extract_metafeatures(self.model, X_eval)
+        feats = self._extract_metafeatures(self.model, x_eval)
         scores = {}
 
         for name, reg in self.meta_regressors_.items():
@@ -196,7 +197,7 @@ class RegressionEvaluator(BaseEvaluator):
                 print(f"[INFO] Estimated {name}: {estimated_score:.4f}")
         return scores
 
-    def _extract_metafeatures(self, estimator, X):
+    def _extract_metafeatures(self, estimator, x):
         """Extracts meta-features from a fitted model's predicted probabilities.
 
         The extracted features include the mean and standard deviation of the
@@ -207,7 +208,7 @@ class RegressionEvaluator(BaseEvaluator):
         ----------
         estimator : fitted classifier
             The classifier from which to extract prediction probabilities.
-        X : array-like of shape (n_samples, n_features)
+        x : array-like of shape (n_samples, n_features)
             The input data.
 
         Returns
@@ -224,7 +225,7 @@ class RegressionEvaluator(BaseEvaluator):
         if not hasattr(estimator, "predict_proba"):
             raise ValueError("The estimator must implement predict_proba.")
 
-        probas = estimator.predict_proba(X)
+        probas = estimator.predict_proba(x)
         max_probs = np.max(probas, axis=1)
         eps = 1e-12
         entropy = -np.sum(probas * np.log(probas + eps), axis=1)

@@ -8,7 +8,6 @@ from skeval.metrics.scorers import make_scorer
 
 
 class TestMakeScorer(unittest.TestCase):
-
     def setUp(self):
         """Set up the test data."""
         self.y_true = np.array([0, 1, 2, 0, 1, 2])

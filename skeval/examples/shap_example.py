@@ -12,7 +12,7 @@ from sklearn.pipeline import make_pipeline
 from xgboost import XGBClassifier
 
 from skeval.evaluators.shap import ShapEvaluator
-from skeval.utils import get_CV_and_real_scores
+from skeval.utils import get_cv_and_real_scores, print_comparison
 
 
 def run_shap_eval(verbose=False):
@@ -64,34 +64,16 @@ def run_shap_eval(verbose=False):
     # =====================================
     # 7. Compute real and CV performance
     # =====================================
-    scores_dict = get_CV_and_real_scores(
-        model=model, scorers=scorers, X_train=X1, y_train=y1, X_test=X2, y_test=y2
+    train_data = X1, y1
+    test_data = X2, y2
+    scores_dict = get_cv_and_real_scores(
+        model=model, scorers=scorers, train_data=train_data, test_data=test_data
     )
     cv_scores = scores_dict["cv_scores"]
     real_scores = scores_dict["real_scores"]
 
     if verbose:
-        # =====================================
-        # 8. Final comparison
-        # =====================================
-        print(
-            "\n===== CV (intra-domain) vs. Estimated vs. Real (train Geriatrics -> test Neurology) ====="
-        )
-        for metric in scorers.keys():
-            print(
-                f"{metric:<10} -> CV: {cv_scores[metric]:.4f} | "
-                f"Estimated: {estimated_scores[metric]:.4f} | "
-                f"Real: {real_scores[metric]:.4f}"
-            )
-
-        print("\n===== Absolute Error w.r.t. Real Performance =====")
-        for metric in scorers.keys():
-            err_est = abs(real_scores[metric] - estimated_scores[metric])
-            err_cv = abs(real_scores[metric] - cv_scores[metric])
-            print(
-                f"{metric:<10} -> |Real - Estimated|: {err_est:.4f} | "
-                f"|Real - CV|: {err_cv:.4f}"
-            )
+        print_comparison(scorers, cv_scores, estimated_scores, real_scores)
 
     return {"cv": cv_scores, "estimated": estimated_scores, "real": real_scores}
 

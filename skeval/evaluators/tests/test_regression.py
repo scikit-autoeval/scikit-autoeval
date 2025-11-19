@@ -12,7 +12,6 @@ from skeval.evaluators.regression import RegressionEvaluator
 
 
 class TestRegressionBasedEvaluator(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         iris = load_iris()
@@ -21,13 +20,13 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
         cls.y_list = [iris.target, cancer.target]
 
     def test_fit_and_estimate_with_single_scorer(self):
-        model = LogisticRegression(max_iter=1000)
+        model = LogisticRegression(max_iter=2000)
         evaluator = RegressionEvaluator(
             model=model, scorer=accuracy_score, n_splits=3, verbose=False
         )
         evaluator.fit(self.X_list, self.y_list)
 
-        final_model = LogisticRegression(max_iter=1000).fit(
+        final_model = LogisticRegression(max_iter=2000).fit(
             self.X_list[1], self.y_list[1]
         )
         evaluator.model = final_model

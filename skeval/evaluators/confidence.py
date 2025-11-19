@@ -48,12 +48,12 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
     >>> from sklearn.linear_model import LogisticRegression
     >>> from sklearn.metrics import precision_score, recall_score
     >>> # Sample data
-    >>> X_train = np.array([[1], [2], [3], [4], [5], [6]])
+    >>> x_train = np.array([[1], [2], [3], [4], [5], [6]])
     >>> y_train = np.array([0, 0, 0, 1, 1, 1])
-    >>> X_test = np.array([[0.5], [0.8], [3.5], [5.5]])
+    >>> x_test = np.array([[0.5], [0.8], [3.5], [5.5]])
     >>> # 1. Create and train a standard classifier
     >>> classifier = LogisticRegression(solver='liblinear', random_state=0)
-    >>> classifier.fit(X_train, y_train)
+    >>> classifier.fit(x_train, y_train)
     LogisticRegression(random_state=0, solver='liblinear')
     >>> # 2. Create the evaluator with the trained classifier
     >>> scorings = {'precision': precision_score, 'recall': recall_score}
@@ -64,11 +64,11 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
     ... )
     >>> # 3. The fit method is for compatibility, not strictly needed here
     >>> #    since the model is already trained.
-    >>> conf_eval.fit(X_train, y_train)
+    >>> conf_eval.fit(x_train, y_train)
     ConfidenceThresholdEvaluator(...)
     >>> # 4. Estimate the performance on the test set
-    >>> #    The evaluator will internally call classifier.predict_proba(X_test)
-    >>> scores = conf_eval.estimate(X_test)
+    >>> #    The evaluator will internally call classifier.predict_proba(x_test)
+    >>> scores = conf_eval.estimate(x_test)
     >>> for score_name, value in scores.items():
     ...     print(f"{score_name}: {value:.2f}")
     precision: 1.00
@@ -88,13 +88,13 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         self.threshold = threshold
         self.limit_to_top_class = limit_to_top_class
 
-    def fit(self, X, y):
+    def fit(self, x, y):
         """
         Fits the model to the training data.
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
+        x : array-like of shape (n_samples, n_features)
             The training input samples.
         y : array-like of shape (n_samples,)
             The target labels.
@@ -105,11 +105,11 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
             Returns the instance itself.
         """
         if self.verbose:
-            print(f"[INFO] Model has been trained.")
-        self.model.fit(X, y)
+            print("[INFO] Model has been trained.")
+        self.model.fit(x, y)
         return self
 
-    def estimate(self, X_eval):
+    def estimate(self, x_eval):
         """
         Estimates scores based on the confidence threshold.
 
@@ -119,7 +119,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
 
         Parameters
         ----------
-        X_eval : array-like of shape (n_samples, n_features)
+        x_eval : array-like of shape (n_samples, n_features)
             Input data for which to estimate scores.
 
         Returns
@@ -131,13 +131,13 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         """
         check_is_fitted(self.model)
 
-        conf, correct = self.__get_confidences_and_correct(X_eval)
+        conf, correct = self.__get_confidences_and_correct(x_eval)
         self._print_verbose_confidence_info(conf, correct)
 
         if not np.any(correct):
             return self._handle_no_confident_predictions()
 
-        y_pred = self.model.predict(X_eval)
+        y_pred = self.model.predict(x_eval)
         y_estimated = self._build_estimated_labels(y_pred, correct)
 
         self._print_verbose_label_info(y_pred, y_estimated)
@@ -174,16 +174,14 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
                 print("[INFO] Estimated scores:", scores)
             return scores
 
-        elif callable(self.scorer):
+        if callable(self.scorer):
             score = self.scorer(y_estimated, y_pred)
             if self.verbose:
                 print("[INFO] Estimated score:", score)
             return {"score": score}
+        raise ValueError("'scorer' must be a callable or a dict of callables.")
 
-        else:
-            raise ValueError("'scorer' must be a callable or a dict of callables.")
-
-    def __get_confidences_and_correct(self, X):
+    def __get_confidences_and_correct(self, x):
         """
         Computes confidence scores and applies the confidence threshold.
         """
@@ -196,10 +194,10 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
             )
 
         if hasattr(self.model, "predict_proba"):
-            probas = self.model.predict_proba(X)
+            probas = self.model.predict_proba(x)
             conf = np.max(probas, axis=1) if self.limit_to_top_class else probas
         elif hasattr(self.model, "decision_function"):
-            decision = self.model.decision_function(X)
+            decision = self.model.decision_function(x)
             conf = np.max(decision, axis=1) if decision.ndim > 1 else np.abs(decision)
         else:
             raise ValueError(

@@ -37,6 +37,13 @@ jobs:
               echo "Formatting issues were found:" > black_report.txt
               cat /tmp/black_output.txt >> black_report.txt
           fi
+      
+      # -------------------------------
+      # Ruff
+      # -------------------------------
+      - name: Run Ruff check
+        run: |
+          ruff check skeval > ruff_report.txt || true
 
       # -------------------------------
       # Pylint

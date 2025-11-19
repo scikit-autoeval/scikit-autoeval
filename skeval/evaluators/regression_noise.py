@@ -68,7 +68,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
     {'score': ...}
     """
 
-    def fit(self, X, y, start_noise=10, end_noise=100, step_noise=10):
+    def fit(self, x, y, start_noise=10, end_noise=100, step_noise=10):
         """Trains the internal meta-regressor(s) using a single model type.
 
         This method builds a meta-dataset to train the evaluator. For each dataset,
@@ -76,10 +76,10 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
 
         Parameters
         ----------
-        X : list of array-like
+        x : list of array-like
             A list of datasets (features) used to train the meta-model.
         y : list of array-like
-            A list of labels corresponding to `X`.
+            A list of labels corresponding to `x`.
         start_noise : int, default=10
             The starting percentage of label noise to introduce in the holdout set.
         end_noise : int, default=100
@@ -98,9 +98,9 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
         meta_features = []
         meta_targets = {name: [] for name in scorer_names}
 
-        for X_i, y_i in zip(X, y):
+        for x_i, y_i in zip(x, y):
             self._process_single_dataset(
-                X_i,
+                x_i,
                 y_i,
                 start_noise,
                 end_noise,
@@ -113,7 +113,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
         self._train_meta_regressors(meta_features, meta_targets, scorer_names)
 
         # Base model fit (lógica original preservada)
-        self.model.fit(X[0], y[0])
+        self.model.fit(x[0], y[0])
         return self
 
     def _validate_noise_params(self, start_noise, end_noise, step_noise):
@@ -125,7 +125,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
 
     def _process_single_dataset(
         self,
-        X_i,
+        x_i,
         y_i,
         start_noise,
         end_noise,
@@ -141,7 +141,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
 
         for split in range(self.n_splits):
             self._process_single_split(
-                X_i,
+                x_i,
                 y_i,
                 stratify_y,
                 split,
@@ -155,7 +155,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
 
     def _process_single_split(
         self,
-        X_i,
+        x_i,
         y_i,
         stratify_y,
         split,
@@ -169,17 +169,17 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
         """Processes each train/holdout split."""
         base_model = clone(self.model)
 
-        X_train, X_holdout, y_train, y_holdout = train_test_split(
-            X_i, y_i, test_size=0.33, random_state=42 + split, stratify=stratify_y
+        x_train, x_holdout, y_train, y_holdout = train_test_split(
+            x_i, y_i, test_size=0.33, random_state=42 + split, stratify=stratify_y
         )
 
-        base_model.fit(X_train, y_train)
-        metafeats = self._extract_metafeatures(base_model, X_holdout)
+        base_model.fit(x_train, y_train)
+        metafeats = self._extract_metafeatures(base_model, x_holdout)
 
         for noise_p in range(start_noise, end_noise + 1, step_noise):
             self._generate_meta_example(
                 base_model,
-                X_holdout,
+                x_holdout,
                 y_holdout,
                 metafeats,
                 noise_p,
@@ -192,7 +192,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
     def _generate_meta_example(
         self,
         base_model,
-        X_holdout,
+        x_holdout,
         y_holdout,
         metafeats,
         noise_p,
@@ -203,18 +203,18 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
     ):
         """Adds one meta-example (metafeatures + performance target)."""
 
-        n_noisy = int(len(X_holdout) * (noise_p / 100.0))
+        n_noisy = int(len(x_holdout) * (noise_p / 100.0))
 
-        X_noisy = X_holdout[:n_noisy].copy()
-        X_clean = X_holdout[n_noisy:].copy()
+        x_noisy = x_holdout[:n_noisy].copy()
+        x_clean = x_holdout[n_noisy:].copy()
 
         rng = np.random.default_rng(42 + noise_p + split)
 
-        for col in X_holdout.columns:
-            X_noisy[col] = rng.permutation(X_noisy[col])
+        for col in x_holdout.columns:
+            x_noisy[col] = rng.permutation(x_noisy[col])
 
-        X_concat = pd.concat([X_noisy, X_clean], axis=0)
-        y_pred = base_model.predict(X_concat)
+        x_concat = pd.concat([x_noisy, x_clean], axis=0)
+        y_pred = base_model.predict(x_concat)
 
         meta_features.append(metafeats.flatten())
         self._store_meta_targets(meta_targets, scorer_names, y_holdout, y_pred)

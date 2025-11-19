@@ -1,6 +1,7 @@
 from sklearn.base import BaseEstimator
 from sklearn.metrics import accuracy_score
 
+
 class BaseEvaluator(BaseEstimator):
     """
     Base abstract class for all evaluators in scikit-autoeval.
@@ -9,12 +10,12 @@ class BaseEvaluator(BaseEstimator):
     This class also inherits from `sklearn.base.BaseEstimator` to ensure compatibility
     with scikit-learn utilities like `get_params` and `set_params`.
     """
-    
+
     def __init__(self, model, scorer=accuracy_score, verbose=False):
         self.model = model
         self.scorer = scorer
         self.verbose = verbose
-    
+
     def fit(self, X, y):
         """
         Fit the evaluator to the training data.
@@ -48,11 +49,11 @@ class BaseEvaluator(BaseEstimator):
             A dictionary containing the evaluation scores.
         """
         pass
-    
+
     def _get_scorer_names(self):
         """
         Returns the names of the scorers.
-        
+
         This helper method gets the names of the scoring functions to be used
         as keys in the results dictionary.
 
@@ -65,6 +66,6 @@ class BaseEvaluator(BaseEstimator):
         if isinstance(self.scorer, dict):
             return list(self.scorer.keys())
         elif callable(self.scorer):
-            return ['score']
+            return ["score"]
         else:
             return []

@@ -10,7 +10,6 @@ from skeval.base import BaseEvaluator
 
 
 class TestBaseEvaluator(unittest.TestCase):
-
     def setUp(self):
         # Basic model and scorers for use in tests
         self.model = LogisticRegression()
