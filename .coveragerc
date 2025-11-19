@@ -1,0 +1,9 @@
+[run]
+source = skeval
+branch = True
+parallel = True
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if self.verbose:

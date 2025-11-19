@@ -21,7 +21,7 @@ jobs:
 
       - name: Install project
         run: |
-          pip install .
+          pip install .[dev] || pip install .
           python -m pip install --upgrade pip
           pip install black flake8 pylint radon pytest pytest-cov
 
@@ -60,11 +60,9 @@ jobs:
       # -------------------------------
       # Pytest + Coverage
       # -------------------------------
-      - name: Run Tests
+      - name: Run tests with coverage
         run: |
-          pytest --cov=skeval --cov-report=term --cov-report=html
-          mv htmlcov coverage_html
-          coverage report > coverage_report.txt
+          pytest --cov=./skeval --cov-report=term-missing --cov-report=xml
 
       # -------------------------------
       # Upload artifacts
