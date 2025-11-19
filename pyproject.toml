@@ -1,0 +1,56 @@
+[project]
+name = "scikit-autoeval"
+version = "1.1.0"
+description = "Open-source AutoEval library for automatic evaluation of supervised machine learning models."
+readme = "README.md"
+requires-python = ">=3.8"
+
+authors = [
+    {name = "Lucas Santos Rodrigues", email = "lucasantos2003@gmail.com"},
+    {name = "Ismael Santana Silva", email = "ismaelsantana@cefetmg.br"}
+]
+
+license = {text = "BSD-3-Clause"}
+
+keywords = [
+    "machine learning",
+    "automated evaluation",
+    "model evaluation",
+    "AutoEval",
+    "ML metrics",
+    "scikit-learn",
+    "python"
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries",
+]
+
+dependencies = [
+    "scikit-learn>=1.0",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "shap",
+    "xgboost",
+]
+
+[project.urls]
+Homepage = "https://github.com/scikit-autoeval/scikit-autoeval"
+Documentation = "https://scikit-autoeval.github.io/scikit-autoeval/"
+Source = "https://github.com/scikit-autoeval/scikit-autoeval"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
