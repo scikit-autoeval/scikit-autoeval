@@ -10,6 +10,7 @@ from sklearn.exceptions import NotFittedError
 
 from skeval.evaluators.regression import RegressionEvaluator
 
+
 class TestRegressionBasedEvaluator(unittest.TestCase):
 
     @classmethod
@@ -21,10 +22,14 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
 
     def test_fit_and_estimate_with_single_scorer(self):
         model = LogisticRegression(max_iter=1000)
-        evaluator = RegressionEvaluator(model=model, scorer=accuracy_score, n_splits=3, verbose=False)
+        evaluator = RegressionEvaluator(
+            model=model, scorer=accuracy_score, n_splits=3, verbose=False
+        )
         evaluator.fit(self.X_list, self.y_list)
 
-        final_model = LogisticRegression(max_iter=1000).fit(self.X_list[1], self.y_list[1])
+        final_model = LogisticRegression(max_iter=1000).fit(
+            self.X_list[1], self.y_list[1]
+        )
         evaluator.model = final_model
 
         estimated_scores = evaluator.estimate(self.X_list[1])
@@ -35,12 +40,16 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
         model = RandomForestClassifier(n_estimators=50, random_state=42)
         scorers = {
             "accuracy": accuracy_score,
-            "f1_macro": lambda y, p: f1_score(y, p, average="macro")
+            "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
         }
-        evaluator = RegressionEvaluator(model=model, scorer=scorers, n_splits=2, verbose=False)
+        evaluator = RegressionEvaluator(
+            model=model, scorer=scorers, n_splits=2, verbose=False
+        )
         evaluator.fit(self.X_list, self.y_list)
 
-        final_model = RandomForestClassifier(n_estimators=50, random_state=42).fit(self.X_list[0], self.y_list[0])
+        final_model = RandomForestClassifier(n_estimators=50, random_state=42).fit(
+            self.X_list[0], self.y_list[0]
+        )
         evaluator.model = final_model
 
         estimated_scores = evaluator.estimate(self.X_list[0])
@@ -63,7 +72,9 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
 
         evaluator = RegressionEvaluator(model=model)
         feats = evaluator._extract_metafeatures(model, self.X_list[0])
-        self.assertEqual(feats.shape, (1, 4))  # mean_conf, std_conf, mean_entropy, std_entropy
+        self.assertEqual(
+            feats.shape, (1, 4)
+        )  # mean_conf, std_conf, mean_entropy, std_entropy
 
 
 if __name__ == "__main__":

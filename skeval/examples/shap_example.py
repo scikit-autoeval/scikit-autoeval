@@ -12,8 +12,7 @@ from sklearn.pipeline import make_pipeline
 from xgboost import XGBClassifier
 
 from skeval.evaluators.shap import ShapEvaluator
-from skeval.utils import get_CV_and_real_scores 
-
+from skeval.utils import get_CV_and_real_scores
 
 
 def run_shap_eval(verbose=False):
@@ -32,26 +31,23 @@ def run_shap_eval(verbose=False):
     # =====================================
     # 3. Define pipeline (KNNImputer + RandomForest)
     # =====================================
-    model = make_pipeline(
-        KNNImputer(n_neighbors=5),
-        XGBClassifier()
-    )
+    model = make_pipeline(KNNImputer(n_neighbors=5), XGBClassifier())
 
     # =====================================
     # 4. Define scorers and evaluator
     # =====================================
     scorers = {
         "accuracy": accuracy_score,
-        "f1_macro": lambda y, p: f1_score(y, p, average="macro")
+        "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
     }
 
     evaluator = ShapEvaluator(
         model=model,
         scorer=scorers,
         verbose=False,
-        inner_clf = XGBClassifier(random_state=42),
+        inner_clf=XGBClassifier(random_state=42),
         X_train=X1,
-        y_train=y1
+        y_train=y1,
     )
 
     # =====================================
@@ -62,21 +58,25 @@ def run_shap_eval(verbose=False):
     # =====================================
     # 6. Estimate performance (train on X1, estimate on X2)
     # =====================================
-    
+
     estimated_scores = evaluator.estimate(X2)
 
     # =====================================
     # 7. Compute real and CV performance
     # =====================================
-    scores_dict = get_CV_and_real_scores(model=model, scorers=scorers, X_train=X1, y_train=y1, X_test=X2, y_test=y2)
-    cv_scores = scores_dict['cv_scores']
-    real_scores = scores_dict['real_scores']
+    scores_dict = get_CV_and_real_scores(
+        model=model, scorers=scorers, X_train=X1, y_train=y1, X_test=X2, y_test=y2
+    )
+    cv_scores = scores_dict["cv_scores"]
+    real_scores = scores_dict["real_scores"]
 
     if verbose:
         # =====================================
         # 8. Final comparison
         # =====================================
-        print("\n===== CV (intra-domain) vs. Estimated vs. Real (train Geriatrics -> test Neurology) =====")
+        print(
+            "\n===== CV (intra-domain) vs. Estimated vs. Real (train Geriatrics -> test Neurology) ====="
+        )
         for metric in scorers.keys():
             print(
                 f"{metric:<10} -> CV: {cv_scores[metric]:.4f} | "
@@ -84,21 +84,17 @@ def run_shap_eval(verbose=False):
                 f"Real: {real_scores[metric]:.4f}"
             )
 
-
         print("\n===== Absolute Error w.r.t. Real Performance =====")
         for metric in scorers.keys():
             err_est = abs(real_scores[metric] - estimated_scores[metric])
-            err_cv  = abs(real_scores[metric] - cv_scores[metric])
+            err_cv = abs(real_scores[metric] - cv_scores[metric])
             print(
                 f"{metric:<10} -> |Real - Estimated|: {err_est:.4f} | "
                 f"|Real - CV|: {err_cv:.4f}"
             )
 
-    return {
-        'cv': cv_scores,
-        'estimated': estimated_scores,
-        'real': real_scores
-    }
+    return {"cv": cv_scores, "estimated": estimated_scores, "real": real_scores}
 
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     results = run_shap_eval(verbose=True)

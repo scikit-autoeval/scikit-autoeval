@@ -10,6 +10,7 @@ from xgboost import XGBClassifier
 from skeval.base import BaseEvaluator
 from skeval.utils import check_is_fitted
 
+
 class ShapEvaluator(BaseEvaluator):
     """
     SHAP-based evaluator for supervised classification models.
@@ -60,11 +61,11 @@ class ShapEvaluator(BaseEvaluator):
 
     Notes
     -----
-    *SHAP computation requirement:*  
+    *SHAP computation requirement:*
     The final estimator in ``model`` (or the estimator itself, if not a
     pipeline) must be compatible with ``shap.TreeExplainer``.
 
-    *Estimate method:*  
+    *Estimate method:*
     The method performs multiple correctness predictions and averages the
     resulting estimated metrics. This introduces stochasticity and aims to
     approximate uncertainty in the correctness model.
@@ -89,12 +90,20 @@ class ShapEvaluator(BaseEvaluator):
     0.84
     """
 
-    def __init__(self, model, scorer=accuracy_score, verbose=False, inner_clf=None, X_train=None, y_train=None):
+    def __init__(
+        self,
+        model,
+        scorer=accuracy_score,
+        verbose=False,
+        inner_clf=None,
+        X_train=None,
+        y_train=None,
+    ):
         super().__init__(model=model, scorer=scorer, verbose=verbose)
         self.inner_clf = inner_clf or XGBClassifier(random_state=42)
         self.explainer = None
         self.X_train, self.y_train = X_train, y_train
-        
+
     def fit(self, X=None, y=None):
         """
         Fit the model used by the evaluator.
@@ -123,13 +132,13 @@ class ShapEvaluator(BaseEvaluator):
             If no training data is available (neither from initialization nor
             from arguments), preventing the underlying model from being fitted.
         """
-        
+
         self.X_train = X if X is not None else self.X_train
         self.y_train = y if y is not None else self.y_train
-        
+
         if self.X_train is None or self.y_train is None:
             raise ValueError("X and y must be provided to fit the model.")
-            
+
         self.model.fit(self.X_train, self.y_train)
         return self
 
@@ -154,7 +163,9 @@ class ShapEvaluator(BaseEvaluator):
         """
         check_is_fitted(self.model)
         if self.X_train is None or self.y_train is None:
-            raise ValueError("X_train and y_train must be provided to compute SHAP values.")
+            raise ValueError(
+                "X_train and y_train must be provided to compute SHAP values."
+            )
 
         shap_train_arr, shap_eval_arr = self._compute_shap_arrays(X_eval)
 
@@ -191,9 +202,11 @@ class ShapEvaluator(BaseEvaluator):
             return shap_vals[:, :, idx]
 
         return np.array(shap_vals)
-    
+
     def _compute_shap_arrays(self, X_eval):
-        model_to_explain = self.model[-1] if hasattr(self.model, "steps") else self.model
+        model_to_explain = (
+            self.model[-1] if hasattr(self.model, "steps") else self.model
+        )
         self.explainer = shap.TreeExplainer(model_to_explain)
 
         shap_train = self.explainer.shap_values(self.X_train)
@@ -208,7 +221,7 @@ class ShapEvaluator(BaseEvaluator):
         clf = clone(self.inner_clf)
         clf.fit(shap_train_arr, y_right)
         return clf
-    
+
     def _train_correctness_model(self, shap_train_arr, y_right):
         clf = clone(self.inner_clf)
         clf.fit(shap_train_arr, y_right)
@@ -216,11 +229,8 @@ class ShapEvaluator(BaseEvaluator):
 
     def _predict_expected_labels(self, pred_eval, pred_right):
         return pred_eval ^ (1 - pred_right)
-    
+
     def _evaluate_scores(self, expected_y, pred_eval):
         if isinstance(self.scorer, dict):
             return {name: fn(expected_y, pred_eval) for name, fn in self.scorer.items()}
         return {"score": self.scorer(expected_y, pred_eval)}
-
-
-

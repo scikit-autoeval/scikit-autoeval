@@ -13,17 +13,19 @@ from sklearn.exceptions import NotFittedError
 # Assuming the functions are in a utils.py file in this path
 from skeval.utils import check_is_fitted, get_CV_and_real_scores
 
+
 # A mock model that is "fitted" but lacks predict_proba or decision_function
 class MockModelNoProba:
     def __init__(self):
-        self.fitted_ = True # To pass sklearn_check_is_fitted
-    
+        self.fitted_ = True  # To pass sklearn_check_is_fitted
+
     def fit(self, X, y):
         self.fitted_ = True
         return self
-    
+
     def predict(self, X):
         return np.zeros(len(X))
+
 
 class TestCheckIsFitted(unittest.TestCase):
 
@@ -32,10 +34,10 @@ class TestCheckIsFitted(unittest.TestCase):
         Test that a fitted model with 'predict_proba' passes the check.
         """
         # CORRECTION: Added a second class (1) to the fit data
-        X_fit = np.array([[0,0], [1,1]])
+        X_fit = np.array([[0, 0], [1, 1]])
         y_fit = np.array([0, 1])
         model = LogisticRegression().fit(X_fit, y_fit)
-        
+
         try:
             check_is_fitted(model)
         except (NotFittedError, ValueError):
@@ -46,10 +48,10 @@ class TestCheckIsFitted(unittest.TestCase):
         Test that a fitted model with 'decision_function' passes the check.
         """
         # CORRECTION: Added a second class (1) to the fit data
-        X_fit = np.array([[0,0], [1,1]])
+        X_fit = np.array([[0, 0], [1, 1]])
         y_fit = np.array([0, 1])
         model = SVC().fit(X_fit, y_fit)
-        
+
         try:
             check_is_fitted(model)
         except (NotFittedError, ValueError):
@@ -83,10 +85,7 @@ class TestGetCVAndRealScores(unittest.TestCase):
         cls.X_train, cls.X_test, cls.y_train, cls.y_test = train_test_split(
             X, y, test_size=0.3, random_state=42
         )
-        cls.scorers = {
-            "accuracy": accuracy_score,
-            "f1": f1_score
-        }
+        cls.scorers = {"accuracy": accuracy_score, "f1": f1_score}
         cls.model_base = LogisticRegression(max_iter=1000)
 
     def test_output_structure_and_keys(self):
@@ -99,7 +98,7 @@ class TestGetCVAndRealScores(unittest.TestCase):
             self.X_train,
             self.y_train,
             self.X_test,
-            self.y_test
+            self.y_test,
         )
 
         # Check top-level structure
@@ -118,11 +117,15 @@ class TestGetCVAndRealScores(unittest.TestCase):
         # Check value types
         for score_name, score_value in results["cv_scores"].items():
             self.assertIsInstance(score_value, float)
-            self.assertGreaterEqual(score_value, 0.0, f"CV score {score_name} was not >= 0")
+            self.assertGreaterEqual(
+                score_value, 0.0, f"CV score {score_name} was not >= 0"
+            )
 
         for score_name, score_value in results["real_scores"].items():
             self.assertIsInstance(score_value, float)
-            self.assertGreaterEqual(score_value, 0.0, f"Real score {score_name} was not >= 0")
+            self.assertGreaterEqual(
+                score_value, 0.0, f"Real score {score_name} was not >= 0"
+            )
 
 
 if __name__ == "__main__":

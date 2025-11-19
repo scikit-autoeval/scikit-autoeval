@@ -14,20 +14,21 @@ from sklearn.exceptions import NotFittedError
 # Assuming the ShapEvaluator is in this path
 from skeval.evaluators.shap import ShapEvaluator
 
+
 class TestShapEvaluator(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
         # Load a binary classification dataset
         X, y = load_breast_cancer(return_X_y=True)
-        
+
         # Split data. ShapEvaluator needs X_train for fit() and X_eval for estimate()
         cls.X_train, cls.X_eval, cls.y_train, cls.y_eval = train_test_split(
             X, y, test_size=0.3, random_state=42
         )
-        
+
         # A small number of predictions for fast tests, due to the random loop
-        cls.n_pred_fast = 5 
+        cls.n_pred_fast = 5
 
     def test_fit_and_estimate_with_single_scorer(self):
         """
@@ -36,13 +37,9 @@ class TestShapEvaluator(unittest.TestCase):
         """
         # RandomForest is a tree-based model
         model = RandomForestClassifier(n_estimators=10, random_state=42)
-        
-        evaluator = ShapEvaluator(
-            model=model, 
-            scorer=accuracy_score, 
-            verbose=False
-        )
-        
+
+        evaluator = ShapEvaluator(model=model, scorer=accuracy_score, verbose=False)
+
         # Fit the model and set X_train/y_train inside the evaluator
         evaluator.fit(self.X_train, self.y_train)
 
@@ -60,27 +57,21 @@ class TestShapEvaluator(unittest.TestCase):
         Test fit and estimate with multiple scorers.
         """
         # XGBClassifier is also a tree-based model
-        model = XGBClassifier(
-            n_estimators=10, 
-            random_state=42, 
-            eval_metric='logloss'
-        )
-        
+        model = XGBClassifier(n_estimators=10, random_state=42, eval_metric="logloss")
+
         scorers = {
             "accuracy": accuracy_score,
-            "f1_macro": lambda y_true, y_pred: f1_score(y_true, y_pred, average="macro")
+            "f1_macro": lambda y_true, y_pred: f1_score(
+                y_true, y_pred, average="macro"
+            ),
         }
-        
-        evaluator = ShapEvaluator(
-            model=model, 
-            scorer=scorers, 
-            verbose=False
-        )
-        
+
+        evaluator = ShapEvaluator(model=model, scorer=scorers, verbose=False)
+
         evaluator.fit(self.X_train, self.y_train)
-        
+
         estimated_scores = evaluator.estimate(self.X_eval, n_pred=self.n_pred_fast)
-        
+
         self.assertIsInstance(estimated_scores, dict)
         self.assertIn("accuracy", estimated_scores)
         self.assertIn("f1_macro", estimated_scores)
@@ -106,10 +97,10 @@ class TestShapEvaluator(unittest.TestCase):
         # Fit the model *outside* the evaluator
         model = RandomForestClassifier(n_estimators=10, random_state=42)
         model.fit(self.X_train, self.y_train)
-        
+
         # Init evaluator with pre-fit model, but *without* X_train/y_train
         evaluator = ShapEvaluator(model=model)
-        
+
         # This checks the "if self.X_train is None..." call in estimate()
         with self.assertRaises(ValueError):
             evaluator.estimate(self.X_eval)
@@ -121,12 +112,10 @@ class TestShapEvaluator(unittest.TestCase):
         """
         model = RandomForestClassifier(n_estimators=10, random_state=42)
         model.fit(self.X_train, self.y_train)
-        
+
         # Provide all required components to __init__
         evaluator = ShapEvaluator(
-            model=model,
-            X_train=self.X_train,
-            y_train=self.y_train
+            model=model, X_train=self.X_train, y_train=self.y_train
         )
 
         # Should work without calling evaluator.fit()
@@ -143,8 +132,9 @@ class TestShapEvaluator(unittest.TestCase):
         """
         model = RandomForestClassifier()
         evaluator = ShapEvaluator(model=model)
-        
+
         self.assertIsInstance(evaluator.inner_clf, XGBClassifier)
+
 
 if __name__ == "__main__":
     unittest.main()

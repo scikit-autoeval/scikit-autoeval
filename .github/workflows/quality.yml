@@ -30,14 +30,13 @@ jobs:
       # -------------------------------
       - name: Run Black (check only)
         run: |
-          black --check skeval > black_report.txt || true
-
-      # -------------------------------
-      # Flake8
-      # -------------------------------
-      - name: Run Flake8
-        run: |
-          flake8 skeval > flake8_report.txt || true
+          if black --check skeval > /tmp/black_output.txt 2>&1; then
+              echo "All files are properly formatted." > black_report.txt
+              cat /tmp/black_output.txt >> black_report.txt
+          else
+              echo "Formatting issues were found:" > black_report.txt
+              cat /tmp/black_output.txt >> black_report.txt
+          fi
 
       # -------------------------------
       # Pylint

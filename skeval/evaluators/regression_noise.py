@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 
 from skeval.evaluators.regression import RegressionEvaluator
 
+
 class RegressionNoiseEvaluator(RegressionEvaluator):
     """Regression-based evaluator for classification models.
 
@@ -42,7 +43,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
     meta_regressors_ : dict
         A dictionary mapping each scorer's name to its fitted meta-regressor
         instance. This attribute is populated after the `fit` method is called.
-    
+
     Examples
     --------
     >>> from sklearn.datasets import load_iris
@@ -66,7 +67,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
     >>> print(estimated_scores)
     {'score': ...}
     """
-    
+
     def fit(self, X, y, start_noise=10, end_noise=100, step_noise=10):
         """Trains the internal meta-regressor(s) using a single model type.
 
@@ -99,8 +100,14 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
 
         for X_i, y_i in zip(X, y):
             self._process_single_dataset(
-                X_i, y_i, start_noise, end_noise, step_noise,
-                meta_features, meta_targets, scorer_names
+                X_i,
+                y_i,
+                start_noise,
+                end_noise,
+                step_noise,
+                meta_features,
+                meta_targets,
+                scorer_names,
             )
 
         self._train_meta_regressors(meta_features, meta_targets, scorer_names)
@@ -108,7 +115,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
         # Base model fit (lógica original preservada)
         self.model.fit(X[0], y[0])
         return self
-    
+
     def _validate_noise_params(self, start_noise, end_noise, step_noise):
         if start_noise < 0 or end_noise > 100 or step_noise <= 0:
             raise ValueError(
@@ -117,8 +124,15 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
             )
 
     def _process_single_dataset(
-        self, X_i, y_i, start_noise, end_noise, step_noise,
-        meta_features, meta_targets, scorer_names
+        self,
+        X_i,
+        y_i,
+        start_noise,
+        end_noise,
+        step_noise,
+        meta_features,
+        meta_targets,
+        scorer_names,
     ):
         """Processes one dataset by generating meta-examples."""
 
@@ -127,24 +141,36 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
 
         for split in range(self.n_splits):
             self._process_single_split(
-                X_i, y_i, stratify_y, split,
-                start_noise, end_noise, step_noise,
-                meta_features, meta_targets, scorer_names
+                X_i,
+                y_i,
+                stratify_y,
+                split,
+                start_noise,
+                end_noise,
+                step_noise,
+                meta_features,
+                meta_targets,
+                scorer_names,
             )
 
     def _process_single_split(
-        self, X_i, y_i, stratify_y, split,
-        start_noise, end_noise, step_noise,
-        meta_features, meta_targets, scorer_names
+        self,
+        X_i,
+        y_i,
+        stratify_y,
+        split,
+        start_noise,
+        end_noise,
+        step_noise,
+        meta_features,
+        meta_targets,
+        scorer_names,
     ):
         """Processes each train/holdout split."""
         base_model = clone(self.model)
 
         X_train, X_holdout, y_train, y_holdout = train_test_split(
-            X_i, y_i,
-            test_size=0.33,
-            random_state=42 + split,
-            stratify=stratify_y
+            X_i, y_i, test_size=0.33, random_state=42 + split, stratify=stratify_y
         )
 
         base_model.fit(X_train, y_train)
@@ -152,14 +178,28 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
 
         for noise_p in range(start_noise, end_noise + 1, step_noise):
             self._generate_meta_example(
-                base_model, X_holdout, y_holdout,
-                metafeats, noise_p, split,
-                meta_features, meta_targets, scorer_names
+                base_model,
+                X_holdout,
+                y_holdout,
+                metafeats,
+                noise_p,
+                split,
+                meta_features,
+                meta_targets,
+                scorer_names,
             )
 
     def _generate_meta_example(
-        self, base_model, X_holdout, y_holdout, metafeats,
-        noise_p, split, meta_features, meta_targets, scorer_names
+        self,
+        base_model,
+        X_holdout,
+        y_holdout,
+        metafeats,
+        noise_p,
+        split,
+        meta_features,
+        meta_targets,
+        scorer_names,
     ):
         """Adds one meta-example (metafeatures + performance target)."""
 

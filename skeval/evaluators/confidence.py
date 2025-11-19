@@ -6,10 +6,11 @@ from sklearn.metrics import accuracy_score
 from skeval.base import BaseEvaluator
 from skeval.utils import check_is_fitted
 
+
 class ConfidenceThresholdEvaluator(BaseEvaluator):
     """
     Confidence-based evaluator for classification models.
-    
+
     This evaluator filters the predictions of a classification model based on a
     confidence threshold. Only predictions with a confidence greater than or
     equal to the specified threshold are considered for scoring.
@@ -73,10 +74,17 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
     precision: 1.00
     recall: 1.00
     """
-    
-    def __init__(self, model, scorer=accuracy_score, verbose=False, threshold=0.65, limit_to_top_class=True):
+
+    def __init__(
+        self,
+        model,
+        scorer=accuracy_score,
+        verbose=False,
+        threshold=0.65,
+        limit_to_top_class=True,
+    ):
         super().__init__(model=model, scorer=scorer, verbose=verbose)
-        
+
         self.threshold = threshold
         self.limit_to_top_class = limit_to_top_class
 
@@ -97,7 +105,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
             Returns the instance itself.
         """
         if self.verbose:
-                print(f"[INFO] Model has been trained.")
+            print(f"[INFO] Model has been trained.")
         self.model.fit(X, y)
         return self
 
@@ -148,8 +156,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
 
     def _build_estimated_labels(self, y_pred, correct):
         y_estimated = [
-            y_pred[i] if c == 1 else (y_pred[i] + 1) % 2
-            for i, c in enumerate(correct)
+            y_pred[i] if c == 1 else (y_pred[i] + 1) % 2 for i, c in enumerate(correct)
         ]
         return [int(y) for y in y_estimated]
 
@@ -161,8 +168,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
     def _compute_scores(self, y_estimated, y_pred):
         if isinstance(self.scorer, dict):
             scores = {
-                name: func(y_estimated, y_pred)
-                for name, func in self.scorer.items()
+                name: func(y_estimated, y_pred) for name, func in self.scorer.items()
             }
             if self.verbose:
                 print("[INFO] Estimated scores:", scores)
@@ -181,9 +187,14 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         """
         Computes confidence scores and applies the confidence threshold.
         """
-        if not (hasattr(self.model, 'predict_proba') or hasattr(self.model, 'decision_function')):
-            raise ValueError("The model must implement predict_proba or decision_function.")
-        
+        if not (
+            hasattr(self.model, "predict_proba")
+            or hasattr(self.model, "decision_function")
+        ):
+            raise ValueError(
+                "The model must implement predict_proba or decision_function."
+            )
+
         if hasattr(self.model, "predict_proba"):
             probas = self.model.predict_proba(X)
             conf = np.max(probas, axis=1) if self.limit_to_top_class else probas
@@ -191,7 +202,9 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
             decision = self.model.decision_function(X)
             conf = np.max(decision, axis=1) if decision.ndim > 1 else np.abs(decision)
         else:
-            raise ValueError("The model must implement predict_proba or decision_function.")
-        
+            raise ValueError(
+                "The model must implement predict_proba or decision_function."
+            )
+
         correct = conf >= self.threshold
         return conf, correct

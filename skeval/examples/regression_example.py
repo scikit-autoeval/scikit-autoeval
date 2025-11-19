@@ -11,6 +11,7 @@ from sklearn.ensemble import RandomForestClassifier
 from skeval.evaluators import RegressionEvaluator
 from skeval.utils import get_CV_and_real_scores
 
+
 def run_regression_eval(verbose=False):
     # =====================================
     # 1. Load datasets
@@ -34,14 +35,11 @@ def run_regression_eval(verbose=False):
     # =====================================
     scorers = {
         "accuracy": accuracy_score,
-        "f1_macro": lambda y, p: f1_score(y, p, average="macro")
+        "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
     }
 
     evaluator = RegressionEvaluator(
-        model=model,
-        scorer=scorers,
-        n_splits=4,
-        verbose=False
+        model=model, scorer=scorers, n_splits=4, verbose=False
     )
 
     # =====================================
@@ -57,17 +55,21 @@ def run_regression_eval(verbose=False):
 
     # ======================
     # 7. Cross-Validation and Real Performance
-    #  
+    #
     # ======================
-    scores_dict = get_CV_and_real_scores(model=model, scorers=scorers, X_train=X1, y_train=y1, X_test=X2, y_test=y2)
-    cv_scores = scores_dict['cv_scores']
-    real_scores = scores_dict['real_scores']
+    scores_dict = get_CV_and_real_scores(
+        model=model, scorers=scorers, X_train=X1, y_train=y1, X_test=X2, y_test=y2
+    )
+    cv_scores = scores_dict["cv_scores"]
+    real_scores = scores_dict["real_scores"]
 
     if verbose:
         # ======================
         # 8. Side-by-side comparison
         # ======================
-        print("\n===== CV (intra-domain) vs. Estimated vs. Real (train Geriatrics -> test Neurology) =====")
+        print(
+            "\n===== CV (intra-domain) vs. Estimated vs. Real (train Geriatrics -> test Neurology) ====="
+        )
         for metric in scorers.keys():
             print(
                 f"{metric:<10} -> CV: {cv_scores[metric]:.4f} | "
@@ -81,17 +83,14 @@ def run_regression_eval(verbose=False):
         print("\n===== Absolute Error w.r.t. Real Performance =====")
         for metric in scorers.keys():
             err_est = abs(real_scores[metric] - estimated_scores[metric])
-            err_cv  = abs(real_scores[metric] - cv_scores[metric])
+            err_cv = abs(real_scores[metric] - cv_scores[metric])
             print(
                 f"{metric:<10} -> |Real - Estimated|: {err_est:.4f} | "
                 f"|Real - CV|: {err_cv:.4f}"
             )
-        
-    return {
-        'cv': cv_scores,
-        'estimated': estimated_scores,
-        'real': real_scores
-    }
+
+    return {"cv": cv_scores, "estimated": estimated_scores, "real": real_scores}
+
 
 if __name__ == "__main__":
     results = run_regression_eval(verbose=True)
