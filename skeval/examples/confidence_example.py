@@ -44,9 +44,7 @@ def run_confidence_eval(verbose=False):
         "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
     }
 
-    evaluator = ConfidenceThresholdEvaluator(
-        model=model, scorer=scorers, threshold=0.65, verbose=False
-    )
+    evaluator = ConfidenceThresholdEvaluator(model=model, scorer=scorers, verbose=False)
 
     # ======================
     # 5. Fit evaluator
@@ -56,7 +54,7 @@ def run_confidence_eval(verbose=False):
     # ======================
     # 6. Estimated performance
     # ======================
-    estimated_scores = evaluator.estimate(X2)
+    estimated_scores = evaluator.estimate(X2, threshold=0.65, limit_to_top_class=True)
 
     # ======================
     # 7. CV and Real performance

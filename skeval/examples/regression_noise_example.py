@@ -42,13 +42,11 @@ def run_regression_noise_eval(verbose=False):
         "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
     }
 
-    evaluator = RegressionNoiseEvaluator(
-        model=model, scorer=scorers, n_splits=5, verbose=False
-    )
+    evaluator = RegressionNoiseEvaluator(model=model, scorer=scorers, verbose=False)
     # =====================================
     # 5. Fit evaluator using multiple datasets
     # =====================================
-    evaluator.fit([X1, X2], [y1, y2])
+    evaluator.fit([X1, X2], [y1, y2], n_splits=5)
     # final_model = model.fit(X1, y1)
 
     # =====================================

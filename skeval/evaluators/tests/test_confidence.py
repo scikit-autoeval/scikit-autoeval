@@ -31,31 +31,20 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
 
     def test_initialization(self):
         """Test if attributes are set correctly in the constructor."""
-        evaluator = ConfidenceThresholdEvaluator(
-            self.classifier,
-            scorer=accuracy_score,
-            threshold=0.9,
-            limit_to_top_class=True,
-        )
+        evaluator = ConfidenceThresholdEvaluator(self.classifier, scorer=accuracy_score)
         self.assertIs(evaluator.model, self.classifier)
         self.assertIs(evaluator.scorer, accuracy_score)
-        self.assertEqual(evaluator.threshold, 0.9)
-        self.assertTrue(evaluator.limit_to_top_class)
 
     def test_initialization_defaults(self):
         """Test if default parameters are set."""
         evaluator = ConfidenceThresholdEvaluator(self.classifier)
-        self.assertEqual(evaluator.threshold, 0.65)
-        self.assertTrue(evaluator.limit_to_top_class)
         self.assertFalse(evaluator.verbose)
         self.assertIs(evaluator.scorer, accuracy_score)
 
     def test_estimate_with_single_scorer(self):
         """Test the estimate method with a single scorer."""
-        evaluator = ConfidenceThresholdEvaluator(
-            self.classifier, scorer=accuracy_score, threshold=0.75
-        )
-        scores = evaluator.estimate(self.X_test)
+        evaluator = ConfidenceThresholdEvaluator(self.classifier, scorer=accuracy_score)
+        scores = evaluator.estimate(self.X_test, threshold=0.75)
         self.assertIn("score", scores)
         self.assertAlmostEqual(scores["score"], 0.25)
 
@@ -65,11 +54,9 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
             "accuracy": accuracy_score,
             "precision": lambda y_t, y_p: precision_score(y_t, y_p, zero_division=0),
         }
-        evaluator = ConfidenceThresholdEvaluator(
-            self.classifier, scorer=scorers, threshold=0.75
-        )
+        evaluator = ConfidenceThresholdEvaluator(self.classifier, scorer=scorers)
 
-        scores = evaluator.estimate(self.X_test)
+        scores = evaluator.estimate(self.X_test, threshold=0.75)
 
         expected_accuracy = 0.25
         expected_precision = 0.3333333333333333
@@ -81,20 +68,16 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
 
     def test_high_threshold_no_predictions_pass(self):
         """Test the case where no predictions pass the threshold."""
-        evaluator = ConfidenceThresholdEvaluator(
-            self.classifier, scorer=accuracy_score, threshold=0.99
-        )
-        scores = evaluator.estimate(self.X_test)
+        evaluator = ConfidenceThresholdEvaluator(self.classifier, scorer=accuracy_score)
+        scores = evaluator.estimate(self.X_test, threshold=0.99)
         # Deve retornar 0.0 para todos os scorers
         self.assertEqual(scores, {"score": 0.0})
 
     def test_low_threshold_all_predictions_pass(self):
         """Test the case where all predictions pass the threshold."""
         # If all pass, y_estimated == y_pred, so accuracy should be 1.0
-        evaluator = ConfidenceThresholdEvaluator(
-            self.classifier, scorer=accuracy_score, threshold=0.1
-        )
-        scores = evaluator.estimate(self.X_test)
+        evaluator = ConfidenceThresholdEvaluator(self.classifier, scorer=accuracy_score)
+        scores = evaluator.estimate(self.X_test, threshold=0.1)
         self.assertAlmostEqual(scores["score"], 1.0)
 
     def test_estimator_with_decision_function(self):
@@ -104,10 +87,10 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
         svc_classifier.fit(self.X_train, self.y_train)
 
         # O decision_function do SVC binário é 1D, testando o branch np.abs(decision)
-        evaluator = ConfidenceThresholdEvaluator(svc_classifier, threshold=0.5)
+        evaluator = ConfidenceThresholdEvaluator(svc_classifier)
 
         try:
-            scores = evaluator.estimate(self.X_test)
+            scores = evaluator.estimate(self.X_test, threshold=0.5)
             self.assertIn("score", scores)
         except ValueError:
             self.fail(
@@ -162,14 +145,12 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
 
     def test_verbose_logging_fit_and_estimate_single_scorer(self):
         """Test all verbose branches for fit and estimate (single scorer)."""
-        evaluator = ConfidenceThresholdEvaluator(
-            self.classifier, threshold=0.75, verbose=True
-        )
+        evaluator = ConfidenceThresholdEvaluator(self.classifier, verbose=True)
 
         f = io.StringIO()
         with contextlib.redirect_stdout(f):
             evaluator.fit(self.X_train, self.y_train)
-            evaluator.estimate(self.X_test)
+            evaluator.estimate(self.X_test, threshold=0.75)
 
         output = f.getvalue()
 
@@ -188,12 +169,12 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
         """Test verbose branch for dict scorer in estimate."""
         scorers = {"accuracy": accuracy_score}
         evaluator = ConfidenceThresholdEvaluator(
-            self.classifier, scorer=scorers, threshold=0.75, verbose=True
+            self.classifier, scorer=scorers, verbose=True
         )
 
         f = io.StringIO()
         with contextlib.redirect_stdout(f):
-            evaluator.estimate(self.X_test)
+            evaluator.estimate(self.X_test, threshold=0.75)
 
         output = f.getvalue()
         # Test verbose para 'isinstance(self.scorer, dict)'
@@ -201,13 +182,11 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
 
     def test_verbose_logging_no_pass_threshold(self):
         """Test verbose branch for 'no predictions passed'."""
-        evaluator = ConfidenceThresholdEvaluator(
-            self.classifier, threshold=0.99, verbose=True
-        )
+        evaluator = ConfidenceThresholdEvaluator(self.classifier, verbose=True)
 
         f = io.StringIO()
         with contextlib.redirect_stdout(f):
-            evaluator.estimate(self.X_test)
+            evaluator.estimate(self.X_test, threshold=0.99)
 
         output = f.getvalue()
         # Test verbose para 'if not np.any(correct):'
@@ -234,10 +213,10 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
         svc_multi = SVC(decision_function_shape="ovr", random_state=0)
         svc_multi.fit(self.X_multi, self.y_multi)
 
-        evaluator = ConfidenceThresholdEvaluator(svc_multi, threshold=0.1)
+        evaluator = ConfidenceThresholdEvaluator(svc_multi)
 
         try:
-            scores = evaluator.estimate(self.X_multi)
+            scores = evaluator.estimate(self.X_multi, threshold=0.1)
             self.assertIn("score", scores)
             self.assertGreater(scores["score"], 0)  # Deve ser > 0 com threshold baixo
         except Exception as e:
@@ -245,12 +224,10 @@ class TestConfidenceThresholdEvaluator(unittest.TestCase):
 
     def test_limit_to_top_class_false_raises_error(self):
         """Test the 'else probas' branch for limit_to_top_class=False."""
-        evaluator = ConfidenceThresholdEvaluator(
-            self.classifier, limit_to_top_class=False
-        )
+        evaluator = ConfidenceThresholdEvaluator(self.classifier)
 
         with self.assertRaises(ValueError):
-            evaluator.estimate(self.X_test)
+            evaluator.estimate(self.X_test, limit_to_top_class=False)
 
 
 if __name__ == "__main__":

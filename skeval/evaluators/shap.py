@@ -41,10 +41,6 @@ class ShapEvaluator(BaseEvaluator):
     inner_clf : estimator, optional
         Classifier trained on SHAP values to estimate correctness. If None,
         defaults to ``XGBClassifier(random_state=42)``.
-    x_train : array-like, optional
-        Training features used to compute SHAP values.
-    y_train : array-like, optional
-        Training labels used to compute SHAP values.
 
     Attributes
     ----------
@@ -54,10 +50,6 @@ class ShapEvaluator(BaseEvaluator):
         The classifier used to model correctness from SHAP values.
     explainer : shap.TreeExplainer
         Object responsible for computing SHAP values.
-    x_train : ndarray of shape (n_samples, n_features)
-        Feature matrix used to compute SHAP values for correctness learning.
-    y_train : ndarray of shape (n_samples,)
-        Ground-truth labels corresponding to ``x_train``.
 
     Notes
     -----
@@ -96,13 +88,11 @@ class ShapEvaluator(BaseEvaluator):
         scorer=accuracy_score,
         verbose=False,
         inner_clf=None,
-        x_train=None,
-        y_train=None,
     ):
         super().__init__(model=model, scorer=scorer, verbose=verbose)
         self.inner_clf = inner_clf or XGBClassifier(random_state=42)
         self.explainer = None
-        self.x_train, self.y_train = x_train, y_train
+        self.x_train, self.y_train = None, None
 
     def fit(self, x=None, y=None):
         """
@@ -114,10 +104,10 @@ class ShapEvaluator(BaseEvaluator):
 
         Parameters
         ----------
-        x : array-like of shape (n_samples, n_features), optional
+        x : array-like of shape (n_samples, n_features)
             Feature matrix used to fit the original model and to compute SHAP
             values if `x_train` is not already defined.
-        y : array-like of shape (n_samples,), optional
+        y : array-like of shape (n_samples,)
             Labels corresponding to `x`. Required if no training data was
             provided at initialization.
 
@@ -129,20 +119,21 @@ class ShapEvaluator(BaseEvaluator):
         Raises
         ------
         ValueError
-            If no training data is available (neither from initialization nor
-            from arguments), preventing the underlying model from being fitted.
+            If no training data is available, preventing the underlying model from being fitted.
         """
 
-        self.x_train = x if x is not None else self.x_train
-        self.y_train = y if y is not None else self.y_train
+        # self.x_train = x if x is not None else self.x_train
+        # self.y_train = y if y is not None else self.y_train
 
-        if self.x_train is None or self.y_train is None:
+        if x is None or y is None:
             raise ValueError("x and y must be provided to fit the model.")
+        self.x_train = x
+        self.y_train = y
 
         self.model.fit(self.x_train, self.y_train)
         return self
 
-    def estimate(self, x_eval, n_pred=30):
+    def estimate(self, x_eval, n_pred=30, train_data=None):
         """
         Estimate metric values using SHAP-based correctness prediction.
 
@@ -154,7 +145,12 @@ class ShapEvaluator(BaseEvaluator):
         Parameters
         ----------
         x_eval : array-like
+            Feature matrix for evaluation.
         n_pred : int
+            Number of correctness predictions to average over.
+        train_data : tuple of (array-like, array-like), optional
+            Training data (X, y) used to fit the original model and compute SHAP
+            values, if not already provided during `fit()`.
 
         Returns
         -------
@@ -163,9 +159,9 @@ class ShapEvaluator(BaseEvaluator):
         """
         check_is_fitted(self.model)
         if self.x_train is None or self.y_train is None:
-            raise ValueError(
-                "x_train and y_train must be provided to compute SHAP values."
-            )
+            if train_data is None:
+                raise ValueError("Train data must be provided to compute SHAP values.")
+            self.x_train, self.y_train = train_data
 
         shap_train_arr, shap_eval_arr = self._compute_shap_arrays(x_eval)
 

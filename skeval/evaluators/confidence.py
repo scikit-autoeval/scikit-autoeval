@@ -22,10 +22,6 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         `decision_function` methods.
     scorer : callable or dict of str -> callable, default=accuracy_score
         An evaluation function or a dictionary of multiple evaluation functions.
-    threshold : float, default=0.8
-        The minimum confidence required to include a prediction in the calculation.
-    limit_to_top_class : bool, default=True
-        If True, uses only the probability of the top class as the confidence score.
     verbose : bool, default=False
         If True, prints additional information during evaluation.
 
@@ -35,10 +31,6 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         The model passed in the constructor.
     scorer : callable or dict
         The scoring function(s) passed in the constructor.
-    threshold : float
-        The confidence threshold.
-    limit_to_top_class : bool
-        Indicates if confidence is based solely on the highest probability class.
     verbose : bool
         The verbosity level.
 
@@ -59,8 +51,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
     >>> scorings = {'precision': precision_score, 'recall': recall_score}
     >>> conf_eval = ConfidenceThresholdEvaluator(
     ...     model=classifier,
-    ...     scorer=scorings,
-    ...     threshold=0.9
+    ...     scorer=scorings
     ... )
     >>> # 3. The fit method is for compatibility, not strictly needed here
     >>> #    since the model is already trained.
@@ -68,7 +59,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
     ConfidenceThresholdEvaluator(...)
     >>> # 4. Estimate the performance on the test set
     >>> #    The evaluator will internally call classifier.predict_proba(x_test)
-    >>> scores = conf_eval.estimate(x_test)
+    >>> scores = conf_eval.estimate(x_test, threshold=0.9)
     >>> for score_name, value in scores.items():
     ...     print(f"{score_name}: {value:.2f}")
     precision: 1.00
@@ -80,13 +71,8 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         model,
         scorer=accuracy_score,
         verbose=False,
-        threshold=0.65,
-        limit_to_top_class=True,
     ):
         super().__init__(model=model, scorer=scorer, verbose=verbose)
-
-        self.threshold = threshold
-        self.limit_to_top_class = limit_to_top_class
 
     def fit(self, x, y):
         """
@@ -109,7 +95,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         self.model.fit(x, y)
         return self
 
-    def estimate(self, x_eval):
+    def estimate(self, x_eval, threshold=0.65, limit_to_top_class=True):
         """
         Estimates scores based on the confidence threshold.
 
@@ -121,6 +107,10 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         ----------
         x_eval : array-like of shape (n_samples, n_features)
             Input data for which to estimate scores.
+        threshold : float, default=0.8
+            The minimum confidence required to include a prediction in the calculation.
+        limit_to_top_class : bool, default=True
+            If True, uses only the probability of the top class as the confidence score.
 
         Returns
         -------
@@ -131,7 +121,9 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         """
         check_is_fitted(self.model)
 
-        conf, correct = self.__get_confidences_and_correct(x_eval)
+        conf, correct = self.__get_confidences_and_correct(
+            x_eval, threshold, limit_to_top_class
+        )
         self._print_verbose_confidence_info(conf, correct)
 
         if not np.any(correct):
@@ -181,7 +173,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
             return {"score": score}
         raise ValueError("'scorer' must be a callable or a dict of callables.")
 
-    def __get_confidences_and_correct(self, x):
+    def __get_confidences_and_correct(self, x, threshold, limit_to_top_class):
         """
         Computes confidence scores and applies the confidence threshold.
         """
@@ -195,7 +187,7 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
 
         if hasattr(self.model, "predict_proba"):
             probas = self.model.predict_proba(x)
-            conf = np.max(probas, axis=1) if self.limit_to_top_class else probas
+            conf = np.max(probas, axis=1) if limit_to_top_class else probas
         elif hasattr(self.model, "decision_function"):
             decision = self.model.decision_function(x)
             conf = np.max(decision, axis=1) if decision.ndim > 1 else np.abs(decision)
@@ -204,5 +196,5 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
                 "The model must implement predict_proba or decision_function."
             )
 
-        correct = conf >= self.threshold
+        correct = conf >= threshold
         return conf, correct

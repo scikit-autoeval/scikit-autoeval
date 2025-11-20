@@ -38,15 +38,12 @@ def run_regression_eval(verbose=False):
         "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
     }
 
-    evaluator = RegressionEvaluator(
-        model=model, scorer=scorers, n_splits=4, verbose=False
-    )
+    evaluator = RegressionEvaluator(model=model, scorer=scorers, verbose=False)
 
     # =====================================
     # 5. Fit evaluator using multiple datasets
     # =====================================
-    evaluator.fit([X1, X2], [y1, y2])
-    # final_model = model.fit(X1, y1)
+    evaluator.fit([X1, X2], [y1, y2], n_splits=4)
 
     # =====================================
     # 6. Estimate scores for new dataset

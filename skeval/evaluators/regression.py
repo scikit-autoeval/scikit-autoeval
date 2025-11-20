@@ -31,8 +31,6 @@ class RegressionEvaluator(BaseEvaluator):
     meta_regressor : object, default=None
         A regression model implementing `fit` and `predict`. If None, a
         `RandomForestRegressor` with 500 trees is used for each scorer.
-    n_splits : int, default=5
-        Number of random splits per dataset to generate multiple meta-examples.
     scorer : callable or dict of str -> callable, default=accuracy_score
         The performance metric(s) to estimate. If a dictionary is provided, a
         separate meta-regressor will be trained to estimate each metric.
@@ -76,7 +74,6 @@ class RegressionEvaluator(BaseEvaluator):
         scorer=accuracy_score,
         verbose=False,
         meta_regressor=None,
-        n_splits=5,
     ):
         super().__init__(model=model, scorer=scorer, verbose=verbose)
 
@@ -84,9 +81,8 @@ class RegressionEvaluator(BaseEvaluator):
             n_estimators=500, random_state=42
         )
         self.meta_regressors_ = {}
-        self.n_splits = n_splits
 
-    def fit(self, x, y):
+    def fit(self, x, y, n_splits=5):
         """Trains the internal meta-regressor(s) using a single model type.
 
         This method builds a meta-dataset to train the evaluator. For each dataset,
@@ -98,6 +94,8 @@ class RegressionEvaluator(BaseEvaluator):
             A list of datasets (features) used to train the meta-model.
         y : list of array-like
             A list of labels corresponding to `x`.
+        n_splits : int, default=5
+            Number of random splits per dataset to generate multiple meta-examples.
 
         Returns
         -------
@@ -109,42 +107,21 @@ class RegressionEvaluator(BaseEvaluator):
         meta_targets = {name: [] for name in scorers_names}
 
         for x_i, y_i in zip(x, y):
-            for split in range(self.n_splits):
-                est = clone(self.model)
-
-                stratify_y = y_i if len(np.unique(y_i)) > 1 else None
-                x_train_meta, x_holdout_meta, y_train_meta, y_holdout_meta = (
-                    train_test_split(
-                        x_i,
-                        y_i,
-                        test_size=0.33,
-                        random_state=42 + split,
-                        stratify=stratify_y,
-                    )
+            for split in range(n_splits):
+                feats, y_holdout_meta, y_pred_holdout = self._generate_meta_example(
+                    x_i, y_i, split
                 )
+                meta_features.append(feats)
 
-                est.fit(x_train_meta, y_train_meta)
-                feats = self._extract_metafeatures(est, x_holdout_meta)
-                y_pred_holdout = est.predict(x_holdout_meta)
-
-                meta_features.append(feats.flatten())
-
-                if isinstance(self.scorer, dict):
-                    for name in scorers_names:
-                        func = self.scorer[name]
-                        score = func(y_holdout_meta, y_pred_holdout)
-                        meta_targets[name].append(score)
-                elif callable(self.scorer):
-                    score = self.scorer(y_holdout_meta, y_pred_holdout)
-                    meta_targets["score"].append(score)
+                self._update_meta_targets(
+                    y_holdout_meta, y_pred_holdout, meta_targets, scorers_names
+                )
 
         meta_features = np.array(meta_features)
         self.meta_regressors_ = {}
 
         for name in scorers_names:
-            meta_y = np.array(meta_targets[name])
-            reg = clone(self.meta_regressor)
-            reg.fit(meta_features, meta_y)
+            reg = self._fit_single_meta_regressor(name, meta_features, meta_targets)
             self.meta_regressors_[name] = reg
 
             if self.verbose:
@@ -237,3 +214,38 @@ class RegressionEvaluator(BaseEvaluator):
             "std_entropy": np.std(entropy),
         }
         return np.array(list(features.values())).reshape(1, -1)
+
+    def _generate_meta_example(self, x_i, y_i, split):
+        """Generates a single meta-example from a dataset split."""
+        est = clone(self.model)
+
+        stratify_y = y_i if len(np.unique(y_i)) > 1 else None
+        x_train, x_hold, y_train, y_hold = train_test_split(
+            x_i,
+            y_i,
+            test_size=0.33,
+            random_state=42 + split,
+            stratify=stratify_y,
+        )
+
+        est.fit(x_train, y_train)
+
+        feats = self._extract_metafeatures(est, x_hold)
+        y_pred = est.predict(x_hold)
+
+        return feats.flatten(), y_hold, y_pred
+
+    def _fit_single_meta_regressor(self, name, meta_features, meta_targets):
+        """Fits a single meta-regressor for a given scorer."""
+        meta_y = np.array(meta_targets[name])
+        reg = clone(self.meta_regressor)
+        reg.fit(meta_features, meta_y)
+        return reg
+
+    def _update_meta_targets(self, y_true, y_pred, meta_targets, scorers_names):
+        """Updates the meta-targets dictionary with new scores."""
+        if isinstance(self.scorer, dict):
+            for name in scorers_names:
+                meta_targets[name].append(self.scorer[name](y_true, y_pred))
+        else:
+            meta_targets["score"].append(self.scorer(y_true, y_pred))

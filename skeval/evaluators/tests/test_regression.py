@@ -22,9 +22,9 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
     def test_fit_and_estimate_with_single_scorer(self):
         model = LogisticRegression(max_iter=2000)
         evaluator = RegressionEvaluator(
-            model=model, scorer=accuracy_score, n_splits=3, verbose=False
+            model=model, scorer=accuracy_score, verbose=False
         )
-        evaluator.fit(self.X_list, self.y_list)
+        evaluator.fit(self.X_list, self.y_list, n_splits=3)
 
         final_model = LogisticRegression(max_iter=2000).fit(
             self.X_list[1], self.y_list[1]
@@ -41,10 +41,8 @@ class TestRegressionBasedEvaluator(unittest.TestCase):
             "accuracy": accuracy_score,
             "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
         }
-        evaluator = RegressionEvaluator(
-            model=model, scorer=scorers, n_splits=2, verbose=False
-        )
-        evaluator.fit(self.X_list, self.y_list)
+        evaluator = RegressionEvaluator(model=model, scorer=scorers, verbose=False)
+        evaluator.fit(self.X_list, self.y_list, n_splits=2)
 
         final_model = RandomForestClassifier(n_estimators=50, random_state=42).fit(
             self.X_list[0], self.y_list[0]

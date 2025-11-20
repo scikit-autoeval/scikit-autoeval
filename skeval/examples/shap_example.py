@@ -46,8 +46,6 @@ def run_shap_eval(verbose=False):
         scorer=scorers,
         verbose=False,
         inner_clf=XGBClassifier(random_state=42),
-        X_train=X1,
-        y_train=y1,
     )
 
     # =====================================

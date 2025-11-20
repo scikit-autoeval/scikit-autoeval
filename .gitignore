@@ -4,3 +4,7 @@ docs/_build
 skeval/console_tests
 .coverage
 .pypirc
+.pytest_cache/
+.ruff_cache/
+structure/
+metrics/

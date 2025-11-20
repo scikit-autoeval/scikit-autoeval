@@ -12,6 +12,7 @@ from sklearn.exceptions import NotFittedError
 # Assuming the ShapEvaluator is in this path
 from skeval.evaluators.shap import ShapEvaluator
 
+
 class TestShapEvaluator(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -101,22 +102,23 @@ class TestShapEvaluator(unittest.TestCase):
         with self.assertRaises(ValueError):
             evaluator.estimate(self.X_eval)
 
-    def test_init_with_prefit_model_and_train_data(self):
+    def test_init_with_prefit_model(self):
         """
         Test that estimate() works without calling fit() if a pre-fitted model
-        and training data are provided to __init__.
         """
         model = RandomForestClassifier(n_estimators=10, random_state=42)
         model.fit(self.x_train, self.y_train)
 
         # Provide all required components to __init__
-        evaluator = ShapEvaluator(
-            model=model, x_train=self.x_train, y_train=self.y_train
-        )
+        evaluator = ShapEvaluator(model=model)
 
         # Should work without calling evaluator.fit()
         try:
-            estimated_scores = evaluator.estimate(self.X_eval, n_pred=self.n_pred_fast)
+            estimated_scores = evaluator.estimate(
+                self.X_eval,
+                n_pred=self.n_pred_fast,
+                train_data=(self.x_train, self.y_train),
+            )
             self.assertIn("score", estimated_scores)
             self.assertIsInstance(estimated_scores["score"], float)
         except (NotFittedError, ValueError):

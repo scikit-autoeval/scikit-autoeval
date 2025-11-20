@@ -53,7 +53,7 @@ jobs:
           pylint skeval > pylint_report.txt || true
 
       # -------------------------------
-      # Radon (cc + mi)
+      # Radon (cc + mi + raw + halstead)
       # -------------------------------
       - name: Radon Cyclomatic Complexity
         run: |
@@ -62,6 +62,14 @@ jobs:
       - name: Radon Maintainability Index
         run: |
           radon mi -s skeval > radon_mi_report.txt
+
+      - name: Radon Raw Metrics
+        run: |
+          radon raw skeval > metricas_raw.txt
+      
+      - name: Radon Halstead Metrics
+        run: |
+          radon hal skeval > metricas_halstead.txt
 
       # -------------------------------
       # Pytest + Coverage
@@ -80,9 +88,8 @@ jobs:
           name: code-quality-reports
           path: |
             black_report.txt
-            flake8_report.txt
             pylint_report.txt
             radon_cc_report.txt
             radon_mi_report.txt
             coverage_report.txt
-            coverage_html
+            ruff_report.txt

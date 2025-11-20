@@ -39,12 +39,13 @@ class TestRegressionNoiseEvaluator(unittest.TestCase):
 
         # Use n_splits=2 and a small noise range for a fast test
         evaluator = RegressionNoiseEvaluator(
-            model=model, scorer=accuracy_score, n_splits=2, verbose=False
+            model=model, scorer=accuracy_score, verbose=False
         )
 
         # Fit the meta-regressors
+        noise_cfg = {"start": 10, "end": 30, "step": 10}
         evaluator.fit(
-            self.X_list, self.y_list, start_noise=10, end_noise=30, step_noise=10
+            self.X_list, self.y_list, n_splits=2, noise_cfg=noise_cfg
         )
 
         # Per the example workflow, train a final model manually
@@ -72,12 +73,13 @@ class TestRegressionNoiseEvaluator(unittest.TestCase):
         }
 
         evaluator = RegressionNoiseEvaluator(
-            model=model, scorer=scorers, n_splits=2, verbose=False
+            model=model, scorer=scorers, verbose=False
         )
 
         # Fit the meta-regressors
+        noise_cfg = {"start": 10, "end": 20, "step": 10}
         evaluator.fit(
-            self.X_list, self.y_list, start_noise=10, end_noise=20, step_noise=10
+            self.X_list, self.y_list, n_splits=2, noise_cfg=noise_cfg
         )
 
         # The .fit() method automatically fits self.model on X_list[0] (Iris)
@@ -122,18 +124,22 @@ class TestRegressionNoiseEvaluator(unittest.TestCase):
         """
         model = LogisticRegression()
         evaluator = RegressionNoiseEvaluator(model=model)
-
+        noise_cfg = {"start": 10, "end": 100, "step": 10}
+        
         # Test: start_noise < 0
         with self.assertRaises(ValueError):
-            evaluator.fit(self.X_list, self.y_list, start_noise=-10)
+            noise_cfg["start"] = -10
+            evaluator.fit(self.X_list, self.y_list, noise_cfg=noise_cfg)
 
         # Test: end_noise > 100
         with self.assertRaises(ValueError):
-            evaluator.fit(self.X_list, self.y_list, end_noise=110)
+            noise_cfg["end"] = 110
+            evaluator.fit(self.X_list, self.y_list, noise_cfg=noise_cfg)
 
         # Test: step_noise <= 0
         with self.assertRaises(ValueError):
-            evaluator.fit(self.X_list, self.y_list, step_noise=0)
+            noise_cfg["step"] = 0
+            evaluator.fit(self.X_list, self.y_list, noise_cfg=noise_cfg)
 
 
 if __name__ == "__main__":
