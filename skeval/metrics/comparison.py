@@ -7,7 +7,9 @@ from sklearn.metrics import mean_absolute_error
 def score_error(
     real_scores: Mapping[str, float],
     est_scores: Mapping[str, float],
-    comparator: Union[Callable[[Any, Any], float], Mapping[str, Callable[[Any, Any], float]]] = mean_absolute_error,
+    comparator: Union[
+        Callable[[Any, Any], float], Mapping[str, Callable[[Any, Any], float]]
+    ] = mean_absolute_error,
     verbose: bool = False,
 ) -> Dict[str, float]:
     """

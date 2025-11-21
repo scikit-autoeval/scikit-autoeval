@@ -101,7 +101,9 @@ class ShapEvaluator(BaseEvaluator):
         self.x_train: Optional[ArrayLike] = None
         self.y_train: Optional[NDArray[Any]] = None
 
-    def fit(self, x: Optional[ArrayLike] = None, y: Optional[Sequence[Any]] = None) -> "ShapEvaluator":
+    def fit(
+        self, x: Optional[ArrayLike] = None, y: Optional[Sequence[Any]] = None
+    ) -> "ShapEvaluator":
         """
         Fit the model used by the evaluator.
 
@@ -197,7 +199,9 @@ class ShapEvaluator(BaseEvaluator):
             return {k: float(np.mean([s[k] for s in scores_list])) for k in self.scorer}
         return {"score": float(np.mean([s["score"] for s in scores_list]))}
 
-    def _choose_class_shap(self, shap_vals: Union[np.ndarray, Sequence[Any]], model: Any) -> NDArray[Any]:
+    def _choose_class_shap(
+        self, shap_vals: Union[np.ndarray, Sequence[Any]], model: Any
+    ) -> NDArray[Any]:
         """
         Returns SHAP values for class 1 (or fallback class). Supports list and 3D-array formats.
         """
@@ -217,7 +221,9 @@ class ShapEvaluator(BaseEvaluator):
         out: NDArray[Any] = np.asarray(shap_vals)
         return out
 
-    def _compute_shap_arrays(self, x_eval: ArrayLike) -> Tuple[NDArray[Any], NDArray[Any]]:
+    def _compute_shap_arrays(
+        self, x_eval: ArrayLike
+    ) -> Tuple[NDArray[Any], NDArray[Any]]:
         model_to_explain = (
             self.model[-1] if hasattr(self.model, "steps") else self.model
         )

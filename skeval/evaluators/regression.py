@@ -1,7 +1,7 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
-import numpy as np
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union, cast
+import numpy as np
 
 from sklearn.base import clone
 from sklearn.ensemble import RandomForestRegressor
@@ -108,8 +108,8 @@ class RegressionEvaluator(BaseEvaluator):
             The fitted evaluator instance.
         """
         scorers_names: List[str] = self._get_scorer_names()
-        meta_features: List[np.ndarray] = []
         meta_targets: Dict[str, List[float]] = {name: [] for name in scorers_names}
+        meta_features: List[np.ndarray] = []
 
         for x_i, y_i in zip(x, y):
             for split in range(n_splits):
@@ -125,12 +125,12 @@ class RegressionEvaluator(BaseEvaluator):
                     scorers_names=scorers_names,
                 )
 
-        meta_features_arr = np.array(meta_features)
         self.meta_regressors_ = {}
 
         for name in scorers_names:
-            reg = self._fit_single_meta_regressor(name, meta_features_arr, meta_targets)
-            self.meta_regressors_[name] = reg
+            self.meta_regressors_[name] = self._fit_single_meta_regressor(
+                name, np.array(meta_features), meta_targets
+            )
 
             if self.verbose:
                 print(f"[INFO] Meta-regressor for '{name}' has been trained.")

@@ -1,6 +1,6 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
-from typing import Any, Dict, List, Mapping, Optional, Union
+from typing import Any, Dict, Mapping, Optional, Union
 
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
