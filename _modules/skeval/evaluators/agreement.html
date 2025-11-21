@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/skeval/evaluators/agreement.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>skeval.evaluators.agreement - scikit-autoeval 0.1.1 documentation</title>
+        <title>skeval.evaluators.agreement - scikit-autoeval 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">scikit-autoeval 0.1.1 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">scikit-autoeval 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -201,12 +201,20 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+  <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../modules.html">skeval</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../base.html">base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../evaluators.html">evaluators package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../metrics.html">metrics package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../evaluators/index.html">skeval.evaluators</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/agreement.html">AgreementEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/confidence.html">ConfidenceThresholdEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/regression.html">RegressionEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/regression_noise.html">RegressionNoiseEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/shap.html">ShapEvaluator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../base.html">skeval.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../metrics.html">skeval.metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../utils.html">skeval.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples.html">skeval.examples</a></li>
 </ul>
 </li>
 </ul>
@@ -246,55 +254,139 @@
           <h1>Source code for skeval.evaluators.agreement</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Authors: The scikit-autoeval developers</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.naive_bayes</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianNB</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">skeval.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEvaluator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_is_fitted</span>
 
+
 <div class="viewcode-block" id="AgreementEvaluator">
-<a class="viewcode-back" href="../../../evaluators.html#evaluators.AgreementEvaluator">[docs]</a>
+<a class="viewcode-back" href="../../../evaluators/agreement.html#skeval.evaluators.agreement.AgreementEvaluator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AgreementEvaluator</span><span class="p">(</span><span class="n">BaseEvaluator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Evaluator based on agreement/disagreement between the target model (M)</span>
-<span class="sd">    and a secondary model (M&#39;).</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Agreement-based evaluator for supervised classification models.</span>
 
-<span class="sd">    The agreement is computed as:</span>
-<span class="sd">        1 if the prediction of M equals the prediction of M&#39; for an instance,</span>
-<span class="sd">        0 otherwise.</span>
+<span class="sd">    This evaluator compares predictions produced by a *primary* model (``model``)</span>
+<span class="sd">    and a *secondary* model (``sec_model``) on an evaluation set. For each</span>
+<span class="sd">    sample, an agreement indicator is defined as ``1`` when both models predict</span>
+<span class="sd">    the same class and ``0`` otherwise. Using this indicator, an *expected label*</span>
+<span class="sd">    vector is created by flipping the primary model&#39;s prediction when the models</span>
+<span class="sd">    disagree. Metric(s) are then computed comparing the expected label vector</span>
+<span class="sd">    to the agreement indicator, providing an estimate of how often the primary</span>
+<span class="sd">    model&#39;s predictions would align with a plausible correction strategy based</span>
+<span class="sd">    on model disagreement.</span>
 
-<span class="sd">    The secondary model is set to Naive Bayes by default, but can be replaced</span>
-<span class="sd">    by any other classifier.</span>
+<span class="sd">    Evaluation workflow:</span>
+<span class="sd">    1. Fit both the primary and secondary models on the training data.</span>
+<span class="sd">    2. Generate predictions for both models on the evaluation data.</span>
+<span class="sd">    3. Build the agreement vector (1 = same prediction, 0 = different).</span>
+<span class="sd">    4. Produce an expected label vector, flipping predictions where disagreement occurs.</span>
+<span class="sd">    5. Compute the chosen metric(s) using the scorer(s).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : estimator</span>
+<span class="sd">        A classification estimator implementing ``fit`` and ``predict``.</span>
+<span class="sd">        May be a single estimator or a pipeline created with</span>
+<span class="sd">        ``sklearn.pipeline.make_pipeline``.</span>
+<span class="sd">    scorer : callable or dict of str -&gt; callable, default=accuracy_score</span>
+<span class="sd">        A single scoring function or a dictionary mapping metric names to</span>
+<span class="sd">        scoring callables. Each scorer must follow the signature</span>
+<span class="sd">        ``scorer(y_true, y_pred)``.</span>
+<span class="sd">    verbose : bool, default=False</span>
+<span class="sd">        If ``True``, prints progress information during fit and estimate.</span>
+<span class="sd">    sec_model : estimator, optional</span>
+<span class="sd">        Secondary classification model used solely to generate comparison</span>
+<span class="sd">        predictions. If ``None``, defaults to ``GaussianNB()``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : estimator</span>
+<span class="sd">        The primary model provided at initialization.</span>
+<span class="sd">    sec_model : estimator</span>
+<span class="sd">        The secondary model used to create agreement signals.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This evaluator assumes both models output class labels directly via</span>
+<span class="sd">    ``predict``. No probability calibration is performed. The metric(s) are</span>
+<span class="sd">    computed on synthetic targets produced from model agreement—not against</span>
+<span class="sd">    real ground-truth labels—so scores should be interpreted as *agreement-based</span>
+<span class="sd">    estimates*, not actual performance metrics.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Basic usage with two RandomForest pipelines and multiple scorers:</span>
+
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.metrics import accuracy_score, f1_score</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.impute import KNNImputer</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.pipeline import make_pipeline</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.ensemble import RandomForestClassifier</span>
+<span class="sd">    &gt;&gt;&gt; from skeval.evaluators.agreement import AgreementEvaluator</span>
+<span class="sd">    &gt;&gt;&gt; from skeval.utils import get_cv_and_real_scores, print_comparison</span>
+<span class="sd">    &gt;&gt;&gt; df_geriatrics = pd.read_csv(&quot;geriatria.csv&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; df_neurology = pd.read_csv(&quot;neurologia.csv&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; X1, y1 = df_geriatrics.drop(columns=[&quot;Alzheimer&quot;]), df_geriatrics[&quot;Alzheimer&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; X2, y2 = df_neurology.drop(columns=[&quot;Alzheimer&quot;]), df_neurology[&quot;Alzheimer&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; model = make_pipeline(</span>
+<span class="sd">    ...     KNNImputer(n_neighbors=10),</span>
+<span class="sd">    ...     RandomForestClassifier(n_estimators=50, random_state=42),</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; sec_model = make_pipeline(</span>
+<span class="sd">    ...     KNNImputer(n_neighbors=10),</span>
+<span class="sd">    ...     RandomForestClassifier(n_estimators=100, random_state=42),</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; scorers = {</span>
+<span class="sd">    ...     &quot;accuracy&quot;: accuracy_score,</span>
+<span class="sd">    ...     &quot;f1_macro&quot;: lambda y, p: f1_score(y, p, average=&quot;macro&quot;),</span>
+<span class="sd">    ... }</span>
+<span class="sd">    &gt;&gt;&gt; evaluator = AgreementEvaluator(model=model, sec_model=sec_model, scorer=scorers)</span>
+<span class="sd">    &gt;&gt;&gt; evaluator.fit(X1, y1)</span>
+<span class="sd">    &gt;&gt;&gt; estimated_scores = evaluator.estimate(X2)</span>
+<span class="sd">    &gt;&gt;&gt; # Optionally compare with CV and real scores</span>
+<span class="sd">    &gt;&gt;&gt; scores_dict = get_cv_and_real_scores(</span>
+<span class="sd">    ...     model=model, scorers=scorers, train_data=(X1, y1), test_data=(X2, y2)</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; cv_scores = scores_dict[&quot;cv_scores&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; real_scores = scores_dict[&quot;real_scores&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; print_comparison(scorers, cv_scores, estimated_scores, real_scores)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">model</span><span class="p">,</span>
-        <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span>
-        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">sec_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">scorer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">sec_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">scorer</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span> <span class="o">=</span> <span class="n">sec_model</span> <span class="k">if</span> <span class="n">sec_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">GaussianNB</span><span class="p">()</span>
 
 <div class="viewcode-block" id="AgreementEvaluator.fit">
-<a class="viewcode-back" href="../../../evaluators.html#evaluators.AgreementEvaluator.fit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Fit the evaluator by generating predictions from both models.</span>
+<a class="viewcode-back" href="../../../evaluators/agreement.html#skeval.evaluators.agreement.AgreementEvaluator.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AgreementEvaluator&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit the evaluator by training both primary and secondary models.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : array-like</span>
-<span class="sd">            Feature matrix.</span>
-<span class="sd">        y : array-like</span>
-<span class="sd">            Target vector.</span>
+<span class="sd">        x : array-like of shape (n_samples, n_features)</span>
+<span class="sd">            Feature matrix used to fit both models.</span>
+<span class="sd">        y : array-like of shape (n_samples,)</span>
+<span class="sd">            Target labels corresponding to ``x``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : AgreementEvaluator</span>
+<span class="sd">            The fitted evaluator instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Fit completed.&quot;</span><span class="p">)</span>
 
@@ -302,35 +394,55 @@
 
 
 <div class="viewcode-block" id="AgreementEvaluator.estimate">
-<a class="viewcode-back" href="../../../evaluators.html#evaluators.AgreementEvaluator.estimate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_eval</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Estimate the agreement score between the main and secondary models.</span>
+<a class="viewcode-back" href="../../../evaluators/agreement.html#skeval.evaluators.agreement.AgreementEvaluator.estimate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_eval</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Estimate agreement-based metric values on evaluation data.</span>
+
+<span class="sd">        Generates predictions from both models, constructs an agreement vector</span>
+<span class="sd">        and an expected label vector (flipping the primary prediction when</span>
+<span class="sd">        disagreement occurs), then applies the configured scorer(s).</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X_eval : array-like</span>
-<span class="sd">            Feature matrix (not used, kept for interface consistency).</span>
+<span class="sd">        x_eval : array-like of shape (n_samples, n_features)</span>
+<span class="sd">            Evaluation feature matrix.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        scores : dict or float</span>
-<span class="sd">            Agreement score(s) computed using the provided scorer(s).</span>
+<span class="sd">        scores : dict</span>
+<span class="sd">            If ``scorer`` is a dict, returns a mapping from metric name to</span>
+<span class="sd">            agreement-based score. Otherwise returns ``{&quot;score&quot;: float}``.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``scorer`` is neither a callable nor a dict of callables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span><span class="p">)</span>
-        
-        <span class="n">pred_main</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_eval</span><span class="p">)</span>
-        <span class="n">pred_secondary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_eval</span><span class="p">)</span>
+
+        <span class="n">pred_main</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_eval</span><span class="p">)</span>
+        <span class="n">pred_secondary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_eval</span><span class="p">)</span>
 
         <span class="n">agreement</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred_main</span> <span class="o">==</span> <span class="n">pred_secondary</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">y_agreement</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">if</span> <span class="n">a</span> <span class="k">else</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pred_main</span><span class="p">,</span> <span class="n">agreement</span><span class="p">)]</span>
-        
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_agreement</span><span class="p">,</span> <span class="n">agreement</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">(</span><span class="n">y_agreement</span><span class="p">,</span> <span class="n">agreement</span><span class="p">)</span></div>
+            <span class="n">score</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">name</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">metric</span><span class="p">(</span><span class="n">y_agreement</span><span class="p">,</span> <span class="n">agreement</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Estimated score:&quot;</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">score</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">):</span>
+            <span class="n">score_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">(</span><span class="n">y_agreement</span><span class="p">,</span> <span class="n">agreement</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Estimated score:&quot;</span><span class="p">,</span> <span class="n">score_val</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">score_val</span><span class="p">}</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;scorer&#39; must be a callable or a dict of callables.&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -365,7 +477,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=91f6191e"></script>
+</div><script src="../../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>

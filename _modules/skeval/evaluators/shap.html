@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/skeval/evaluators/shap.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>skeval.evaluators.shap - scikit-autoeval 0.1.1 documentation</title>
+        <title>skeval.evaluators.shap - scikit-autoeval 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">scikit-autoeval 0.1.1 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">scikit-autoeval 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -201,12 +201,20 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+  <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../modules.html">skeval</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../base.html">base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../evaluators.html">evaluators package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../metrics.html">metrics package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../evaluators/index.html">skeval.evaluators</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/agreement.html">AgreementEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/confidence.html">ConfidenceThresholdEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/regression.html">RegressionEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/regression_noise.html">RegressionNoiseEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/shap.html">ShapEvaluator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../base.html">skeval.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../metrics.html">skeval.metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../utils.html">skeval.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples.html">skeval.examples</a></li>
 </ul>
 </li>
 </ul>
@@ -246,8 +254,11 @@
           <h1>Source code for skeval.evaluators.shap</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Authors: The scikit-autoeval developers</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">cast</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">shap</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">NDArray</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">clone</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">XGBClassifier</span>
@@ -256,160 +267,325 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">skeval.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEvaluator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_is_fitted</span>
 
+
 <div class="viewcode-block" id="ShapEvaluator">
-<a class="viewcode-back" href="../../../evaluators.html#evaluators.ShapEvaluator">[docs]</a>
+<a class="viewcode-back" href="../../../evaluators/shap.html#skeval.evaluators.shap.ShapEvaluator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ShapEvaluator</span><span class="p">(</span><span class="n">BaseEvaluator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    SHAP-based evaluator.</span>
+<span class="sd">    SHAP-based evaluator for supervised classification models.</span>
 
-<span class="sd">    The evaluator uses SHAP values extracted from a (tree) classifier to train</span>
-<span class="sd">    a secondary classifier that predicts whether the original classifier&#39;s</span>
-<span class="sd">    predictions are correct. The predicted &quot;correctness&quot; on the evaluation set</span>
-<span class="sd">    is then used to build an expected label vector; that vector is compared</span>
-<span class="sd">    against the original model predictions to produce estimated metrics.</span>
+<span class="sd">    This evaluator uses SHAP values computed from a tree-based classifier to</span>
+<span class="sd">    train a secondary model that predicts the correctness of the original</span>
+<span class="sd">    classifier&#39;s predictions. The predicted correctness on the evaluation set</span>
+<span class="sd">    is used to generate an expected label vector, which is then compared with</span>
+<span class="sd">    the model predictions to estimate the chosen metric(s).</span>
+
+<span class="sd">    The evaluation process follows four steps:</span>
+<span class="sd">    (1) compute SHAP values on the training and evaluation sets,</span>
+<span class="sd">    (2) train a correctness classifier using SHAP values as input,</span>
+<span class="sd">    (3) predict correctness for evaluation samples,</span>
+<span class="sd">    (4) flip labels where the model is predicted to be wrong, generating an</span>
+<span class="sd">    &quot;expected label&quot; vector used to estimate metrics.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    model : estimator</span>
-<span class="sd">        A trained (or to-be-trained) classifier. For SHAP TreeExplainer a</span>
-<span class="sd">        tree-based model (e.g. RandomForest, GradientBoosting) is expected.</span>
-<span class="sd">    scorer : callable or dict, default=accuracy_score</span>
-<span class="sd">        Single scoring function or dictionary of name-&gt;callable to compute</span>
-<span class="sd">        estimated metrics.</span>
+<span class="sd">        A classification model implementing ``fit`` and ``predict``. For SHAP</span>
+<span class="sd">        computation using ``TreeExplainer``. Compatible with ``sklearn.make_pipeline``.</span>
+<span class="sd">    scorer : callable or dict of str -&gt; callable, default=accuracy_score</span>
+<span class="sd">        A scoring function or a dictionary mapping metric names to scoring</span>
+<span class="sd">        functions. Scorers must follow the signature ``scorer(y_true, y_pred)``.</span>
 <span class="sd">    verbose : bool, default=False</span>
-<span class="sd">        Enable informational prints.</span>
+<span class="sd">        If True, prints additional progress information.</span>
 <span class="sd">    inner_clf : estimator, optional</span>
-<span class="sd">        Classifier used to learn &quot;correctness&quot; from SHAP values. If None a</span>
-<span class="sd">        RandomForestClassifier is used.</span>
+<span class="sd">        Classifier trained on SHAP values to estimate correctness. If None,</span>
+<span class="sd">        defaults to ``XGBClassifier(random_state=42)``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : estimator</span>
+<span class="sd">        The model provided at initialization.</span>
+<span class="sd">    inner_clf : estimator</span>
+<span class="sd">        The classifier used to model correctness from SHAP values.</span>
+<span class="sd">    explainer : shap.TreeExplainer</span>
+<span class="sd">        Object responsible for computing SHAP values.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    estimate requires both a training set (X_train, y_train) and an</span>
-<span class="sd">    evaluation set (X_eval, optionally y_eval for debugging). The method</span>
-<span class="sd">    signature follows estimate(X_eval, X_train=None, y_train=None, y_eval=None).</span>
+<span class="sd">    *SHAP computation requirement:*</span>
+<span class="sd">    The final estimator in ``model`` (or the estimator itself, if not a</span>
+<span class="sd">    pipeline) must be compatible with ``shap.TreeExplainer``.</span>
+
+<span class="sd">    *Estimate method:*</span>
+<span class="sd">    The method performs multiple correctness predictions and averages the</span>
+<span class="sd">    resulting estimated metrics. This introduces stochasticity and aims to</span>
+<span class="sd">    approximate uncertainty in the correctness model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; # Authors: The scikit-autoeval developers</span>
+<span class="sd">    &gt;&gt;&gt; # SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # ==============================================================</span>
+<span class="sd">    &gt;&gt;&gt; # ShapEvaluator Example</span>
+<span class="sd">    &gt;&gt;&gt; # ==============================================================</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.metrics import accuracy_score, f1_score</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.impute import KNNImputer</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.pipeline import make_pipeline</span>
+<span class="sd">    &gt;&gt;&gt; from xgboost import XGBClassifier</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; from skeval.evaluators.shap import ShapEvaluator</span>
+<span class="sd">    &gt;&gt;&gt; from skeval.utils import get_cv_and_real_scores, print_comparison</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; def run_shap_eval(verbose=False):</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     # 1. Load datasets</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     geriatrics = pd.read_csv(&quot;geriatria.csv&quot;)</span>
+<span class="sd">    &gt;&gt;&gt;     neurology = pd.read_csv(&quot;neurologia.csv&quot;)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     # 2. Separate features and target</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     X1, y1 = geriatrics.drop(columns=[&quot;Alzheimer&quot;]), geriatrics[&quot;Alzheimer&quot;]</span>
+<span class="sd">    &gt;&gt;&gt;     X2, y2 = neurology.drop(columns=[&quot;Alzheimer&quot;]), neurology[&quot;Alzheimer&quot;]</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     # 3. Define pipeline (KNNImputer + RandomForest)</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     model = make_pipeline(KNNImputer(n_neighbors=5), XGBClassifier())</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     # 4. Define scorers and evaluator</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     scorers = {</span>
+<span class="sd">    &gt;&gt;&gt;         &quot;accuracy&quot;: accuracy_score,</span>
+<span class="sd">    &gt;&gt;&gt;         &quot;f1_macro&quot;: lambda y, p: f1_score(y, p, average=&quot;macro&quot;),</span>
+<span class="sd">    &gt;&gt;&gt;     }</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     evaluator = ShapEvaluator(</span>
+<span class="sd">    &gt;&gt;&gt;         model=model,</span>
+<span class="sd">    &gt;&gt;&gt;         scorer=scorers,</span>
+<span class="sd">    &gt;&gt;&gt;         verbose=False,</span>
+<span class="sd">    &gt;&gt;&gt;         inner_clf=XGBClassifier(random_state=42),</span>
+<span class="sd">    &gt;&gt;&gt;     )</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     # 5. Fit evaluator on geriatrics data</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     evaluator.fit(X1, y1)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     # 6. Estimate performance (train on X1, estimate on X2)</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     estimated_scores = evaluator.estimate(X2)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     # 7. Compute real and CV performance</span>
+<span class="sd">    &gt;&gt;&gt;     # =====================================</span>
+<span class="sd">    &gt;&gt;&gt;     train_data = X1, y1</span>
+<span class="sd">    &gt;&gt;&gt;     test_data = X2, y2</span>
+<span class="sd">    &gt;&gt;&gt;     scores_dict = get_cv_and_real_scores(</span>
+<span class="sd">    &gt;&gt;&gt;         model=model, scorers=scorers, train_data=train_data, test_data=test_data</span>
+<span class="sd">    &gt;&gt;&gt;     )</span>
+<span class="sd">    &gt;&gt;&gt;     cv_scores = scores_dict[&quot;cv_scores&quot;]</span>
+<span class="sd">    &gt;&gt;&gt;     real_scores = scores_dict[&quot;real_scores&quot;]</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     if verbose:</span>
+<span class="sd">    &gt;&gt;&gt;         print_comparison(scorers, cv_scores, estimated_scores, real_scores)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     return {&quot;cv&quot;: cv_scores, &quot;estimated&quot;: estimated_scores, &quot;real&quot;: real_scores}</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; if __name__ == &quot;__main__&quot;:</span>
+<span class="sd">    &gt;&gt;&gt;     results = run_shap_eval(verbose=True)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inner_clf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">X_train</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_train</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">scorer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">Callable</span><span class="p">[[</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+            <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">],</span> <span class="nb">float</span><span class="p">]],</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">inner_clf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">scorer</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inner_clf</span> <span class="o">=</span> <span class="n">inner_clf</span> <span class="ow">or</span> <span class="n">XGBClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">explainer</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="o">=</span> <span class="n">y_train</span>
-        
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner_clf</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">inner_clf</span> <span class="ow">or</span> <span class="n">XGBClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">explainer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_train</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NDArray</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+
 <div class="viewcode-block" id="ShapEvaluator.fit">
-<a class="viewcode-back" href="../../../evaluators.html#evaluators.ShapEvaluator.fit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../evaluators/shap.html#skeval.evaluators.shap.ShapEvaluator.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ShapEvaluator&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Fit the evaluator&#39;s model.</span>
+<span class="sd">        Fit the model used by the evaluator.</span>
+
+<span class="sd">        If `x_train` and `y_train` were provided during initialization, they</span>
+<span class="sd">        take precedence. Otherwise, the provided `x` and `y` are stored and</span>
+<span class="sd">        used for computing SHAP values during the estimation step.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : array-like</span>
-<span class="sd">            Training features.</span>
-<span class="sd">        y : array-like</span>
-<span class="sd">            Training labels.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">X_train</span> <span class="o">=</span> <span class="n">X</span>
+<span class="sd">        x : array-like of shape (n_samples, n_features)</span>
+<span class="sd">            Feature matrix used to fit the original model and to compute SHAP</span>
+<span class="sd">            values if `x_train` is not already defined.</span>
+<span class="sd">        y : array-like of shape (n_samples,)</span>
+<span class="sd">            Labels corresponding to `x`. Required if no training data was</span>
+<span class="sd">            provided at initialization.</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="o">=</span> <span class="n">y</span>
-            
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_train</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;X and y must be provided to fit the model.&quot;</span><span class="p">)</span>
-            
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : ShapEvaluator</span>
+<span class="sd">            The fitted evaluator instance.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If no training data is available, preventing the underlying model from being fitted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># self.x_train = x if x is not None else self.x_train</span>
+        <span class="c1"># self.y_train = y if y is not None else self.y_train</span>
+
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;x and y must be provided to fit the model.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_train</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_train</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
 <div class="viewcode-block" id="ShapEvaluator.estimate">
-<a class="viewcode-back" href="../../../evaluators.html#evaluators.ShapEvaluator.estimate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_eval</span><span class="p">,</span> <span class="n">n_pred</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../evaluators/shap.html#skeval.evaluators.shap.ShapEvaluator.estimate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x_eval</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">n_pred</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+        <span class="n">train_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Estimate metrics using SHAP-based correctness prediction.</span>
+<span class="sd">        Estimate metric values using SHAP-based correctness prediction.</span>
+
+<span class="sd">        SHAP values are computed for train and eval sets, used to train a correctness</span>
+<span class="sd">        classifier, and the resulting correctness predictions decide when to flip</span>
+<span class="sd">        the model predictions before scoring. Results are averaged over `n_pred`</span>
+<span class="sd">        iterations.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X_eval : array-like</span>
-<span class="sd">            The evaluation features (used as X_test in the pseudo-code).</span>
-<span class="sd">        n_pred : int, optional</span>
-<span class="sd">            Number of predictions to generate. If None, uses 30.</span>
+<span class="sd">        x_eval : array-like</span>
+<span class="sd">            Feature matrix for evaluation.</span>
+<span class="sd">        n_pred : int</span>
+<span class="sd">            Number of correctness predictions to average over.</span>
+<span class="sd">        train_data : tuple of (array-like, array-like), optional</span>
+<span class="sd">            Training data (X, y) used to fit the original model and compute SHAP</span>
+<span class="sd">            values, if not already provided during `fit()`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
-<span class="sd">            Estimated metric(s). If `scorer` is a dict, returns mapping name-&gt;value,</span>
-<span class="sd">            otherwise returns {&#39;score&#39;: value}.</span>
+<span class="sd">            Mapping me</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_train</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;X_train and y_train must be provided to compute SHAP values for the training set.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_train</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">train_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Train data must be provided to compute SHAP values.&quot;</span><span class="p">)</span>
+            <span class="c1"># normalize train_data: ensure y_train becomes a numpy array</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_train</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">train_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="n">model_to_explain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;steps&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span><span class="n">model_to_explain</span><span class="p">)</span>
+        <span class="n">shap_train_arr</span><span class="p">,</span> <span class="n">shap_eval_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_shap_arrays</span><span class="p">(</span><span class="n">x_eval</span><span class="p">)</span>
 
-        <span class="n">X_train_proc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_train</span>
-        <span class="n">X_eval_proc</span> <span class="o">=</span> <span class="n">X_eval</span>
-
-        <span class="n">shap_train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">X_train_proc</span><span class="p">)</span>
-        <span class="n">shap_eval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">X_eval_proc</span><span class="p">)</span>
-
-        <span class="n">shap_train_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_choose_class_shap</span><span class="p">(</span><span class="n">shap_train</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
-        <span class="n">shap_eval_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_choose_class_shap</span><span class="p">(</span><span class="n">shap_eval</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
-        
+        <span class="n">pred_eval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_eval</span><span class="p">)</span>
         <span class="n">scores_list</span> <span class="o">=</span> <span class="p">[]</span>
 
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_pred</span><span class="p">):</span>
             <span class="n">pred_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_train</span><span class="p">))</span>
-            <span class="n">pred_eval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_eval</span><span class="p">)</span>
+            <span class="n">y_right</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="o">==</span> <span class="n">pred_train</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
-            <span class="n">y_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">pred_train</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pred_train</span><span class="p">))])</span>
-
-            <span class="n">clf</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inner_clf</span><span class="p">)</span>
-            <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">shap_train_arr</span><span class="p">,</span> <span class="n">y_right</span><span class="p">)</span>
-
+            <span class="n">clf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_train_correctness_model</span><span class="p">(</span><span class="n">shap_train_arr</span><span class="p">,</span> <span class="n">y_right</span><span class="p">)</span>
             <span class="n">pred_right</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">shap_eval_arr</span><span class="p">)</span>
 
-            <span class="n">expected_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-                <span class="n">pred_eval</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">pred_right</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">((</span><span class="n">pred_eval</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pred_eval</span><span class="p">))</span>
-            <span class="p">])</span>
-
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">iter_scores</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="n">expected_y</span><span class="p">,</span> <span class="n">pred_eval</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-            <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">):</span>
-                <span class="n">iter_scores</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">(</span><span class="n">expected_y</span><span class="p">,</span> <span class="n">pred_eval</span><span class="p">)}</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;scorer&#39; must be a callable or a dict of callables.&quot;</span><span class="p">)</span>
-
-            <span class="n">scores_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iter_scores</span><span class="p">)</span>
+            <span class="n">expected_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_expected_labels</span><span class="p">(</span><span class="n">pred_eval</span><span class="p">,</span> <span class="n">pred_right</span><span class="p">)</span>
+            <span class="n">scores_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_scores</span><span class="p">(</span><span class="n">expected_y</span><span class="p">,</span> <span class="n">pred_eval</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">avg_scores</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">s</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scores_list</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">avg_scores</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scores_list</span><span class="p">])}</span>
-
-        <span class="k">return</span> <span class="n">avg_scores</span></div>
+            <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scores_list</span><span class="p">]))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scores_list</span><span class="p">]))}</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_choose_class_shap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shap_vals</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_choose_class_shap</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">shap_vals</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">model</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns SHAP values for class 1 (or fallback class). Supports list and 3D-array formats.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shap_vals</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shap_vals</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
-
+            <span class="n">arr</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">shap_vals</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">arr</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shap_vals</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">shap_vals</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-            <span class="k">return</span> <span class="n">shap_vals</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">idx</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shap_vals</span><span class="p">)</span></div>
+            <span class="n">res</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">shap_vals</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">idx</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">res</span>
+
+        <span class="n">out</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">shap_vals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_shap_arrays</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">x_eval</span><span class="p">:</span> <span class="n">ArrayLike</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+        <span class="n">model_to_explain</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;steps&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span><span class="n">model_to_explain</span><span class="p">)</span>
+
+        <span class="n">shap_train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_train</span><span class="p">)</span>
+        <span class="n">shap_eval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">x_eval</span><span class="p">)</span>
+
+        <span class="n">shap_train_cast</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">shap_train</span><span class="p">)</span>
+        <span class="n">shap_eval_cast</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">shap_eval</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_choose_class_shap</span><span class="p">(</span><span class="n">shap_train_cast</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_choose_class_shap</span><span class="p">(</span><span class="n">shap_eval_cast</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_train_correctness_model</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">shap_train_arr</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_right</span><span class="p">:</span> <span class="n">ArrayLike</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="n">clf</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inner_clf</span><span class="p">)</span>
+        <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">shap_train_arr</span><span class="p">,</span> <span class="n">y_right</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">clf</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_predict_expected_labels</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pred_eval</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">pred_right</span><span class="p">:</span> <span class="n">ArrayLike</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred_eval</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred_right</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_scores</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">expected_y</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">pred_eval</span><span class="p">:</span> <span class="n">ArrayLike</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="n">name</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="n">expected_y</span><span class="p">,</span> <span class="n">pred_eval</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="n">scorer_fn</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Callable</span><span class="p">[[</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">scorer_fn</span><span class="p">(</span><span class="n">expected_y</span><span class="p">,</span> <span class="n">pred_eval</span><span class="p">))}</span></div>
 
 </pre></div>
         </article>
@@ -443,7 +619,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=91f6191e"></script>
+</div><script src="../../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>

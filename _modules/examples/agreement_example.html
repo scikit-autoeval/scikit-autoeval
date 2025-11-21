@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/examples/agreement_example.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>examples.agreement_example - scikit-autoeval 0.1.1 documentation</title>
+        <title>examples.agreement_example - scikit-autoeval 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">scikit-autoeval 0.1.1 documentation</div></a>
+      <a href="../../index.html"><div class="brand">scikit-autoeval 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -204,8 +204,15 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">skeval</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../evaluators/index.html">skeval.evaluators</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/agreement.html">AgreementEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/confidence.html">ConfidenceThresholdEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/regression.html">RegressionEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/regression_noise.html">RegressionNoiseEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/shap.html">ShapEvaluator</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../base.html">skeval.base</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../evaluators.html">skeval.evaluators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../metrics.html">skeval.metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../utils.html">skeval.utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../examples.html">skeval.examples</a></li>
@@ -265,49 +272,51 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.agreement</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgreementEvaluator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_CV_and_real_scores</span>
 
+
 <div class="viewcode-block" id="run_agreement_eval">
 <a class="viewcode-back" href="../../examples.html#examples.agreement_example.run_agreement_eval">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">run_agreement_eval</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="c1"># ======================</span>
     <span class="c1"># 1. Load datasets</span>
     <span class="c1"># ======================</span>
-    <span class="n">df_geriatrics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./skeval/datasets/geriatria-controle-alzheimerLabel.csv&#39;</span><span class="p">)</span>
-    <span class="n">df_neurology</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./skeval/datasets/neurologia-controle-alzheimerLabel.csv&#39;</span><span class="p">)</span>
+    <span class="n">df_geriatrics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+        <span class="s2">&quot;./skeval/datasets/geriatria-controle-alzheimerLabel.csv&quot;</span>
+    <span class="p">)</span>
+    <span class="n">df_neurology</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+        <span class="s2">&quot;./skeval/datasets/neurologia-controle-alzheimerLabel.csv&quot;</span>
+    <span class="p">)</span>
 
     <span class="c1"># ======================</span>
     <span class="c1"># 2. Separate features and target</span>
     <span class="c1"># ======================</span>
-    <span class="n">X1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">df_geriatrics</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Alzheimer&#39;</span><span class="p">]),</span> <span class="n">df_geriatrics</span><span class="p">[</span><span class="s1">&#39;Alzheimer&#39;</span><span class="p">]</span>
-    <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">df_neurology</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Alzheimer&#39;</span><span class="p">]),</span> <span class="n">df_neurology</span><span class="p">[</span><span class="s1">&#39;Alzheimer&#39;</span><span class="p">]</span>
+    <span class="n">X1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">df_geriatrics</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">df_geriatrics</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
+    <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">df_neurology</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">df_neurology</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
 
     <span class="c1"># ======================</span>
     <span class="c1"># 3. Define model pipelines</span>
     <span class="c1"># ======================</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span>
         <span class="n">KNNImputer</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-        <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">),</span>
     <span class="p">)</span>
     <span class="c1"># model = RandomForestClassifier(n_estimators=50, random_state=42)</span>
 
     <span class="n">sec_model</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span>
         <span class="n">KNNImputer</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-        <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">),</span>
     <span class="p">)</span>
     <span class="c1"># sec_model = RandomForestClassifier(n_estimators=100, random_state=42)</span>
-    
+
     <span class="c1"># ======================</span>
     <span class="c1"># 4. Define scorers and evaluator</span>
     <span class="c1"># ======================</span>
     <span class="n">scorers</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">accuracy_score</span><span class="p">,</span>
-        <span class="s1">&#39;f1_macro&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span>
+        <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy_score</span><span class="p">,</span>
+        <span class="s2">&quot;f1_macro&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;macro&quot;</span><span class="p">),</span>
     <span class="p">}</span>
 
     <span class="n">evaluator</span> <span class="o">=</span> <span class="n">AgreementEvaluator</span><span class="p">(</span>
-        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
-        <span class="n">sec_model</span><span class="o">=</span><span class="n">sec_model</span><span class="p">,</span>
-        <span class="n">scorer</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span>
-        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">sec_model</span><span class="o">=</span><span class="n">sec_model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="c1"># ======================</span>
@@ -316,20 +325,22 @@
     <span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span>
     <span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span>
 
-
     <span class="c1"># ======================</span>
     <span class="c1"># 6. Cross-Validation and Real Performance</span>
     <span class="c1"># ======================</span>
-    <span class="n">scores_dict</span> <span class="o">=</span> <span class="n">get_CV_and_real_scores</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorers</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span> <span class="n">X_train</span><span class="o">=</span><span class="n">X1</span><span class="p">,</span> <span class="n">y_train</span><span class="o">=</span><span class="n">y1</span><span class="p">,</span> <span class="n">X_test</span><span class="o">=</span><span class="n">X2</span><span class="p">,</span> <span class="n">y_test</span><span class="o">=</span><span class="n">y2</span><span class="p">)</span>
-    <span class="n">cv_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s1">&#39;cv_scores&#39;</span><span class="p">]</span>
-    <span class="n">real_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s1">&#39;real_scores&#39;</span><span class="p">]</span>
+    <span class="n">scores_dict</span> <span class="o">=</span> <span class="n">get_CV_and_real_scores</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorers</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span> <span class="n">X_train</span><span class="o">=</span><span class="n">X1</span><span class="p">,</span> <span class="n">y_train</span><span class="o">=</span><span class="n">y1</span><span class="p">,</span> <span class="n">X_test</span><span class="o">=</span><span class="n">X2</span><span class="p">,</span> <span class="n">y_test</span><span class="o">=</span><span class="n">y2</span>
+    <span class="p">)</span>
+    <span class="n">cv_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;cv_scores&quot;</span><span class="p">]</span>
+    <span class="n">real_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;real_scores&quot;</span><span class="p">]</span>
 
-    
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="c1"># ======================</span>
         <span class="c1"># 7. Side-by-side comparison</span>
         <span class="c1"># ======================</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">===== CV (intra-domain) vs. Estimated vs. Real (train Geriatrics -&gt; test Neurology) =====&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">===== CV (intra-domain) vs. Estimated vs. Real (train Geriatrics -&gt; test Neurology) =====&quot;</span>
+        <span class="p">)</span>
         <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">scorers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="nb">print</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metric</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> -&gt; CV: </span><span class="si">{</span><span class="n">cv_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
@@ -343,17 +354,14 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">===== Absolute Error w.r.t. Real Performance =====&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">scorers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">err_est</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">real_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">-</span> <span class="n">estimated_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">])</span>
-            <span class="n">err_cv</span>  <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">real_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">-</span> <span class="n">cv_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">])</span>
+            <span class="n">err_cv</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">real_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">-</span> <span class="n">cv_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">])</span>
             <span class="nb">print</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metric</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> -&gt; |Real - Estimated|: </span><span class="si">{</span><span class="n">err_est</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;|Real - CV|: </span><span class="si">{</span><span class="n">err_cv</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;cv&#39;</span><span class="p">:</span> <span class="n">cv_scores</span><span class="p">,</span>
-        <span class="s1">&#39;estimated&#39;</span><span class="p">:</span> <span class="n">estimated_scores</span><span class="p">,</span>
-        <span class="s1">&#39;real&#39;</span><span class="p">:</span> <span class="n">real_scores</span>
-    <span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;cv&quot;</span><span class="p">:</span> <span class="n">cv_scores</span><span class="p">,</span> <span class="s2">&quot;estimated&quot;</span><span class="p">:</span> <span class="n">estimated_scores</span><span class="p">,</span> <span class="s2">&quot;real&quot;</span><span class="p">:</span> <span class="n">real_scores</span><span class="p">}</span></div>
+
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -390,7 +398,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=91f6191e"></script>
+</div><script src="../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

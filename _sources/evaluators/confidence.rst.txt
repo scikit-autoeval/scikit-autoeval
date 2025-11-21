@@ -1,7 +1,7 @@
 ConfidenceThresholdEvaluator
 ----------------------------
 
-.. automodule:: evaluators.confidence
+.. automodule:: skeval.evaluators.confidence
    :members:
    :show-inheritance:
    :undoc-members:

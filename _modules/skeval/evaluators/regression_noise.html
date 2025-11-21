@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/skeval/evaluators/regression_noise.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>skeval.evaluators.regression_noise - scikit-autoeval 0.1.1 documentation</title>
+        <title>skeval.evaluators.regression_noise - scikit-autoeval 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">scikit-autoeval 0.1.1 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">scikit-autoeval 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -201,12 +201,20 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+  <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../modules.html">skeval</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../base.html">base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../evaluators.html">evaluators package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../metrics.html">metrics package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../evaluators/index.html">skeval.evaluators</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/agreement.html">AgreementEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/confidence.html">ConfidenceThresholdEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/regression.html">RegressionEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/regression_noise.html">RegressionNoiseEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/shap.html">ShapEvaluator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../base.html">skeval.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../metrics.html">skeval.metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../utils.html">skeval.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples.html">skeval.examples</a></li>
 </ul>
 </li>
 </ul>
@@ -246,6 +254,8 @@
           <h1>Source code for skeval.evaluators.regression_noise</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Authors: The scikit-autoeval developers</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">cast</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">clone</span>
@@ -253,8 +263,9 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.regression</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegressionEvaluator</span>
 
+
 <div class="viewcode-block" id="RegressionNoiseEvaluator">
-<a class="viewcode-back" href="../../../evaluators.html#evaluators.RegressionNoiseEvaluator">[docs]</a>
+<a class="viewcode-back" href="../../../evaluators/regression_noise.html#skeval.evaluators.regression_noise.RegressionNoiseEvaluator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RegressionNoiseEvaluator</span><span class="p">(</span><span class="n">RegressionEvaluator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Regression-based evaluator for classification models.</span>
 
@@ -276,8 +287,6 @@
 <span class="sd">    meta_regressor : object, default=None</span>
 <span class="sd">        A regression model implementing `fit` and `predict`. If None, a</span>
 <span class="sd">        `RandomForestRegressor` with 500 trees is used for each scorer.</span>
-<span class="sd">    n_splits : int, default=5</span>
-<span class="sd">        Number of random splits per dataset to generate multiple meta-examples.</span>
 <span class="sd">    scorer : callable or dict of str -&gt; callable, default=accuracy_score</span>
 <span class="sd">        The performance metric(s) to estimate. If a dictionary is provided, a</span>
 <span class="sd">        separate meta-regressor will be trained to estimate each metric.</span>
@@ -290,34 +299,74 @@
 <span class="sd">    meta_regressors_ : dict</span>
 <span class="sd">        A dictionary mapping each scorer&#39;s name to its fitted meta-regressor</span>
 <span class="sd">        instance. This attribute is populated after the `fit` method is called.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from sklearn.datasets import load_iris</span>
-<span class="sd">    &gt;&gt;&gt; from sklearn.linear_model import LogisticRegression</span>
-<span class="sd">    &gt;&gt;&gt; from sklearn.metrics import accuracy_score</span>
-<span class="sd">    &gt;&gt;&gt; from skeval.evaluators.regression import RegressionBasedEvaluator</span>
+<span class="sd">    &gt;&gt;&gt; # Authors: The scikit-autoeval developers</span>
+<span class="sd">    &gt;&gt;&gt; # SPDX-License-Identifier: BSD-3-Clause</span>
 <span class="sd">    &gt;&gt;&gt;</span>
-<span class="sd">    &gt;&gt;&gt; iris = load_iris()</span>
-<span class="sd">    &gt;&gt;&gt; X_list, y_list = [iris.data], [iris.target]</span>
-<span class="sd">    &gt;&gt;&gt; evaluator = RegressionBasedEvaluator(</span>
-<span class="sd">    ...     model=LogisticRegression(max_iter=1000),</span>
-<span class="sd">    ...     scorer=accuracy_score,</span>
-<span class="sd">    ...     verbose=False</span>
-<span class="sd">    ... )</span>
-<span class="sd">    &gt;&gt;&gt; evaluator.fit(X_list, y_list)</span>
-<span class="sd">    RegressionBasedEvaluator(...)</span>
-<span class="sd">    &gt;&gt;&gt; # Train a final model manually</span>
-<span class="sd">    &gt;&gt;&gt; final_model = LogisticRegression(max_iter=1000).fit(iris.data, iris.target)</span>
-<span class="sd">    &gt;&gt;&gt; evaluator.model = final_model</span>
-<span class="sd">    &gt;&gt;&gt; estimated_scores = evaluator.estimate(iris.data)</span>
-<span class="sd">    &gt;&gt;&gt; print(estimated_scores)</span>
-<span class="sd">    {&#39;score&#39;: ...}</span>
+<span class="sd">    &gt;&gt;&gt; # ==============================================================</span>
+<span class="sd">    &gt;&gt;&gt; # RegressionNoiseEvaluator Example</span>
+<span class="sd">    &gt;&gt;&gt; # ==============================================================</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.metrics import accuracy_score, f1_score</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.ensemble import RandomForestClassifier</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; from skeval.evaluators import RegressionNoiseEvaluator</span>
+<span class="sd">    &gt;&gt;&gt; from skeval.utils import get_cv_and_real_scores, print_comparison</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; def run_regression_noise_eval(verbose=False):</span>
+<span class="sd">    &gt;&gt;&gt;     # 1. Load datasets</span>
+<span class="sd">    &gt;&gt;&gt;     geriatrics = pd.read_csv(&quot;./skeval/datasets/geriatria-controle-alzheimerLabel.csv&quot;)</span>
+<span class="sd">    &gt;&gt;&gt;     neurology = pd.read_csv(&quot;./skeval/datasets/neurologia-controle-alzheimerLabel.csv&quot;)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # 2. Separate features and target</span>
+<span class="sd">    &gt;&gt;&gt;     X1, y1 = geriatrics.drop(columns=[&quot;Alzheimer&quot;]), geriatrics[&quot;Alzheimer&quot;]</span>
+<span class="sd">    &gt;&gt;&gt;     X2, y2 = neurology.drop(columns=[&quot;Alzheimer&quot;]), neurology[&quot;Alzheimer&quot;]</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # 3. Define pipeline (Optional preprocessing + RandomForest)</span>
+<span class="sd">    &gt;&gt;&gt;     model = RandomForestClassifier(n_estimators=180, random_state=42)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # 4. Define scorers and evaluator</span>
+<span class="sd">    &gt;&gt;&gt;     scorers = {</span>
+<span class="sd">    &gt;&gt;&gt;         &quot;accuracy&quot;: accuracy_score,</span>
+<span class="sd">    &gt;&gt;&gt;         &quot;f1_macro&quot;: lambda y, p: f1_score(y, p, average=&quot;macro&quot;),</span>
+<span class="sd">    &gt;&gt;&gt;     }</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     evaluator = RegressionNoiseEvaluator(model=model, scorer=scorers, verbose=False)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # 5. Fit evaluator using multiple datasets (builds meta-dataset with label noise)</span>
+<span class="sd">    &gt;&gt;&gt;     evaluator.fit([X1, X2], [y1, y2], n_splits=5)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # 6. Estimate scores for new dataset</span>
+<span class="sd">    &gt;&gt;&gt;     estimated_scores = evaluator.estimate(X2)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     # 7. Cross-Validation and Real Performance</span>
+<span class="sd">    &gt;&gt;&gt;     train_data = X1, y1</span>
+<span class="sd">    &gt;&gt;&gt;     test_data = X2, y2</span>
+<span class="sd">    &gt;&gt;&gt;     scores_dict = get_cv_and_real_scores(</span>
+<span class="sd">    &gt;&gt;&gt;         model=model, scorers=scorers, train_data=train_data, test_data=test_data</span>
+<span class="sd">    &gt;&gt;&gt;     )</span>
+<span class="sd">    &gt;&gt;&gt;     cv_scores = scores_dict[&quot;cv_scores&quot;]</span>
+<span class="sd">    &gt;&gt;&gt;     real_scores = scores_dict[&quot;real_scores&quot;]</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;     if verbose:</span>
+<span class="sd">    &gt;&gt;&gt;         print_comparison(scorers, cv_scores, estimated_scores, real_scores)</span>
+<span class="sd">    &gt;&gt;&gt;     return {&quot;cv&quot;: cv_scores, &quot;estimated&quot;: estimated_scores, &quot;real&quot;: real_scores}</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; if __name__ == &quot;__main__&quot;:</span>
+<span class="sd">    &gt;&gt;&gt;     results = run_regression_noise_eval(verbose=True)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
 <div class="viewcode-block" id="RegressionNoiseEvaluator.fit">
-<a class="viewcode-back" href="../../../evaluators.html#evaluators.RegressionNoiseEvaluator.fit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">start_noise</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">end_noise</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">step_noise</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../evaluators/regression_noise.html#skeval.evaluators.regression_noise.RegressionNoiseEvaluator.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+        <span class="n">y</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+        <span class="n">n_splits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">noise_cfg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegressionNoiseEvaluator&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Trains the internal meta-regressor(s) using a single model type.</span>
 
 <span class="sd">        This method builds a meta-dataset to train the evaluator. For each dataset,</span>
@@ -325,85 +374,181 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : list of array-like</span>
+<span class="sd">        x : list of array-like</span>
 <span class="sd">            A list of datasets (features) used to train the meta-model.</span>
 <span class="sd">        y : list of array-like</span>
-<span class="sd">            A list of labels corresponding to `X`.</span>
-<span class="sd">        start_noise : int, default=10</span>
-<span class="sd">            The starting percentage of label noise to introduce in the holdout set.</span>
-<span class="sd">        end_noise : int, default=100</span>
-<span class="sd">            The ending percentage of label noise to introduce in the holdout set.</span>
-<span class="sd">        step_noise : int, default=10</span>
-<span class="sd">            The step size for increasing the percentage of label noise.</span>
+<span class="sd">            A list of labels corresponding to `x`.</span>
+<span class="sd">        n_splits : int, default=5</span>
+<span class="sd">            Number of random splits per dataset to generate multiple meta-examples.</span>
+<span class="sd">        noise_cfg : dict, default=None</span>
+<span class="sd">            Configuration for label noise levels:</span>
+<span class="sd">            - &#39;start&#39;: int, starting percentage of label noise (inclusive).</span>
+<span class="sd">            - &#39;end&#39;: int, ending percentage of label noise (inclusive).</span>
+<span class="sd">            - &#39;step&#39;: int, step size for noise percentage increments.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        self : object</span>
 <span class="sd">            The fitted evaluator instance.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - This evaluator extends `RegressionEvaluator` by generating meta-examples</span>
+<span class="sd">            that incorporate controlled label noise. The `noise_cfg` parameter</span>
+<span class="sd">            configures the percentage(s) of examples to permute during meta-example</span>
+<span class="sd">            generation.</span>
+<span class="sd">        - The `fit` method expects `x` and `y` to be lists of datasets (as in</span>
+<span class="sd">            `RegressionEvaluator`). Each dataset is processed with multiple splits</span>
+<span class="sd">            and multiple noise levels to build a larger meta-dataset.</span>
+<span class="sd">        - After training meta-regressors, `fit` will fit `self.model` on the first</span>
+<span class="sd">            provided dataset (`x[0], y[0]`). If you wish to use a separately trained</span>
+<span class="sd">            final model before calling `estimate`, set `evaluator.model` to your</span>
+<span class="sd">            fitted estimator manually.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">start_noise</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">end_noise</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="ow">or</span> <span class="n">step_noise</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Noise parameters must satisfy: 0 &lt;= start_noise &lt;= end_noise &lt;= 100 and step_noise &gt; 0.&quot;</span><span class="p">)</span>
-        
-        <span class="n">scorers_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scorer_names</span><span class="p">()</span>
-        <span class="n">meta_features</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">meta_targets</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">scorers_names</span><span class="p">}</span>
-        
-        <span class="k">for</span> <span class="n">X_i</span><span class="p">,</span> <span class="n">y_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">split</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_splits</span><span class="p">):</span>
-                <span class="n">est</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">noise_cfg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">noise_cfg</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
 
-                <span class="n">stratify_y</span> <span class="o">=</span> <span class="n">y_i</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_i</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span>
-                <span class="n">X_train_meta</span><span class="p">,</span> <span class="n">X_holdout_meta</span><span class="p">,</span> <span class="n">y_train_meta</span><span class="p">,</span> <span class="n">y_holdout_meta</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
-                    <span class="n">X_i</span><span class="p">,</span> <span class="n">y_i</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.33</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span> <span class="o">+</span> <span class="n">split</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">stratify_y</span>
-                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_noise_params</span><span class="p">(</span><span class="n">noise_cfg</span><span class="p">)</span>
 
-                <span class="n">est</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_meta</span><span class="p">,</span> <span class="n">y_train_meta</span><span class="p">)</span>
+        <span class="n">scorer_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scorer_names</span><span class="p">()</span>
 
-                <span class="n">feats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_metafeatures</span><span class="p">(</span><span class="n">est</span><span class="p">,</span> <span class="n">X_holdout_meta</span><span class="p">)</span>
+        <span class="n">meta_cfg</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;targets&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">scorer_names</span><span class="p">},</span>
+            <span class="s2">&quot;scorer_names&quot;</span><span class="p">:</span> <span class="n">scorer_names</span><span class="p">,</span>
+        <span class="p">}</span>
 
-                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_noise</span><span class="p">,</span> <span class="p">(</span><span class="n">end_noise</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">step_noise</span><span class="p">):</span>
-                    <span class="n">n_noisy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_holdout_meta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">x_i</span><span class="p">,</span> <span class="n">y_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_process_single_dataset</span><span class="p">((</span><span class="n">x_i</span><span class="p">,</span> <span class="n">y_i</span><span class="p">),</span> <span class="n">noise_cfg</span><span class="p">,</span> <span class="n">meta_cfg</span><span class="p">,</span> <span class="n">n_splits</span><span class="p">)</span>
 
-                    <span class="n">X_noisy_part</span> <span class="o">=</span> <span class="n">X_holdout_meta</span><span class="p">[:</span><span class="n">n_noisy</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_train_meta_regressors</span><span class="p">(</span><span class="n">meta_cfg</span><span class="p">)</span>
 
-                    <span class="n">X_clean_part</span> <span class="o">=</span> <span class="n">X_holdout_meta</span><span class="p">[</span><span class="n">n_noisy</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># Base model fit (lógica original preservada)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
-                    <span class="c1"># set noise</span>
-                    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span> <span class="o">+</span> <span class="n">p</span> <span class="o">+</span> <span class="n">split</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">X_holdout_meta</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                        
-                        <span class="n">X_noisy_part</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">X_noisy_part</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
-                        
-                        <span class="n">X_concat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X_noisy_part</span><span class="p">,</span> <span class="n">X_clean_part</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-                        <span class="n">y_pred_holdout</span> <span class="o">=</span> <span class="n">est</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_concat</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_noise_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">noise_cfg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">has_all_keys</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">noise_cfg</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">])</span>
 
-                        <span class="n">meta_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feats</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-                        
-                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">scorers_names</span><span class="p">:</span>
-                                <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-                                <span class="n">score</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">y_holdout_meta</span><span class="p">,</span> <span class="n">y_pred_holdout</span><span class="p">)</span>
-                                <span class="n">meta_targets</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
-                        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">):</span>
-                            <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">(</span><span class="n">y_holdout_meta</span><span class="p">,</span> <span class="n">y_pred_holdout</span><span class="p">)</span>
-                            <span class="n">meta_targets</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">has_all_keys</span>
+            <span class="ow">or</span> <span class="n">noise_cfg</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+            <span class="ow">or</span> <span class="n">noise_cfg</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">100</span>
+            <span class="ow">or</span> <span class="n">noise_cfg</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Noise parameters must satisfy: &quot;</span>
+                <span class="s2">&quot;0 &lt;= start &lt;= end &lt;= 100 and step &gt; 0.&quot;</span>
+            <span class="p">)</span>
 
-        <span class="n">meta_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">meta_features</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_single_dataset</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">train_data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">noise_cfg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">meta_cfg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">n_splits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Processes one dataset by generating meta-examples.&quot;&quot;&quot;</span>
+        <span class="n">y_i</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">unique_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_i</span><span class="p">)</span>
+        <span class="n">stratify_y</span> <span class="o">=</span> <span class="n">y_i</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">split</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_splits</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_process_single_split</span><span class="p">(</span>
+                <span class="n">train_data</span><span class="p">,</span> <span class="n">stratify_y</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="p">(</span><span class="n">noise_cfg</span><span class="p">,</span> <span class="n">meta_cfg</span><span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_single_split</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">train_data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">stratify_y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+        <span class="n">split</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">cfg</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Processes each train/holdout split.&quot;&quot;&quot;</span>
+        <span class="n">base_model</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">noise_cfg</span><span class="p">,</span> <span class="n">meta_cfg</span> <span class="o">=</span> <span class="n">cfg</span>
+
+        <span class="n">x_train</span><span class="p">,</span> <span class="n">x_holdout</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_holdout</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+            <span class="n">train_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">train_data</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">test_size</span><span class="o">=</span><span class="mf">0.33</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span> <span class="o">+</span> <span class="n">split</span><span class="p">,</span>
+            <span class="n">stratify</span><span class="o">=</span><span class="n">stratify_y</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">base_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+        <span class="n">metafeats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_metafeatures</span><span class="p">(</span><span class="n">base_model</span><span class="p">,</span> <span class="n">x_holdout</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">noise_p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span>
+            <span class="n">noise_cfg</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">noise_cfg</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">noise_cfg</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="n">generation_cfg</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="n">meta_cfg</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;targets&quot;</span><span class="p">:</span> <span class="n">meta_cfg</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;scorer_names&quot;</span><span class="p">:</span> <span class="n">meta_cfg</span><span class="p">[</span><span class="s2">&quot;scorer_names&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;metafeats&quot;</span><span class="p">:</span> <span class="n">metafeats</span><span class="p">,</span>
+                <span class="s2">&quot;noise_p&quot;</span><span class="p">:</span> <span class="n">noise_p</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_generate_noise_meta_example</span><span class="p">(</span>
+                <span class="n">base_model</span><span class="p">,</span> <span class="p">(</span><span class="n">x_holdout</span><span class="p">,</span> <span class="n">y_holdout</span><span class="p">),</span> <span class="n">split</span><span class="p">,</span> <span class="n">generation_cfg</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_noise_meta_example</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">base_model</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">holdout</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">split</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds one meta-example (metafeatures + performance target).&quot;&quot;&quot;</span>
+        <span class="n">x_holdout</span><span class="p">,</span> <span class="n">y_holdout</span> <span class="o">=</span> <span class="n">holdout</span>
+        <span class="c1"># Ensure x_holdout is a DataFrame so column-wise permutation works</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x_holdout</span><span class="p">,</span> <span class="s2">&quot;columns&quot;</span><span class="p">):</span>
+            <span class="n">x_holdout</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">x_holdout</span><span class="p">)</span>
+
+        <span class="n">n_noisy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_holdout</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;noise_p&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">))</span>
+
+        <span class="n">x_noisy</span> <span class="o">=</span> <span class="n">x_holdout</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">n_noisy</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">x_clean</span> <span class="o">=</span> <span class="n">x_holdout</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">n_noisy</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span> <span class="o">+</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;noise_p&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">split</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">x_holdout</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">x_noisy</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">x_noisy</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="n">x_concat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">x_noisy</span><span class="p">,</span> <span class="n">x_clean</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">base_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_concat</span><span class="p">)</span>
+
+        <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;metafeats&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_meta_targets</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">],</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;scorer_names&quot;</span><span class="p">],</span> <span class="n">y_holdout</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_store_meta_targets</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">meta_targets</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+        <span class="n">scorer_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">y_true</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">y_pred</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stores score values for one meta-example.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">scorer_names</span><span class="p">:</span>
+                <span class="n">meta_targets</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scorer_fn</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">)</span>
+            <span class="n">meta_targets</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">scorer_fn</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_train_meta_regressors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meta_cfg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Trains one regressor per scorer.&quot;&quot;&quot;</span>
+        <span class="n">meta_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">meta_cfg</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meta_regressors_</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">scorers_names</span><span class="p">:</span>
-            <span class="n">meta_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">meta_targets</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">meta_cfg</span><span class="p">[</span><span class="s2">&quot;scorer_names&quot;</span><span class="p">]:</span>
+            <span class="n">y_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">meta_cfg</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">][</span><span class="n">name</span><span class="p">])</span>
             <span class="n">reg</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_regressor</span><span class="p">)</span>
-            <span class="n">reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">meta_features</span><span class="p">,</span> <span class="n">meta_y</span><span class="p">)</span>
+            <span class="n">reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">meta_features</span><span class="p">,</span> <span class="n">y_arr</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">meta_regressors_</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reg</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[INFO] Meta-regressor for &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; has been trained.&quot;</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-</div>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[INFO] Meta-regressor for &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; has been trained.&quot;</span><span class="p">)</span></div>
 
 </pre></div>
         </article>
@@ -437,7 +582,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=91f6191e"></script>
+</div><script src="../../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>

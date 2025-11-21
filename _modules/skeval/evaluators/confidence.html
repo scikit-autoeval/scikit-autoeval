@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/skeval/evaluators/confidence.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>skeval.evaluators.confidence - scikit-autoeval 0.1.1 documentation</title>
+        <title>skeval.evaluators.confidence - scikit-autoeval 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">scikit-autoeval 0.1.1 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">scikit-autoeval 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -201,12 +201,20 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+  <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../modules.html">skeval</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../base.html">base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../evaluators.html">evaluators package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../metrics.html">metrics package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../evaluators/index.html">skeval.evaluators</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/agreement.html">AgreementEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/confidence.html">ConfidenceThresholdEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/regression.html">RegressionEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/regression_noise.html">RegressionNoiseEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../evaluators/shap.html">ShapEvaluator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../base.html">skeval.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../metrics.html">skeval.metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../utils.html">skeval.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples.html">skeval.examples</a></li>
 </ul>
 </li>
 </ul>
@@ -246,97 +254,107 @@
           <h1>Source code for skeval.evaluators.confidence</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Authors: The scikit-autoeval developers</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">skeval.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEvaluator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_is_fitted</span>
 
+
 <div class="viewcode-block" id="ConfidenceThresholdEvaluator">
-<a class="viewcode-back" href="../../../evaluators.html#evaluators.ConfidenceThresholdEvaluator">[docs]</a>
+<a class="viewcode-back" href="../../../evaluators/confidence.html#skeval.evaluators.confidence.ConfidenceThresholdEvaluator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConfidenceThresholdEvaluator</span><span class="p">(</span><span class="n">BaseEvaluator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Confidence-based evaluator for classification models.</span>
-<span class="sd">    </span>
-<span class="sd">    This evaluator filters the predictions of a classification model based on a</span>
-<span class="sd">    confidence threshold. Only predictions with a confidence greater than or</span>
-<span class="sd">    equal to the specified threshold are considered for scoring.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Confidence-based evaluator for classification models.</span>
+
+<span class="sd">    This evaluator filters predictions from a classification model according to</span>
+<span class="sd">    a confidence threshold. Only predictions whose confidence (top-class</span>
+<span class="sd">    probability, or other chosen score) is greater than or equal to the given</span>
+<span class="sd">    threshold are treated as &quot;trusted&quot;; the remaining predictions are flipped</span>
+<span class="sd">    (binary case) to build an expected label vector used for metric estimation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    model : object</span>
-<span class="sd">        Any model with `fit`, `predict`, and `predict_proba` or</span>
-<span class="sd">        `decision_function` methods.</span>
+<span class="sd">        Any classifier implementing ``fit``, ``predict`` and either</span>
+<span class="sd">        ``predict_proba`` or ``decision_function``.</span>
 <span class="sd">    scorer : callable or dict of str -&gt; callable, default=accuracy_score</span>
-<span class="sd">        An evaluation function or a dictionary of multiple evaluation functions.</span>
-<span class="sd">    threshold : float, default=0.8</span>
-<span class="sd">        The minimum confidence required to include a prediction in the calculation.</span>
-<span class="sd">    limit_to_top_class : bool, default=True</span>
-<span class="sd">        If True, uses only the probability of the top class as the confidence score.</span>
+<span class="sd">        Single scoring function or mapping of metric names to callables with</span>
+<span class="sd">        signature ``scorer(y_true, y_pred)``.</span>
 <span class="sd">    verbose : bool, default=False</span>
-<span class="sd">        If True, prints additional information during evaluation.</span>
+<span class="sd">        If ``True``, prints intermediate information during fitting and</span>
+<span class="sd">        estimation.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    model : object</span>
-<span class="sd">        The model passed in the constructor.</span>
+<span class="sd">        The primary model evaluated.</span>
 <span class="sd">    scorer : callable or dict</span>
-<span class="sd">        The scoring function(s) passed in the constructor.</span>
-<span class="sd">    threshold : float</span>
-<span class="sd">        The confidence threshold.</span>
-<span class="sd">    limit_to_top_class : bool</span>
-<span class="sd">        Indicates if confidence is based solely on the highest probability class.</span>
+<span class="sd">        Scoring function(s) applied to agreement-based labels.</span>
 <span class="sd">    verbose : bool</span>
-<span class="sd">        The verbosity level.</span>
+<span class="sd">        Verbosity flag.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
-<span class="sd">    &gt;&gt;&gt; from sklearn.linear_model import LogisticRegression</span>
-<span class="sd">    &gt;&gt;&gt; from sklearn.metrics import precision_score, recall_score</span>
-<span class="sd">    &gt;&gt;&gt; # Sample data</span>
-<span class="sd">    &gt;&gt;&gt; X_train = np.array([[1], [2], [3], [4], [5], [6]])</span>
-<span class="sd">    &gt;&gt;&gt; y_train = np.array([0, 0, 0, 1, 1, 1])</span>
-<span class="sd">    &gt;&gt;&gt; X_test = np.array([[0.5], [0.8], [3.5], [5.5]])</span>
-<span class="sd">    &gt;&gt;&gt; # 1. Create and train a standard classifier</span>
-<span class="sd">    &gt;&gt;&gt; classifier = LogisticRegression(solver=&#39;liblinear&#39;, random_state=0)</span>
-<span class="sd">    &gt;&gt;&gt; classifier.fit(X_train, y_train)</span>
-<span class="sd">    LogisticRegression(random_state=0, solver=&#39;liblinear&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; # 2. Create the evaluator with the trained classifier</span>
-<span class="sd">    &gt;&gt;&gt; scorings = {&#39;precision&#39;: precision_score, &#39;recall&#39;: recall_score}</span>
-<span class="sd">    &gt;&gt;&gt; conf_eval = ConfidenceThresholdEvaluator(</span>
-<span class="sd">    ...     model=classifier,</span>
-<span class="sd">    ...     scorer=scorings,</span>
-<span class="sd">    ...     threshold=0.9</span>
+<span class="sd">    Example using medical datasets and a RandomForest pipeline:</span>
+
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.metrics import accuracy_score, f1_score</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.impute import KNNImputer</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.pipeline import make_pipeline</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.ensemble import RandomForestClassifier</span>
+<span class="sd">    &gt;&gt;&gt; from skeval.evaluators.confidence import ConfidenceThresholdEvaluator</span>
+<span class="sd">    &gt;&gt;&gt; from skeval.utils import get_cv_and_real_scores, print_comparison</span>
+<span class="sd">    &gt;&gt;&gt; # 1. Load datasets</span>
+<span class="sd">    &gt;&gt;&gt; df_geriatrics = pd.read_csv(&quot;geriatria.csv&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; df_neurology = pd.read_csv(&quot;neurologia.csv&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; # 2. Separate features and target</span>
+<span class="sd">    &gt;&gt;&gt; X1, y1 = df_geriatrics.drop(columns=[&quot;Alzheimer&quot;]), df_geriatrics[&quot;Alzheimer&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; X2, y2 = df_neurology.drop(columns=[&quot;Alzheimer&quot;]), df_neurology[&quot;Alzheimer&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; # 3. Define model pipeline</span>
+<span class="sd">    &gt;&gt;&gt; model = make_pipeline(</span>
+<span class="sd">    ...     KNNImputer(n_neighbors=4),</span>
+<span class="sd">    ...     RandomForestClassifier(n_estimators=300, random_state=42),</span>
 <span class="sd">    ... )</span>
-<span class="sd">    &gt;&gt;&gt; # 3. The fit method is for compatibility, not strictly needed here</span>
-<span class="sd">    &gt;&gt;&gt; #    since the model is already trained.</span>
-<span class="sd">    &gt;&gt;&gt; conf_eval.fit(X_train, y_train)</span>
-<span class="sd">    ConfidenceThresholdEvaluator(...)</span>
-<span class="sd">    &gt;&gt;&gt; # 4. Estimate the performance on the test set</span>
-<span class="sd">    &gt;&gt;&gt; #    The evaluator will internally call classifier.predict_proba(X_test)</span>
-<span class="sd">    &gt;&gt;&gt; scores = conf_eval.estimate(X_test)</span>
-<span class="sd">    &gt;&gt;&gt; for score_name, value in scores.items():</span>
-<span class="sd">    ...     print(f&quot;{score_name}: {value:.2f}&quot;)</span>
-<span class="sd">    precision: 1.00</span>
-<span class="sd">    recall: 1.00</span>
+<span class="sd">    &gt;&gt;&gt; # 4. Initialize evaluator with scorers</span>
+<span class="sd">    &gt;&gt;&gt; scorers = {</span>
+<span class="sd">    ...     &quot;accuracy&quot;: accuracy_score,</span>
+<span class="sd">    ...     &quot;f1_macro&quot;: lambda y, p: f1_score(y, p, average=&quot;macro&quot;),</span>
+<span class="sd">    ... }</span>
+<span class="sd">    &gt;&gt;&gt; evaluator = ConfidenceThresholdEvaluator(model=model, scorer=scorers)</span>
+<span class="sd">    &gt;&gt;&gt; # 5. Fit evaluator</span>
+<span class="sd">    &gt;&gt;&gt; evaluator.fit(X1, y1)</span>
+<span class="sd">    &gt;&gt;&gt; # 6. Estimated performance (using confidence threshold)</span>
+<span class="sd">    &gt;&gt;&gt; estimated_scores = evaluator.estimate(X2, threshold=0.65, limit_to_top_class=True)</span>
+<span class="sd">    &gt;&gt;&gt; # 7. Cross-validation and real performance comparison</span>
+<span class="sd">    &gt;&gt;&gt; scores_dict = get_cv_and_real_scores(</span>
+<span class="sd">    ...     model=model, scorers=scorers, train_data=(X1, y1), test_data=(X2, y2)</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; cv_scores = scores_dict[&quot;cv_scores&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; real_scores = scores_dict[&quot;real_scores&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; print_comparison(scorers, cv_scores, estimated_scores, real_scores)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.65</span><span class="p">,</span> <span class="n">limit_to_top_class</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">scorer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">scorer</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">limit_to_top_class</span> <span class="o">=</span> <span class="n">limit_to_top_class</span>
 
 <div class="viewcode-block" id="ConfidenceThresholdEvaluator.fit">
-<a class="viewcode-back" href="../../../evaluators.html#evaluators.ConfidenceThresholdEvaluator.fit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../evaluators/confidence.html#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ConfidenceThresholdEvaluator&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fits the model to the training data.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
+<span class="sd">        x : array-like of shape (n_samples, n_features)</span>
 <span class="sd">            The training input samples.</span>
 <span class="sd">        y : array-like of shape (n_samples,)</span>
 <span class="sd">            The target labels.</span>
@@ -347,14 +365,16 @@
 <span class="sd">            Returns the instance itself.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[INFO] Model has been trained.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Model has been trained.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
 <div class="viewcode-block" id="ConfidenceThresholdEvaluator.estimate">
-<a class="viewcode-back" href="../../../evaluators.html#evaluators.ConfidenceThresholdEvaluator.estimate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_eval</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../evaluators/confidence.html#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.estimate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">x_eval</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.65</span><span class="p">,</span> <span class="n">limit_to_top_class</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Estimates scores based on the confidence threshold.</span>
 
@@ -364,8 +384,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X_eval : array-like of shape (n_samples, n_features)</span>
+<span class="sd">        x_eval : array-like of shape (n_samples, n_features)</span>
 <span class="sd">            Input data for which to estimate scores.</span>
+<span class="sd">        threshold : float, default=0.8</span>
+<span class="sd">            The minimum confidence required to include a prediction in the calculation.</span>
+<span class="sd">        limit_to_top_class : bool, default=True</span>
+<span class="sd">            If True, uses only the probability of the top class as the confidence score.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -375,84 +399,95 @@
 <span class="sd">            If no predictions pass the threshold, it returns 0.0 for each scorer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
-   
-        <span class="n">conf</span><span class="p">,</span> <span class="n">correct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_confidences_and_correct</span><span class="p">(</span><span class="n">X_eval</span><span class="p">)</span>
-        
+
+        <span class="n">conf</span><span class="p">,</span> <span class="n">correct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_confidences_and_correct</span><span class="p">(</span>
+            <span class="n">x_eval</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">limit_to_top_class</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_print_verbose_confidence_info</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">correct</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">correct</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_no_confident_predictions</span><span class="p">()</span>
+
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_eval</span><span class="p">)</span>
+        <span class="n">y_estimated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_estimated_labels</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">correct</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_print_verbose_label_info</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y_estimated</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_scores</span><span class="p">(</span><span class="n">y_estimated</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_print_verbose_confidence_info</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">conf</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">correct</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Confidences:&quot;</span><span class="p">,</span> <span class="n">conf</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Passed threshold:&quot;</span><span class="p">,</span> <span class="n">correct</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">correct</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] No predictions passed the threshold.&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scorer_names</span><span class="p">()}</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_no_confident_predictions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] No predictions passed the threshold.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scorer_names</span><span class="p">()}</span>
 
-        <span class="n">y_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_eval</span><span class="p">)</span>
-        <span class="n">y_estimated</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">correct</span><span class="p">)]</span>
-        <span class="n">y_estimated</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">y_estimated</span><span class="p">]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_estimated_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">correct</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="n">y_estimated</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">correct</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">y_estimated</span><span class="p">]</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_print_verbose_label_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">y_estimated</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] y_pred:&quot;</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] y_estimated:&quot;</span><span class="p">,</span> <span class="n">y_estimated</span><span class="p">)</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_estimated</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">scores</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">name</span><span class="p">:</span> <span class="n">func</span><span class="p">(</span><span class="n">y_estimated</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+            <span class="n">scores</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">name</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">y_estimated</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
                 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="p">}</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Estimated scores:&quot;</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">scores</span>
-        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">):</span>
-            <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">(</span><span class="n">y_estimated</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">):</span>
+            <span class="n">score_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">(</span><span class="n">y_estimated</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Estimated score:&quot;</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="n">score</span><span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;scorer&#39; must be a callable or a dict of callables.&quot;</span><span class="p">)</span></div>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Estimated score:&quot;</span><span class="p">,</span> <span class="n">score_val</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">score_val</span><span class="p">}</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;scorer&#39; must be a callable or a dict of callables.&quot;</span><span class="p">)</span>
 
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">__get_confidences_and_correct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__get_confidences_and_correct</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">limit_to_top_class</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes confidence scores and applies the confidence threshold.</span>
-
-<span class="sd">        This private method extracts prediction confidences from the model,</span>
-<span class="sd">        either from `predict_proba` or `decision_function`. It then compares</span>
-<span class="sd">        these confidences against the `threshold` to determine which predictions</span>
-<span class="sd">        are considered to meet the confidence criteria.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
-<span class="sd">            The input data.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        confidences : ndarray</span>
-<span class="sd">            An array of confidence scores for each sample.</span>
-<span class="sd">        correct : ndarray of bool</span>
-<span class="sd">            A boolean array indicating `True` for samples where confidence</span>
-<span class="sd">            is greater than or equal to the `threshold`.</span>
-<span class="sd">        </span>
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        ValueError</span>
-<span class="sd">            If the model does not implement `predict_proba` or</span>
-<span class="sd">            `decision_function` methods.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;predict_proba&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;decision_function&#39;</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The model must implement predict_proba or decision_function.&quot;</span><span class="p">)</span>
-        
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;predict_proba&quot;</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;decision_function&quot;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The model must implement predict_proba or decision_function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;predict_proba&quot;</span><span class="p">):</span>
-            <span class="n">probas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-            <span class="n">conf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">probas</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit_to_top_class</span> <span class="k">else</span> <span class="n">probas</span>
+            <span class="n">probas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">conf</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">probas</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">limit_to_top_class</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">probas</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;decision_function&quot;</span><span class="p">):</span>
-            <span class="n">decision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-            <span class="n">conf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">decision</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">decision</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">decision</span><span class="p">)</span>
+            <span class="n">decision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">conf</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">decision</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">decision</span><span class="p">,</span> <span class="s2">&quot;ndim&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+                <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">decision</span><span class="p">))</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The model must implement predict_proba or decision_function.&quot;</span><span class="p">)</span>
-        
-        <span class="n">correct</span> <span class="o">=</span> <span class="n">conf</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The model must implement predict_proba or decision_function.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">correct</span> <span class="o">=</span> <span class="n">conf</span> <span class="o">&gt;=</span> <span class="n">threshold</span>
         <span class="k">return</span> <span class="n">conf</span><span class="p">,</span> <span class="n">correct</span></div>
 
 </pre></div>
@@ -487,7 +522,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=91f6191e"></script>
+</div><script src="../../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>

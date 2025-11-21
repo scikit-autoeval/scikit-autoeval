@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/evaluators/agreement.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>evaluators.agreement - scikit-autoeval 0.1.1 documentation</title>
+        <title>evaluators.agreement - scikit-autoeval 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">scikit-autoeval 0.1.1 documentation</div></a>
+      <a href="../../index.html"><div class="brand">scikit-autoeval 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -204,10 +204,18 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">skeval</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../evaluators/index.html">skeval.evaluators</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/agreement.html">AgreementEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/confidence.html">ConfidenceThresholdEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/regression.html">RegressionEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/regression_noise.html">RegressionNoiseEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/shap.html">ShapEvaluator</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../base.html">skeval.base</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../evaluators.html">skeval.evaluators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../metrics.html">skeval.metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../utils.html">skeval.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html">skeval.examples</a></li>
 </ul>
 </li>
 </ul>
@@ -253,8 +261,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">skeval.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEvaluator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_is_fitted</span>
 
+
 <div class="viewcode-block" id="AgreementEvaluator">
-<a class="viewcode-back" href="../../evaluators.html#evaluators.agreement.AgreementEvaluator">[docs]</a>
+<a class="viewcode-back" href="../../evaluators/agreement.html#evaluators.agreement.AgreementEvaluator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AgreementEvaluator</span><span class="p">(</span><span class="n">BaseEvaluator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Evaluator based on agreement/disagreement between the target model (M)</span>
@@ -280,7 +289,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span> <span class="o">=</span> <span class="n">sec_model</span> <span class="k">if</span> <span class="n">sec_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">GaussianNB</span><span class="p">()</span>
 
 <div class="viewcode-block" id="AgreementEvaluator.fit">
-<a class="viewcode-back" href="../../evaluators.html#evaluators.agreement.AgreementEvaluator.fit">[docs]</a>
+<a class="viewcode-back" href="../../evaluators/agreement.html#evaluators.agreement.AgreementEvaluator.fit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fit the evaluator by generating predictions from both models.</span>
@@ -295,7 +304,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Fit completed.&quot;</span><span class="p">)</span>
 
@@ -303,7 +312,7 @@
 
 
 <div class="viewcode-block" id="AgreementEvaluator.estimate">
-<a class="viewcode-back" href="../../evaluators.html#evaluators.agreement.AgreementEvaluator.estimate">[docs]</a>
+<a class="viewcode-back" href="../../evaluators/agreement.html#evaluators.agreement.AgreementEvaluator.estimate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_eval</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Estimate the agreement score between the main and secondary models.</span>
@@ -318,18 +327,21 @@
 <span class="sd">        scores : dict or float</span>
 <span class="sd">            Agreement score(s) computed using the provided scorer(s).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span><span class="p">)</span>
-        
+
         <span class="n">pred_main</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_eval</span><span class="p">)</span>
         <span class="n">pred_secondary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sec_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_eval</span><span class="p">)</span>
 
         <span class="n">agreement</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred_main</span> <span class="o">==</span> <span class="n">pred_secondary</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">y_agreement</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">if</span> <span class="n">a</span> <span class="k">else</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pred_main</span><span class="p">,</span> <span class="n">agreement</span><span class="p">)]</span>
-        
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_agreement</span><span class="p">,</span> <span class="n">agreement</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="n">name</span><span class="p">:</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_agreement</span><span class="p">,</span> <span class="n">agreement</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scorer</span><span class="p">(</span><span class="n">y_agreement</span><span class="p">,</span> <span class="n">agreement</span><span class="p">)</span></div>
 </div>
@@ -366,7 +378,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=91f6191e"></script>
+</div><script src="../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

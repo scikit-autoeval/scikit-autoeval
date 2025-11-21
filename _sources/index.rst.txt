@@ -14,17 +14,79 @@ To install the library from PyPI, run:
 
    pip install scikit-autoeval
 
+   Quick Example
+   -------------
+
+   A short runnable example showing how to use the `ShapEvaluator` to estimate
+   performance and compare it to cross-validated and real scores::
+
+      # Authors: The scikit-autoeval developers
+      # SPDX-License-Identifier: BSD-3-Clause
+
+      # ==============================================================
+      # ShapEvaluator Example
+      # ==============================================================
+
+      import pandas as pd
+      from sklearn.metrics import accuracy_score, f1_score
+      from sklearn.impute import KNNImputer
+      from sklearn.pipeline import make_pipeline
+      from xgboost import XGBClassifier
+
+      from skeval.evaluators.shap import ShapEvaluator
+      from skeval.utils import get_cv_and_real_scores, print_comparison
+
+
+      # 1. Load datasets
+      geriatrics = pd.read_csv("./skeval/datasets/geriatria-controle-alzheimerLabel.csv")
+      neurology = pd.read_csv("./skeval/datasets/neurologia-controle-alzheimerLabel.csv")
+
+      # 2. Separate features and target
+      X1, y1 = geriatrics.drop(columns=["Alzheimer"]), geriatrics["Alzheimer"]
+      X2, y2 = neurology.drop(columns=["Alzheimer"]), neurology["Alzheimer"]
+
+      # 3. Define pipeline (KNNImputer + XGBoost)
+      model = make_pipeline(KNNImputer(n_neighbors=5), XGBClassifier())
+
+      # 4. Define scorers and evaluator
+      scorers = {
+         "accuracy": accuracy_score,
+         "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
+      }
+
+      evaluator = ShapEvaluator(
+         model=model,
+         scorer=scorers,
+         verbose=False,
+         inner_clf=XGBClassifier(random_state=42),
+      )
+
+      # 5. Fit evaluator on geriatrics data
+      evaluator.fit(X1, y1)
+
+      # 6. Estimate performance (train on X1, estimate on X2)
+      estimated_scores = evaluator.estimate(X2)
+
+      # 7. Compute real and CV performance
+      train_data = X1, y1
+      test_data = X2, y2
+      scores_dict = get_cv_and_real_scores(
+         model=model, scorers=scorers, train_data=train_data, test_data=test_data
+      )
+      cv_scores = scores_dict["cv_scores"]
+      real_scores = scores_dict["real_scores"]
+
+      print_comparison(scorers, cv_scores, estimated_scores, real_scores)
+
 Contents
 --------
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
 
    modules
 
 .. Indices
 
-* :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
+* :ref:`modindex`

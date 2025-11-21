@@ -202,8 +202,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">skeval</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="evaluators/index.html">skeval.evaluators</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="evaluators/agreement.html">AgreementEvaluator</a></li>
@@ -267,12 +266,18 @@
 <span id="skeval-utils"></span><h1>skeval.utils<a class="headerlink" href="#module-skeval.utils" title="Link to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="skeval.utils.check_is_fitted">
-<span class="sig-prename descclassname"><span class="pre">skeval.utils.</span></span><span class="sig-name descname"><span class="pre">check_is_fitted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skeval/utils.html#check_is_fitted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.utils.check_is_fitted" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">skeval.utils.</span></span><span class="sig-name descname"><span class="pre">check_is_fitted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/skeval/utils.html#check_is_fitted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.utils.check_is_fitted" title="Link to this definition">¶</a></dt>
 <dd><p>Check if the model has been fitted.</p>
 <p>This method uses <cite>sklearn.utils.validation.check_is_fitted</cite> to verify
 that the underlying model has been fitted. It raises a <cite>RuntimeError</cite>
 if the model is not fitted.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model</strong> (<em>object</em>) – The model to check.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>RuntimeError</strong> – If the model has not been fitted yet.</p>
 </dd>
@@ -280,20 +285,17 @@ if the model is not fitted.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="skeval.utils.get_CV_and_real_scores">
-<span class="sig-prename descclassname"><span class="pre">skeval.utils.</span></span><span class="sig-name descname"><span class="pre">get_CV_and_real_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skeval/utils.html#get_CV_and_real_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.utils.get_CV_and_real_scores" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.utils.get_cv_and_real_scores">
+<span class="sig-prename descclassname"><span class="pre">skeval.utils.</span></span><span class="sig-name descname"><span class="pre">get_cv_and_real_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/skeval/utils.html#get_cv_and_real_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.utils.get_cv_and_real_scores" title="Link to this definition">¶</a></dt>
 <dd><p>Compute cross-validation and real scores for a given model and datasets.</p>
-<p>This function computes the cross-validation scores on the test dataset
-(using cross_validate) and the real scores on the test dataset after
-fitting the model on X_train/y_train.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>evaluator</strong> (<em>object</em>) – An evaluator instance with an <cite>estimate</cite> method.</p></li>
 <li><p><strong>model</strong> (<em>object</em>) – A fitted model with <cite>fit</cite> and <cite>predict</cite> methods.</p></li>
-<li><p><strong>X_train</strong> (<em>array-like</em>) – The training features.</p></li>
+<li><p><strong>x_train</strong> (<em>array-like</em>) – The training features.</p></li>
 <li><p><strong>y_train</strong> (<em>array-like</em>) – The training target labels.</p></li>
-<li><p><strong>X_test</strong> (<em>array-like</em>) – The test features.</p></li>
+<li><p><strong>x_test</strong> (<em>array-like</em>) – The test features.</p></li>
 <li><p><strong>y_test</strong> (<em>array-like</em>) – The test target labels.</p></li>
 </ul>
 </dd>
@@ -302,6 +304,32 @@ fitting the model on X_train/y_train.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skeval.utils.print_comparison">
+<span class="sig-prename descclassname"><span class="pre">skeval.utils.</span></span><span class="sig-name descname"><span class="pre">print_comparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scorers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimated_scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">real_scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/skeval/utils.html#print_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.utils.print_comparison" title="Link to this definition">¶</a></dt>
+<dd><p>Print a formatted comparison between cross-validation (intra-domain),
+estimated, and real performance scores for a set of metrics, and display
+the absolute errors of the CV and estimated scores with respect to the
+real scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scorers</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – A mapping whose keys are metric names (strings). Only the keys are
+used to determine which metrics to display; values (e.g., scorer
+callables) are not inspected by this function.</p></li>
+<li><p><strong>cv_scores</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>) – Mapping from metric name to the cross-validation (intra-domain)
+score.</p></li>
+<li><p><strong>estimated_scores</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>) – Mapping from metric name to the estimated cross-domain score.</p></li>
+<li><p><strong>real_scores</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>) – Mapping from metric name to the observed real score on the target
+domain.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -365,7 +393,8 @@ fitting the model on X_train/y_train.</p>
             <ul>
 <li><a class="reference internal" href="#">skeval.utils</a><ul>
 <li><a class="reference internal" href="#skeval.utils.check_is_fitted"><code class="docutils literal notranslate"><span class="pre">check_is_fitted()</span></code></a></li>
-<li><a class="reference internal" href="#skeval.utils.get_CV_and_real_scores"><code class="docutils literal notranslate"><span class="pre">get_CV_and_real_scores()</span></code></a></li>
+<li><a class="reference internal" href="#skeval.utils.get_cv_and_real_scores"><code class="docutils literal notranslate"><span class="pre">get_cv_and_real_scores()</span></code></a></li>
+<li><a class="reference internal" href="#skeval.utils.print_comparison"><code class="docutils literal notranslate"><span class="pre">print_comparison()</span></code></a></li>
 </ul>
 </li>
 </ul>

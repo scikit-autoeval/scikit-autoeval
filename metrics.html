@@ -202,8 +202,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">skeval</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="evaluators/index.html">skeval.evaluators</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="evaluators/agreement.html">AgreementEvaluator</a></li>
@@ -265,21 +264,21 @@
         <article role="main" id="furo-main-content">
           <section id="skeval-metrics">
 <h1>skeval.metrics<a class="headerlink" href="#skeval-metrics" title="Link to this heading">¶</a></h1>
-<section id="module-metrics.comparison">
-<span id="comparison-module"></span><h2>comparison module<a class="headerlink" href="#module-metrics.comparison" title="Link to this heading">¶</a></h2>
+<section id="module-skeval.metrics.comparison">
+<span id="comparison-module"></span><h2>comparison module<a class="headerlink" href="#module-skeval.metrics.comparison" title="Link to this heading">¶</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="metrics.comparison.score_error">
-<span class="sig-prename descclassname"><span class="pre">metrics.comparison.</span></span><span class="sig-name descname"><span class="pre">score_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimated_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comparator=&lt;function</span> <span class="pre">mean_absolute_error&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics/comparison.html#score_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics.comparison.score_error" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.metrics.comparison.score_error">
+<span class="sig-prename descclassname"><span class="pre">skeval.metrics.comparison.</span></span><span class="sig-name descname"><span class="pre">score_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">real_scores:</span> <span class="pre">~typing.Mapping[str,</span> <span class="pre">float],</span> <span class="pre">est_scores:</span> <span class="pre">~typing.Mapping[str,</span> <span class="pre">float],</span> <span class="pre">comparator:</span> <span class="pre">~typing.Callable[[~typing.Any,</span> <span class="pre">~typing.Any],</span> <span class="pre">float]</span> <span class="pre">|</span> <span class="pre">~typing.Mapping[str,</span> <span class="pre">~typing.Callable[[~typing.Any,</span> <span class="pre">~typing.Any],</span> <span class="pre">float]]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">mean_absolute_error&gt;,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/skeval/metrics/comparison.html#score_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.metrics.comparison.score_error" title="Link to this definition">¶</a></dt>
 <dd><p>Compares estimated and real scores using a user-defined comparison function.</p>
 <p>This function iterates through the metrics present in both <cite>real_scores</cite> and
-<cite>estimated_scores</cite> dictionaries and computes the error between them using
+<cite>est_scores</cite> dictionaries and computes the error between them using
 the provided comparator function(s).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>real_scores</strong> (<em>dict</em>) – A dictionary of scores computed with true labels.
 Example: <cite>{‘accuracy’: 0.9, ‘f1’: 0.85}</cite></p></li>
-<li><p><strong>estimated_scores</strong> (<em>dict</em>) – A dictionary of scores estimated without true labels.
+<li><p><strong>est_scores</strong> (<em>dict</em>) – A dictionary of scores estimated without true labels.
 Example: <cite>{‘accuracy’: 0.88, ‘f1’: 0.82}</cite></p></li>
 <li><p><strong>comparator</strong> (<em>callable</em><em> or </em><em>dict</em><em>, </em><em>default=mean_absolute_error</em>) – The function or dictionary of functions used to compare the real and
 estimated scores.
@@ -331,11 +330,11 @@ common metric.</p>
 </dd></dl>
 
 </section>
-<section id="module-metrics.scorers">
-<span id="scorers-module"></span><h2>scorers module<a class="headerlink" href="#module-metrics.scorers" title="Link to this heading">¶</a></h2>
+<section id="module-skeval.metrics.scorers">
+<span id="scorers-module"></span><h2>scorers module<a class="headerlink" href="#module-skeval.metrics.scorers" title="Link to this heading">¶</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="metrics.scorers.make_scorer">
-<span class="sig-prename descclassname"><span class="pre">metrics.scorers.</span></span><span class="sig-name descname"><span class="pre">make_scorer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/metrics/scorers.html#make_scorer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metrics.scorers.make_scorer" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.metrics.scorers.make_scorer">
+<span class="sig-prename descclassname"><span class="pre">skeval.metrics.scorers.</span></span><span class="sig-name descname"><span class="pre">make_scorer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/skeval/metrics/scorers.html#make_scorer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.metrics.scorers.make_scorer" title="Link to this definition">¶</a></dt>
 <dd><p>Wraps a metric function with fixed keyword arguments into a simple scorer.</p>
 <p>This utility is useful for creating a unified scorer interface from metric
 functions that require specific arguments (like <cite>average=’macro’</cite> for f1_score).</p>
@@ -444,12 +443,12 @@ whenever the scorer is called.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">skeval.metrics</a><ul>
-<li><a class="reference internal" href="#module-metrics.comparison">comparison module</a><ul>
-<li><a class="reference internal" href="#metrics.comparison.score_error"><code class="docutils literal notranslate"><span class="pre">score_error()</span></code></a></li>
+<li><a class="reference internal" href="#module-skeval.metrics.comparison">comparison module</a><ul>
+<li><a class="reference internal" href="#skeval.metrics.comparison.score_error"><code class="docutils literal notranslate"><span class="pre">score_error()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-metrics.scorers">scorers module</a><ul>
-<li><a class="reference internal" href="#metrics.scorers.make_scorer"><code class="docutils literal notranslate"><span class="pre">make_scorer()</span></code></a></li>
+<li><a class="reference internal" href="#module-skeval.metrics.scorers">scorers module</a><ul>
+<li><a class="reference internal" href="#skeval.metrics.scorers.make_scorer"><code class="docutils literal notranslate"><span class="pre">make_scorer()</span></code></a></li>
 </ul>
 </li>
 </ul>

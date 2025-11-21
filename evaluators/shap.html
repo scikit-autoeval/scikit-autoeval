@@ -202,8 +202,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../modules.html">skeval</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">skeval.evaluators</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="agreement.html">AgreementEvaluator</a></li>
@@ -263,11 +262,11 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-evaluators.shap">
-<span id="shapevaluator"></span><h1>ShapEvaluator<a class="headerlink" href="#module-evaluators.shap" title="Link to this heading">¶</a></h1>
+          <section id="module-skeval.evaluators.shap">
+<span id="shapevaluator"></span><h1>ShapEvaluator<a class="headerlink" href="#module-skeval.evaluators.shap" title="Link to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.shap.</span></span><span class="sig-name descname"><span class="pre">ShapEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_clf=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_train=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/evaluators/shap.html#ShapEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.shap.ShapEvaluator" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.shap.ShapEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skeval.evaluators.shap.</span></span><span class="sig-name descname"><span class="pre">ShapEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">model:</span> <span class="pre">~typing.Any,</span> <span class="pre">scorer:</span> <span class="pre">~typing.Callable[[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes],</span> <span class="pre">~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes]],</span> <span class="pre">float]</span> <span class="pre">|</span> <span class="pre">~typing.Mapping[str,</span> <span class="pre">~typing.Callable[[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes],</span> <span class="pre">~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes]],</span> <span class="pre">float]]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">accuracy_score&gt;,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">inner_clf:</span> <span class="pre">~typing.Any</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skeval/evaluators/shap.html#ShapEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.evaluators.shap.ShapEvaluator" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
 <p>SHAP-based evaluator for supervised classification models.</p>
 <p>This evaluator uses SHAP values computed from a tree-based classifier to
@@ -291,14 +290,12 @@ functions. Scorers must follow the signature <code class="docutils literal notra
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints additional progress information.</p></li>
 <li><p><strong>inner_clf</strong> (<em>estimator</em><em>, </em><em>optional</em>) – Classifier trained on SHAP values to estimate correctness. If None,
 defaults to <code class="docutils literal notranslate"><span class="pre">XGBClassifier(random_state=42)</span></code>.</p></li>
-<li><p><strong>X_train</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Training features used to compute SHAP values.</p></li>
-<li><p><strong>y_train</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Training labels used to compute SHAP values.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.model">
-<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#evaluators.shap.ShapEvaluator.model" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.shap.ShapEvaluator.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#skeval.evaluators.shap.ShapEvaluator.model" title="Link to this definition">¶</a></dt>
 <dd><p>The model provided at initialization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -308,8 +305,8 @@ defaults to <code class="docutils literal notranslate"><span class="pre">XGBClas
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.inner_clf">
-<span class="sig-name descname"><span class="pre">inner_clf</span></span><a class="headerlink" href="#evaluators.shap.ShapEvaluator.inner_clf" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.shap.ShapEvaluator.inner_clf">
+<span class="sig-name descname"><span class="pre">inner_clf</span></span><a class="headerlink" href="#skeval.evaluators.shap.ShapEvaluator.inner_clf" title="Link to this definition">¶</a></dt>
 <dd><p>The classifier used to model correctness from SHAP values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -319,34 +316,12 @@ defaults to <code class="docutils literal notranslate"><span class="pre">XGBClas
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.explainer">
-<span class="sig-name descname"><span class="pre">explainer</span></span><a class="headerlink" href="#evaluators.shap.ShapEvaluator.explainer" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.shap.ShapEvaluator.explainer">
+<span class="sig-name descname"><span class="pre">explainer</span></span><a class="headerlink" href="#skeval.evaluators.shap.ShapEvaluator.explainer" title="Link to this definition">¶</a></dt>
 <dd><p>Object responsible for computing SHAP values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>shap.TreeExplainer</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.X_train">
-<span class="sig-name descname"><span class="pre">X_train</span></span><a class="headerlink" href="#evaluators.shap.ShapEvaluator.X_train" title="Link to this definition">¶</a></dt>
-<dd><p>Feature matrix used to compute SHAP values for correctness learning.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray of shape (n_samples, n_features)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.y_train">
-<span class="sig-name descname"><span class="pre">y_train</span></span><a class="headerlink" href="#evaluators.shap.ShapEvaluator.y_train" title="Link to this definition">¶</a></dt>
-<dd><p>Ground-truth labels corresponding to <code class="docutils literal notranslate"><span class="pre">X_train</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray of shape (n_samples,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -360,76 +335,125 @@ The method performs multiple correctness predictions and averages the
 resulting estimated metrics. This introduces stochasticity and aims to
 approximate uncertainty in the correctness model.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShapEvaluator</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">XGBClassifier</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Authors: The scikit-autoeval developers</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ==============================================================</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ShapEvaluator Example</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ==============================================================</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.impute</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNNImputer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">XGBClassifier</span>
 <span class="gp">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df_train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;dataset_train.csv&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df_test</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;dataset_test.csv&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">df_train</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]),</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X_test</span> <span class="o">=</span> <span class="n">df_test</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">XGBClassifier</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.shap</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShapEvaluator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_cv_and_real_scores</span><span class="p">,</span> <span class="n">print_comparison</span>
 <span class="gp">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">ShapEvaluator</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
-<span class="go">0.84</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">run_shap_eval</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 1. Load datasets</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">geriatrics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;geriatria.csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">neurology</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;neurologia.csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 2. Separate features and target</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">X1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">geriatrics</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">geriatrics</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">neurology</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">neurology</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 3. Define pipeline (KNNImputer + RandomForest)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">model</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">KNNImputer</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span> <span class="n">XGBClassifier</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 4. Define scorers and evaluator</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">scorers</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy_score</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;f1_macro&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;macro&quot;</span><span class="p">),</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">ShapEvaluator</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">scorer</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">inner_clf</span><span class="o">=</span><span class="n">XGBClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">),</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 5. Fit evaluator on geriatrics data</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 6. Estimate performance (train on X1, estimate on X2)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 7. Compute real and CV performance</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">train_data</span> <span class="o">=</span> <span class="n">X1</span><span class="p">,</span> <span class="n">y1</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">test_data</span> <span class="o">=</span> <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">scores_dict</span> <span class="o">=</span> <span class="n">get_cv_and_real_scores</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorers</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span> <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="o">=</span><span class="n">test_data</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">cv_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;cv_scores&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">real_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;real_scores&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">print_comparison</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">cv_scores</span><span class="p">,</span> <span class="n">estimated_scores</span><span class="p">,</span> <span class="n">real_scores</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;cv&quot;</span><span class="p">:</span> <span class="n">cv_scores</span><span class="p">,</span> <span class="s2">&quot;estimated&quot;</span><span class="p">:</span> <span class="n">estimated_scores</span><span class="p">,</span> <span class="s2">&quot;real&quot;</span><span class="p">:</span> <span class="n">real_scores</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">results</span> <span class="o">=</span> <span class="n">run_shap_eval</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.estimate">
-<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_eval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_pred</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/evaluators/shap.html#ShapEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.shap.ShapEvaluator.estimate" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.shap.ShapEvaluator.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_eval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/skeval/evaluators/shap.html#ShapEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.evaluators.shap.ShapEvaluator.estimate" title="Link to this definition">¶</a></dt>
 <dd><p>Estimate metric values using SHAP-based correctness prediction.</p>
-<p>This method computes SHAP values for the training set and the evaluation
-set, trains a correctness classifier on the training SHAP values, and
-predicts correctness for evaluation samples. Labels predicted as
-incorrect are flipped to produce an expected label vector, which is
-compared against the model’s predictions to estimate the target metrics.</p>
-<p>Multiple iterations are performed to model uncertainty, and the final
-metric is obtained by averaging scores across all iterations.</p>
+<p>SHAP values are computed for train and eval sets, used to train a correctness
+classifier, and the resulting correctness predictions decide when to flip
+the model predictions before scoring. Results are averaged over <cite>n_pred</cite>
+iterations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X_eval</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_eval_samples</em><em>, </em><em>n_features</em><em>)</em>) – Evaluation feature matrix used to generate predictions and SHAP
-values.</p></li>
-<li><p><strong>n_pred</strong> (<em>int</em><em>, </em><em>default=30</em>) – Number of estimation iterations. In each iteration, a correctness
-classifier is retrained and used to produce an estimated metric.</p></li>
+<li><p><strong>x_eval</strong> (<em>array-like</em>) – Feature matrix for evaluation.</p></li>
+<li><p><strong>n_pred</strong> (<em>int</em>) – Number of correctness predictions to average over.</p></li>
+<li><p><strong>train_data</strong> (<em>tuple</em><em> of </em><em>(</em><em>array-like</em><em>, </em><em>array-like</em><em>)</em><em>, </em><em>optional</em>) – Training data (X, y) used to fit the original model and compute SHAP
+values, if not already provided during <cite>fit()</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dictionary mapping metric names to averaged estimated values.
-If a single scorer was provided, the dictionary contains a single
-entry with key <code class="docutils literal notranslate"><span class="pre">'score'</span></code>.</p>
+<dd class="field-even"><p>Mapping me</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>ValueError</strong> – If training data (<cite>X_train</cite>, <cite>y_train</cite>) is missing, preventing SHAP
-    computation.</p></li>
-<li><p><strong>ValueError</strong> – If the provided scorer is neither a callable nor a dictionary of
-    callables.</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="evaluators.shap.ShapEvaluator.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/evaluators/shap.html#ShapEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.shap.ShapEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.shap.ShapEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#skeval.evaluators.shap.ShapEvaluator" title="skeval.evaluators.shap.ShapEvaluator"><span class="pre">ShapEvaluator</span></a></span></span><a class="reference internal" href="../_modules/skeval/evaluators/shap.html#ShapEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.evaluators.shap.ShapEvaluator.fit" title="Link to this definition">¶</a></dt>
 <dd><p>Fit the model used by the evaluator.</p>
-<p>If <cite>X_train</cite> and <cite>y_train</cite> were provided during initialization, they
-take precedence. Otherwise, the provided <cite>X</cite> and <cite>y</cite> are stored and
+<p>If <cite>x_train</cite> and <cite>y_train</cite> were provided during initialization, they
+take precedence. Otherwise, the provided <cite>x</cite> and <cite>y</cite> are stored and
 used for computing SHAP values during the estimation step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em><em>, </em><em>optional</em>) – Feature matrix used to fit the original model and to compute SHAP
-values if <cite>X_train</cite> is not already defined.</p></li>
-<li><p><strong>y</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Labels corresponding to <cite>X</cite>. Required if no training data was
+<li><p><strong>x</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Feature matrix used to fit the original model and to compute SHAP
+values if <cite>x_train</cite> is not already defined.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Labels corresponding to <cite>x</cite>. Required if no training data was
 provided at initialization.</p></li>
 </ul>
 </dd>
@@ -437,11 +461,10 @@ provided at initialization.</p></li>
 <dd class="field-even"><p><strong>self</strong> – The fitted evaluator instance.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#evaluators.shap.ShapEvaluator" title="evaluators.shap.ShapEvaluator">ShapEvaluator</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#skeval.evaluators.shap.ShapEvaluator" title="skeval.evaluators.shap.ShapEvaluator">ShapEvaluator</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If no training data is available (neither from initialization nor
-    from arguments), preventing the underlying model from being fitted.</p>
+<dd class="field-even"><p><strong>ValueError</strong> – If no training data is available, preventing the underlying model from being fitted.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -506,14 +529,12 @@ provided at initialization.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">ShapEvaluator</a><ul>
-<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator</span></code></a><ul>
-<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.model"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.model</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.inner_clf"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.inner_clf</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.explainer"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.explainer</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.X_train"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.X_train</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.y_train"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.y_train</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.estimate()</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.shap.ShapEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.fit()</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.shap.ShapEvaluator"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#skeval.evaluators.shap.ShapEvaluator.model"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.model</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.shap.ShapEvaluator.inner_clf"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.inner_clf</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.shap.ShapEvaluator.explainer"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.explainer</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.shap.ShapEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.estimate()</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.shap.ShapEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">ShapEvaluator.fit()</span></code></a></li>
 </ul>
 </li>
 </ul>

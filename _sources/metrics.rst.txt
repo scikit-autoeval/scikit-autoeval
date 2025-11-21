@@ -4,7 +4,7 @@ skeval.metrics
 comparison module
 -------------------------
 
-.. automodule:: metrics.comparison
+.. automodule:: skeval.metrics.comparison
    :members:
    :show-inheritance:
    :undoc-members:
@@ -12,7 +12,7 @@ comparison module
 scorers module
 ----------------------
 
-.. automodule:: metrics.scorers
+.. automodule:: skeval.metrics.scorers
    :members:
    :show-inheritance:
    :undoc-members:
@@ -20,7 +20,7 @@ scorers module
 .. Module contents
 .. ---------------
 
-.. .. automodule:: metrics
+.. .. automodule:: skeval.metrics
 ..    :members:
 ..    :show-inheritance:
 ..    :undoc-members:

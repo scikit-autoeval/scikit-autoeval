@@ -202,8 +202,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../modules.html">skeval</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">skeval.evaluators</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="agreement.html">AgreementEvaluator</a></li>
@@ -263,11 +262,11 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-evaluators.regression">
-<span id="regressionevaluator"></span><h1>RegressionEvaluator<a class="headerlink" href="#module-evaluators.regression" title="Link to this heading">¶</a></h1>
+          <section id="module-skeval.evaluators.regression">
+<span id="regressionevaluator"></span><h1>RegressionEvaluator<a class="headerlink" href="#module-skeval.evaluators.regression" title="Link to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="evaluators.regression.RegressionEvaluator">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.regression.</span></span><span class="sig-name descname"><span class="pre">RegressionEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_regressor=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_splits=5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/evaluators/regression.html#RegressionEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.regression.RegressionEvaluator" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.regression.RegressionEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skeval.evaluators.regression.</span></span><span class="sig-name descname"><span class="pre">RegressionEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">model:</span> <span class="pre">~typing.Any,</span> <span class="pre">scorer:</span> <span class="pre">~typing.Callable[[...],</span> <span class="pre">float]</span> <span class="pre">|</span> <span class="pre">~typing.Dict[str,</span> <span class="pre">~typing.Callable[[...],</span> <span class="pre">float]]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">accuracy_score&gt;,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">meta_regressor:</span> <span class="pre">~typing.Any</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skeval/evaluators/regression.html#RegressionEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.evaluators.regression.RegressionEvaluator" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
 <p>Regression-based evaluator for classification models.</p>
 <p>This evaluator estimates the performance of a classification model (e.g.,
@@ -285,7 +284,6 @@ Clones of this model will be trained during the <cite>fit</cite> process and
 the same model type must later be fitted manually before <cite>estimate</cite>.</p></li>
 <li><p><strong>meta_regressor</strong> (<em>object</em><em>, </em><em>default=None</em>) – A regression model implementing <cite>fit</cite> and <cite>predict</cite>. If None, a
 <cite>RandomForestRegressor</cite> with 500 trees is used for each scorer.</p></li>
-<li><p><strong>n_splits</strong> (<em>int</em><em>, </em><em>default=5</em>) – Number of random splits per dataset to generate multiple meta-examples.</p></li>
 <li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – The performance metric(s) to estimate. If a dictionary is provided, a
 separate meta-regressor will be trained to estimate each metric.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints informational messages during the training of the
@@ -294,10 +292,31 @@ meta-regressors and during estimation.</p></li>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.regression.RegressionEvaluator.meta_regressors_">
-<span class="sig-name descname"><span class="pre">meta_regressors_</span></span><a class="headerlink" href="#evaluators.regression.RegressionEvaluator.meta_regressors_" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.regression.RegressionEvaluator.meta_regressors_">
+<span class="sig-name descname"><span class="pre">meta_regressors_</span></span><a class="headerlink" href="#skeval.evaluators.regression.RegressionEvaluator.meta_regressors_" title="Link to this definition">¶</a></dt>
 <dd><p>A dictionary mapping each scorer’s name to its fitted meta-regressor
 instance. This attribute is populated after the <cite>fit</cite> method is called.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The <cite>fit</cite> method expects lists of datasets (<cite>x</cite> and <cite>y</cite>), where each</dt><dd><p>element is a dataset (features/labels) used to build the meta-dataset.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>After training the meta-regressors, <cite>fit</cite> will also fit <cite>self.model</cite></dt><dd><p>on the first dataset provided (<code class="docutils literal notranslate"><span class="pre">x[0],</span> <span class="pre">y[0]</span></code>). If you prefer to use a
+differently trained final model before calling <cite>estimate</cite>, manually set
+<cite>evaluator.model</cite> to your fitted estimator.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The underlying classifier must implement <cite>predict_proba</cite> because the</dt><dd><p>evaluator extracts meta-features from predicted probability
+distributions. This evaluator is designed for classification tasks.</p>
+</dd>
+</dl>
+</li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
@@ -306,39 +325,88 @@ instance. This attribute is populated after the <cite>fit</cite> method is calle
 </dd></dl>
 
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_iris</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.regression</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegressionEvaluator</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Authors: The scikit-autoeval developers</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 <span class="gp">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">iris</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">],</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">RegressionEvaluator</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span><span class="p">)</span>
-<span class="go">RegressionEvaluator(...)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train a final model manually</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">final_model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">final_model</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">estimated_scores</span><span class="p">)</span>
-<span class="go">{&#39;score&#39;: ...}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ==============================================================</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># RegressionEvaluator Example</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ==============================================================</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegressionEvaluator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_cv_and_real_scores</span><span class="p">,</span> <span class="n">print_comparison</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">run_regression_eval</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 1. Load datasets</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">geriatrics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./skeval/datasets/geriatria-controle-alzheimerLabel.csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">neurology</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./skeval/datasets/neurologia-controle-alzheimerLabel.csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 2. Separate features and target</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">X1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">geriatrics</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">geriatrics</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">neurology</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">neurology</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 3. Define pipeline (KNNImputer + RandomForest)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 4. Define scorers and evaluator</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">scorers</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy_score</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;f1_macro&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;macro&quot;</span><span class="p">),</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">RegressionEvaluator</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 5. Fit evaluator using multiple datasets</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">],</span> <span class="p">[</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">],</span> <span class="n">n_splits</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 6. Estimate scores for new dataset</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># =====================================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># ======================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 7. Cross-Validation and Real Performance</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># ======================</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">train_data</span> <span class="o">=</span> <span class="n">X1</span><span class="p">,</span> <span class="n">y1</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">test_data</span> <span class="o">=</span> <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">scores_dict</span> <span class="o">=</span> <span class="n">get_cv_and_real_scores</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorers</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span> <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="o">=</span><span class="n">test_data</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">cv_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;cv_scores&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">real_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;real_scores&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">print_comparison</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">cv_scores</span><span class="p">,</span> <span class="n">estimated_scores</span><span class="p">,</span> <span class="n">real_scores</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;cv&quot;</span><span class="p">:</span> <span class="n">cv_scores</span><span class="p">,</span> <span class="s2">&quot;estimated&quot;</span><span class="p">:</span> <span class="n">estimated_scores</span><span class="p">,</span> <span class="s2">&quot;real&quot;</span><span class="p">:</span> <span class="n">real_scores</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">results</span> <span class="o">=</span> <span class="n">run_regression_eval</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="evaluators.regression.RegressionEvaluator.estimate">
-<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_eval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/evaluators/regression.html#RegressionEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.regression.RegressionEvaluator.estimate" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.regression.RegressionEvaluator.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_eval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/skeval/evaluators/regression.html#RegressionEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.evaluators.regression.RegressionEvaluator.estimate" title="Link to this definition">¶</a></dt>
 <dd><p>Estimates the performance of the current model on unlabeled data.</p>
 <p>The model assigned to <cite>self.model</cite> must already be a fitted classifier
 (manually trained by the user). This method extracts meta-features from
-its predictions on the unlabeled data <cite>X_eval</cite> and uses the pre-trained
+its predictions on the unlabeled data <cite>x_eval</cite> and uses the pre-trained
 meta-regressor(s) to predict the performance scores.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>X_eval</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The unlabeled input data.</p>
+<dd class="field-odd"><p><strong>x_eval</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The unlabeled input data.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary with the estimated scores, where keys are the names
@@ -358,16 +426,17 @@ of the scorers and values are the predicted performance scores.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="evaluators.regression.RegressionEvaluator.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/evaluators/regression.html#RegressionEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.regression.RegressionEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.regression.RegressionEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_splits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#skeval.evaluators.regression.RegressionEvaluator" title="skeval.evaluators.regression.RegressionEvaluator"><span class="pre">RegressionEvaluator</span></a></span></span><a class="reference internal" href="../_modules/skeval/evaluators/regression.html#RegressionEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.evaluators.regression.RegressionEvaluator.fit" title="Link to this definition">¶</a></dt>
 <dd><p>Trains the internal meta-regressor(s) using a single model type.</p>
 <p>This method builds a meta-dataset to train the evaluator. For each dataset,
 it performs multiple random splits to increase the number of meta-examples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of datasets (features) used to train the meta-model.</p></li>
-<li><p><strong>y</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of labels corresponding to <cite>X</cite>.</p></li>
+<li><p><strong>x</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of datasets (features) used to train the meta-model.</p></li>
+<li><p><strong>y</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of labels corresponding to <cite>x</cite>.</p></li>
+<li><p><strong>n_splits</strong> (<em>int</em><em>, </em><em>default=5</em>) – Number of random splits per dataset to generate multiple meta-examples.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -439,10 +508,10 @@ it performs multiple random splits to increase the number of meta-examples.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">RegressionEvaluator</a><ul>
-<li><a class="reference internal" href="#evaluators.regression.RegressionEvaluator"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator</span></code></a><ul>
-<li><a class="reference internal" href="#evaluators.regression.RegressionEvaluator.meta_regressors_"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.meta_regressors_</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.regression.RegressionEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.estimate()</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.regression.RegressionEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.fit()</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.regression.RegressionEvaluator"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#skeval.evaluators.regression.RegressionEvaluator.meta_regressors_"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.meta_regressors_</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.regression.RegressionEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.estimate()</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.regression.RegressionEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluator.fit()</span></code></a></li>
 </ul>
 </li>
 </ul>

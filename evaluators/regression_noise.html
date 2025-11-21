@@ -202,8 +202,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../modules.html">skeval</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">skeval.evaluators</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="agreement.html">AgreementEvaluator</a></li>
@@ -263,12 +262,12 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-evaluators.regression_noise">
-<span id="regressionnoiseevaluator"></span><h1>RegressionNoiseEvaluator<a class="headerlink" href="#module-evaluators.regression_noise" title="Link to this heading">¶</a></h1>
+          <section id="module-skeval.evaluators.regression_noise">
+<span id="regressionnoiseevaluator"></span><h1>RegressionNoiseEvaluator<a class="headerlink" href="#module-skeval.evaluators.regression_noise" title="Link to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="evaluators.regression_noise.RegressionNoiseEvaluator">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.regression_noise.</span></span><span class="sig-name descname"><span class="pre">RegressionNoiseEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_regressor=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_splits=5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/evaluators/regression_noise.html#RegressionNoiseEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.regression_noise.RegressionNoiseEvaluator" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RegressionEvaluator</span></code></p>
+<dt class="sig sig-object py" id="skeval.evaluators.regression_noise.RegressionNoiseEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skeval.evaluators.regression_noise.</span></span><span class="sig-name descname"><span class="pre">RegressionNoiseEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">model:</span> <span class="pre">~typing.Any,</span> <span class="pre">scorer:</span> <span class="pre">~typing.Callable[[...],</span> <span class="pre">float]</span> <span class="pre">|</span> <span class="pre">~typing.Dict[str,</span> <span class="pre">~typing.Callable[[...],</span> <span class="pre">float]]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">accuracy_score&gt;,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">meta_regressor:</span> <span class="pre">~typing.Any</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skeval/evaluators/regression_noise.html#RegressionNoiseEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.evaluators.regression_noise.RegressionNoiseEvaluator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="regression.html#skeval.evaluators.regression.RegressionEvaluator" title="skeval.evaluators.regression.RegressionEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegressionEvaluator</span></code></a></p>
 <p>Regression-based evaluator for classification models.</p>
 <p>This evaluator estimates the performance of a classification model (e.g.,
 accuracy, precision) without requiring labeled test data. It works by
@@ -285,7 +284,6 @@ Clones of this model will be trained during the <cite>fit</cite> process and
 the same model type must later be fitted manually before <cite>estimate</cite>.</p></li>
 <li><p><strong>meta_regressor</strong> (<em>object</em><em>, </em><em>default=None</em>) – A regression model implementing <cite>fit</cite> and <cite>predict</cite>. If None, a
 <cite>RandomForestRegressor</cite> with 500 trees is used for each scorer.</p></li>
-<li><p><strong>n_splits</strong> (<em>int</em><em>, </em><em>default=5</em>) – Number of random splits per dataset to generate multiple meta-examples.</p></li>
 <li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – The performance metric(s) to estimate. If a dictionary is provided, a
 separate meta-regressor will be trained to estimate each metric.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints informational messages during the training of the
@@ -294,8 +292,8 @@ meta-regressors and during estimation.</p></li>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.regression_noise.RegressionNoiseEvaluator.meta_regressors_">
-<span class="sig-name descname"><span class="pre">meta_regressors_</span></span><a class="headerlink" href="#evaluators.regression_noise.RegressionNoiseEvaluator.meta_regressors_" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.regression_noise.RegressionNoiseEvaluator.meta_regressors_">
+<span class="sig-name descname"><span class="pre">meta_regressors_</span></span><a class="headerlink" href="#skeval.evaluators.regression_noise.RegressionNoiseEvaluator.meta_regressors_" title="Link to this definition">¶</a></dt>
 <dd><p>A dictionary mapping each scorer’s name to its fitted meta-regressor
 instance. This attribute is populated after the <cite>fit</cite> method is called.</p>
 <dl class="field-list simple">
@@ -306,42 +304,78 @@ instance. This attribute is populated after the <cite>fit</cite> method is calle
 </dd></dl>
 
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_iris</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.regression</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegressionBasedEvaluator</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Authors: The scikit-autoeval developers</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 <span class="gp">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">iris</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">],</span> <span class="p">[</span><span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">RegressionBasedEvaluator</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="n">scorer</span><span class="o">=</span><span class="n">accuracy_score</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_list</span><span class="p">,</span> <span class="n">y_list</span><span class="p">)</span>
-<span class="go">RegressionBasedEvaluator(...)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train a final model manually</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">final_model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">final_model</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">estimated_scores</span><span class="p">)</span>
-<span class="go">{&#39;score&#39;: ...}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ==============================================================</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># RegressionNoiseEvaluator Example</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ==============================================================</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegressionNoiseEvaluator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_cv_and_real_scores</span><span class="p">,</span> <span class="n">print_comparison</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">run_regression_noise_eval</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 1. Load datasets</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">geriatrics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./skeval/datasets/geriatria-controle-alzheimerLabel.csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">neurology</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./skeval/datasets/neurologia-controle-alzheimerLabel.csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 2. Separate features and target</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">X1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">geriatrics</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">geriatrics</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">neurology</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">neurology</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 3. Define pipeline (Optional preprocessing + RandomForest)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 4. Define scorers and evaluator</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">scorers</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy_score</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;f1_macro&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;macro&quot;</span><span class="p">),</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">RegressionNoiseEvaluator</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 5. Fit evaluator using multiple datasets (builds meta-dataset with label noise)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">],</span> <span class="p">[</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">],</span> <span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 6. Estimate scores for new dataset</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># 7. Cross-Validation and Real Performance</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">train_data</span> <span class="o">=</span> <span class="n">X1</span><span class="p">,</span> <span class="n">y1</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">test_data</span> <span class="o">=</span> <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">scores_dict</span> <span class="o">=</span> <span class="n">get_cv_and_real_scores</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorers</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span> <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="o">=</span><span class="n">test_data</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">cv_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;cv_scores&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">real_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;real_scores&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">print_comparison</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">cv_scores</span><span class="p">,</span> <span class="n">estimated_scores</span><span class="p">,</span> <span class="n">real_scores</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;cv&quot;</span><span class="p">:</span> <span class="n">cv_scores</span><span class="p">,</span> <span class="s2">&quot;estimated&quot;</span><span class="p">:</span> <span class="n">estimated_scores</span><span class="p">,</span> <span class="s2">&quot;real&quot;</span><span class="p">:</span> <span class="n">real_scores</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">results</span> <span class="o">=</span> <span class="n">run_regression_noise_eval</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="evaluators.regression_noise.RegressionNoiseEvaluator.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/evaluators/regression_noise.html#RegressionNoiseEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.regression_noise.RegressionNoiseEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.regression_noise.RegressionNoiseEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_splits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise_cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#skeval.evaluators.regression_noise.RegressionNoiseEvaluator" title="skeval.evaluators.regression_noise.RegressionNoiseEvaluator"><span class="pre">RegressionNoiseEvaluator</span></a></span></span><a class="reference internal" href="../_modules/skeval/evaluators/regression_noise.html#RegressionNoiseEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.evaluators.regression_noise.RegressionNoiseEvaluator.fit" title="Link to this definition">¶</a></dt>
 <dd><p>Trains the internal meta-regressor(s) using a single model type.</p>
 <p>This method builds a meta-dataset to train the evaluator. For each dataset,
 it performs multiple random splits to increase the number of meta-examples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of datasets (features) used to train the meta-model.</p></li>
-<li><p><strong>y</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of labels corresponding to <cite>X</cite>.</p></li>
-<li><p><strong>start_noise</strong> (<em>int</em><em>, </em><em>default=10</em>) – The starting percentage of label noise to introduce in the holdout set.</p></li>
-<li><p><strong>end_noise</strong> (<em>int</em><em>, </em><em>default=100</em>) – The ending percentage of label noise to introduce in the holdout set.</p></li>
-<li><p><strong>step_noise</strong> (<em>int</em><em>, </em><em>default=10</em>) – The step size for increasing the percentage of label noise.</p></li>
+<li><p><strong>x</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of datasets (features) used to train the meta-model.</p></li>
+<li><p><strong>y</strong> (<em>list</em><em> of </em><em>array-like</em>) – A list of labels corresponding to <cite>x</cite>.</p></li>
+<li><p><strong>n_splits</strong> (<em>int</em><em>, </em><em>default=5</em>) – Number of random splits per dataset to generate multiple meta-examples.</p></li>
+<li><p><strong>noise_cfg</strong> (<em>dict</em><em>, </em><em>default=None</em>) – Configuration for label noise levels:
+- ‘start’: int, starting percentage of label noise (inclusive).
+- ‘end’: int, ending percentage of label noise (inclusive).
+- ‘step’: int, step size for noise percentage increments.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -351,50 +385,29 @@ it performs multiple random splits to increase the number of meta-examples.</p>
 <dd class="field-odd"><p>object</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="evaluators.regression_noise.RegressionNoiseEvaluator.set_fit_request">
-<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#evaluators.regression_noise.RegressionNoiseEvaluator" title="evaluators.regression_noise.RegressionNoiseEvaluator"><span class="pre">RegressionNoiseEvaluator</span></a></span></span><a class="headerlink" href="#evaluators.regression_noise.RegressionNoiseEvaluator.set_fit_request" title="Link to this definition">¶</a></dt>
-<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p>
-<p>Note that this method is only relevant if
-<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
-Please see <span class="xref std std-ref">User Guide</span> on how the routing
-mechanism works.</p>
-<p>The options for each parameter are:</p>
+<p class="rubric">Notes</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
-</ul>
-<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
-existing request. This allows you to change the request for some
-parameters and not others.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 1.3.</span></p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This method is only relevant if this estimator is used as a
-sub-estimator of a meta-estimator, e.g. used inside a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>end_noise</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">end_noise</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
-<li><p><strong>start_noise</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">start_noise</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
-<li><p><strong>step_noise</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">step_noise</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>object</p>
+<li><dl class="simple">
+<dt>This evaluator extends <cite>RegressionEvaluator</cite> by generating meta-examples</dt><dd><p>that incorporate controlled label noise. The <cite>noise_cfg</cite> parameter
+configures the percentage(s) of examples to permute during meta-example
+generation.</p>
 </dd>
 </dl>
+</li>
+<li><dl class="simple">
+<dt>The <cite>fit</cite> method expects <cite>x</cite> and <cite>y</cite> to be lists of datasets (as in</dt><dd><p><cite>RegressionEvaluator</cite>). Each dataset is processed with multiple splits
+and multiple noise levels to build a larger meta-dataset.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>After training meta-regressors, <cite>fit</cite> will fit <cite>self.model</cite> on the first</dt><dd><p>provided dataset (<cite>x[0], y[0]</cite>). If you wish to use a separately trained
+final model before calling <cite>estimate</cite>, set <cite>evaluator.model</cite> to your
+fitted estimator manually.</p>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 </dd></dl>
@@ -457,10 +470,9 @@ sub-estimator of a meta-estimator, e.g. used inside a
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">RegressionNoiseEvaluator</a><ul>
-<li><a class="reference internal" href="#evaluators.regression_noise.RegressionNoiseEvaluator"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator</span></code></a><ul>
-<li><a class="reference internal" href="#evaluators.regression_noise.RegressionNoiseEvaluator.meta_regressors_"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.meta_regressors_</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.regression_noise.RegressionNoiseEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.fit()</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.regression_noise.RegressionNoiseEvaluator.set_fit_request"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.set_fit_request()</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.regression_noise.RegressionNoiseEvaluator"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#skeval.evaluators.regression_noise.RegressionNoiseEvaluator.meta_regressors_"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.meta_regressors_</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.regression_noise.RegressionNoiseEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">RegressionNoiseEvaluator.fit()</span></code></a></li>
 </ul>
 </li>
 </ul>

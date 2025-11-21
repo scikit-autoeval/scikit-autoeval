@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://scikit-autoeval.github.io/scikit-autoeval/_modules/skeval/utils.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>skeval.utils - scikit-autoeval 0.1.1 documentation</title>
+        <title>skeval.utils - scikit-autoeval 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">scikit-autoeval 0.1.1 documentation</div></a>
+      <a href="../../index.html"><div class="brand">scikit-autoeval 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -201,13 +201,20 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+  <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">skeval</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../evaluators/index.html">skeval.evaluators</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/agreement.html">AgreementEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/confidence.html">ConfidenceThresholdEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/regression.html">RegressionEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/regression_noise.html">RegressionNoiseEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluators/shap.html">ShapEvaluator</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../base.html">skeval.base</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../evaluators.html">skeval.evaluators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../metrics.html">skeval.metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../utils.html">skeval.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html">skeval.examples</a></li>
 </ul>
 </li>
 </ul>
@@ -247,18 +254,29 @@
           <h1>Source code for skeval.utils</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Authors: The scikit-autoeval developers</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_is_fitted</span> <span class="k">as</span> <span class="n">sklearn_check_is_fitted</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_validate</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_scorer</span>
 
+
 <div class="viewcode-block" id="check_is_fitted">
 <a class="viewcode-back" href="../../utils.html#skeval.utils.check_is_fitted">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">check_is_fitted</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_is_fitted</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the model has been fitted.</span>
 
 <span class="sd">    This method uses `sklearn.utils.validation.check_is_fitted` to verify</span>
 <span class="sd">    that the underlying model has been fitted. It raises a `RuntimeError`</span>
 <span class="sd">    if the model is not fitted.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : object</span>
+<span class="sd">        The model to check.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -270,14 +288,16 @@
     <span class="n">sklearn_check_is_fitted</span><span class="p">(</span><span class="n">model</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_CV_and_real_scores">
-<a class="viewcode-back" href="../../utils.html#skeval.utils.get_CV_and_real_scores">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_CV_and_real_scores</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">scorers</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute cross-validation and real scores for a given model and datasets.</span>
 
-<span class="sd">    This function computes the cross-validation scores on the test dataset</span>
-<span class="sd">    (using cross_validate) and the real scores on the test dataset after</span>
-<span class="sd">    fitting the model on X_train/y_train.</span>
+<div class="viewcode-block" id="get_cv_and_real_scores">
+<a class="viewcode-back" href="../../utils.html#skeval.utils.get_cv_and_real_scores">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_cv_and_real_scores</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">scorers</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">float</span><span class="p">]],</span>
+    <span class="n">train_data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">test_data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute cross-validation and real scores for a given model and datasets.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -285,11 +305,11 @@
 <span class="sd">        An evaluator instance with an `estimate` method.</span>
 <span class="sd">    model : object</span>
 <span class="sd">        A fitted model with `fit` and `predict` methods.</span>
-<span class="sd">    X_train : array-like</span>
+<span class="sd">    x_train : array-like</span>
 <span class="sd">        The training features.</span>
 <span class="sd">    y_train : array-like</span>
 <span class="sd">        The training target labels.</span>
-<span class="sd">    X_test : array-like</span>
+<span class="sd">    x_test : array-like</span>
 <span class="sd">        The test features.</span>
 <span class="sd">    y_test : array-like</span>
 <span class="sd">        The test target labels.</span>
@@ -299,40 +319,77 @@
 <span class="sd">    dict</span>
 <span class="sd">        A dictionary containing &#39;cv_scores&#39; and &#39;real_scores&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="c1"># ======================</span>
-    <span class="c1"># 1. Cross-Validation (intra-domain)</span>
-    <span class="c1">#  This is the standard CV estimate: train/validate </span>
-    <span class="c1"># ======================</span>
+    <span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">train_data</span>
+    <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">test_data</span>
     <span class="n">cv_scores</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">scoring</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">scorers</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
     <span class="n">cv_result</span> <span class="o">=</span> <span class="n">cross_validate</span><span class="p">(</span>
-        <span class="n">model</span><span class="p">,</span>
-        <span class="n">X_test</span><span class="p">,</span>
-        <span class="n">y_test</span><span class="p">,</span>
-        <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">,</span>
-        <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-        <span class="n">return_train_score</span><span class="o">=</span><span class="kc">False</span>
+        <span class="n">model</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">return_train_score</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
     <span class="k">for</span> <span class="n">metric_name</span> <span class="ow">in</span> <span class="n">scorers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">cv_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;test_</span><span class="si">{</span><span class="n">metric_name</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">cv_scores</span><span class="p">[</span><span class="n">metric_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cv_result</span><span class="p">[</span><span class="n">cv_key</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-
-    <span class="c1"># ======================</span>
-    <span class="c1"># 2. Real performance (train on geriatrics -&gt; test on neurology)</span>
-    <span class="c1"># ======================</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-    <span class="n">y_pred_real</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_pred_real</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
 
     <span class="n">real_scores</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">metric_name</span><span class="p">:</span> <span class="n">scorer_fn</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_real</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">scorer_fn</span> <span class="ow">in</span> <span class="n">scorers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
     <span class="p">}</span>
-    
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;cv_scores&#39;</span><span class="p">:</span> <span class="n">cv_scores</span><span class="p">,</span>
-        <span class="s1">&#39;real_scores&#39;</span><span class="p">:</span> <span class="n">real_scores</span>
-    <span class="p">}</span></div>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;cv_scores&quot;</span><span class="p">:</span> <span class="n">cv_scores</span><span class="p">,</span> <span class="s2">&quot;real_scores&quot;</span><span class="p">:</span> <span class="n">real_scores</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="print_comparison">
+<a class="viewcode-back" href="../../utils.html#skeval.utils.print_comparison">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_comparison</span><span class="p">(</span>
+    <span class="n">scorers</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">cv_scores</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">estimated_scores</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">real_scores</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print a formatted comparison between cross-validation (intra-domain),</span>
+<span class="sd">    estimated, and real performance scores for a set of metrics, and display</span>
+<span class="sd">    the absolute errors of the CV and estimated scores with respect to the</span>
+<span class="sd">    real scores.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scorers : Mapping[str, Any]</span>
+<span class="sd">        A mapping whose keys are metric names (strings). Only the keys are</span>
+<span class="sd">        used to determine which metrics to display; values (e.g., scorer</span>
+<span class="sd">        callables) are not inspected by this function.</span>
+<span class="sd">    cv_scores : Mapping[str, float]</span>
+<span class="sd">        Mapping from metric name to the cross-validation (intra-domain)</span>
+<span class="sd">        score.</span>
+<span class="sd">    estimated_scores : Mapping[str, float]</span>
+<span class="sd">        Mapping from metric name to the estimated cross-domain score.</span>
+<span class="sd">    real_scores : Mapping[str, float]</span>
+<span class="sd">        Mapping from metric name to the observed real score on the target</span>
+<span class="sd">        domain.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">===== CV vs. Estimated vs. Real =====&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">scorers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metric</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> -&gt; CV: </span><span class="si">{</span><span class="n">cv_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Estimated: </span><span class="si">{</span><span class="n">estimated_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Real: </span><span class="si">{</span><span class="n">real_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">===== Absolute Error w.r.t. Real Performance =====&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">scorers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">err_est</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">real_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">-</span> <span class="n">estimated_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">])</span>
+        <span class="n">err_cv</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">real_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">-</span> <span class="n">cv_scores</span><span class="p">[</span><span class="n">metric</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metric</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> -&gt; |Real - Estimated|: </span><span class="si">{</span><span class="n">err_est</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;|Real - CV|: </span><span class="si">{</span><span class="n">err_cv</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
 
 </pre></div>
         </article>
@@ -366,7 +423,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=91f6191e"></script>
+</div><script src="../../_static/documentation_options.js?v=2a705162"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

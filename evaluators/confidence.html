@@ -202,8 +202,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+  <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../modules.html">skeval</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of skeval</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">skeval.evaluators</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of skeval.evaluators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="agreement.html">AgreementEvaluator</a></li>
@@ -263,32 +262,34 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-evaluators.confidence">
-<span id="confidencethresholdevaluator"></span><h1>ConfidenceThresholdEvaluator<a class="headerlink" href="#module-evaluators.confidence" title="Link to this heading">¶</a></h1>
+          <section id="module-skeval.evaluators.confidence">
+<span id="confidencethresholdevaluator"></span><h1>ConfidenceThresholdEvaluator<a class="headerlink" href="#module-skeval.evaluators.confidence" title="Link to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">evaluators.confidence.</span></span><span class="sig-name descname"><span class="pre">ConfidenceThresholdEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer=&lt;function</span> <span class="pre">accuracy_score&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold=0.65</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_to_top_class=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.confidence.ConfidenceThresholdEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skeval.evaluators.confidence.</span></span><span class="sig-name descname"><span class="pre">ConfidenceThresholdEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">model:</span> <span class="pre">~typing.Any,</span> <span class="pre">scorer:</span> <span class="pre">~typing.Callable[[...],</span> <span class="pre">~typing.Any]</span> <span class="pre">|</span> <span class="pre">~typing.Mapping[str,</span> <span class="pre">~typing.Callable[[...],</span> <span class="pre">~typing.Any]]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">accuracy_score&gt;,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skeval/evaluators/confidence.html#ConfidenceThresholdEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../base.html#skeval.base.BaseEvaluator" title="skeval.base.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a></p>
 <p>Confidence-based evaluator for classification models.</p>
-<p>This evaluator filters the predictions of a classification model based on a
-confidence threshold. Only predictions with a confidence greater than or
-equal to the specified threshold are considered for scoring.</p>
+<p>This evaluator filters predictions from a classification model according to
+a confidence threshold. Only predictions whose confidence (top-class
+probability, or other chosen score) is greater than or equal to the given
+threshold are treated as “trusted”; the remaining predictions are flipped
+(binary case) to build an expected label vector used for metric estimation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>object</em>) – Any model with <cite>fit</cite>, <cite>predict</cite>, and <cite>predict_proba</cite> or
-<cite>decision_function</cite> methods.</p></li>
-<li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – An evaluation function or a dictionary of multiple evaluation functions.</p></li>
-<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>default=0.8</em>) – The minimum confidence required to include a prediction in the calculation.</p></li>
-<li><p><strong>limit_to_top_class</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, uses only the probability of the top class as the confidence score.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, prints additional information during evaluation.</p></li>
+<li><p><strong>model</strong> (<em>object</em>) – Any classifier implementing <code class="docutils literal notranslate"><span class="pre">fit</span></code>, <code class="docutils literal notranslate"><span class="pre">predict</span></code> and either
+<code class="docutils literal notranslate"><span class="pre">predict_proba</span></code> or <code class="docutils literal notranslate"><span class="pre">decision_function</span></code>.</p></li>
+<li><p><strong>scorer</strong> (<em>callable</em><em> or </em><em>dict</em><em> of </em><em>str -&gt; callable</em><em>, </em><em>default=accuracy_score</em>) – Single scoring function or mapping of metric names to callables with
+signature <code class="docutils literal notranslate"><span class="pre">scorer(y_true,</span> <span class="pre">y_pred)</span></code>.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, prints intermediate information during fitting and
+estimation.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.model">
-<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.model" title="Link to this definition">¶</a></dt>
-<dd><p>The model passed in the constructor.</p>
+<dt class="sig sig-object py" id="skeval.evaluators.confidence.ConfidenceThresholdEvaluator.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.model" title="Link to this definition">¶</a></dt>
+<dd><p>The primary model evaluated.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>object</p>
@@ -297,9 +298,9 @@ equal to the specified threshold are considered for scoring.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.scorer">
-<span class="sig-name descname"><span class="pre">scorer</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.scorer" title="Link to this definition">¶</a></dt>
-<dd><p>The scoring function(s) passed in the constructor.</p>
+<dt class="sig sig-object py" id="skeval.evaluators.confidence.ConfidenceThresholdEvaluator.scorer">
+<span class="sig-name descname"><span class="pre">scorer</span></span><a class="headerlink" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.scorer" title="Link to this definition">¶</a></dt>
+<dd><p>Scoring function(s) applied to agreement-based labels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>callable or dict</p>
@@ -308,31 +309,9 @@ equal to the specified threshold are considered for scoring.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.threshold">
-<span class="sig-name descname"><span class="pre">threshold</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.threshold" title="Link to this definition">¶</a></dt>
-<dd><p>The confidence threshold.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.limit_to_top_class">
-<span class="sig-name descname"><span class="pre">limit_to_top_class</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.limit_to_top_class" title="Link to this definition">¶</a></dt>
-<dd><p>Indicates if confidence is based solely on the highest probability class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.verbose">
-<span class="sig-name descname"><span class="pre">verbose</span></span><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.verbose" title="Link to this definition">¶</a></dt>
-<dd><p>The verbosity level.</p>
+<dt class="sig sig-object py" id="skeval.evaluators.confidence.ConfidenceThresholdEvaluator.verbose">
+<span class="sig-name descname"><span class="pre">verbose</span></span><a class="headerlink" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.verbose" title="Link to this definition">¶</a></dt>
+<dd><p>Verbosity flag.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -341,47 +320,58 @@ equal to the specified threshold are considered for scoring.</p>
 </dd></dl>
 
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Sample data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">5.5</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 1. Create and train a standard classifier</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">classifier</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;liblinear&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="go">LogisticRegression(random_state=0, solver=&#39;liblinear&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 2. Create the evaluator with the trained classifier</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scorings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="n">precision_score</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">:</span> <span class="n">recall_score</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_eval</span> <span class="o">=</span> <span class="n">ConfidenceThresholdEvaluator</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">classifier</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">scorer</span><span class="o">=</span><span class="n">scorings</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">threshold</span><span class="o">=</span><span class="mf">0.9</span>
+<p>Example using medical datasets and a RandomForest pipeline:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.impute</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNNImputer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.confidence</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfidenceThresholdEvaluator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_cv_and_real_scores</span><span class="p">,</span> <span class="n">print_comparison</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 1. Load datasets</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_geriatrics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;geriatria.csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_neurology</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;neurologia.csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 2. Separate features and target</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">df_geriatrics</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">df_geriatrics</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">df_neurology</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">df_neurology</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 3. Define model pipeline</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">KNNImputer</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">),</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 3. The fit method is for compatibility, not strictly needed here</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#    since the model is already trained.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_eval</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="go">ConfidenceThresholdEvaluator(...)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 4. Estimate the performance on the test set</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#    The evaluator will internally call classifier.predict_proba(X_test)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scores</span> <span class="o">=</span> <span class="n">conf_eval</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">score_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">score_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="go">precision: 1.00</span>
-<span class="go">recall: 1.00</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 4. Initialize evaluator with scorers</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scorers</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy_score</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;f1_macro&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;macro&quot;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">ConfidenceThresholdEvaluator</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">scorers</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 5. Fit evaluator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 6. Estimated performance (using confidence threshold)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.65</span><span class="p">,</span> <span class="n">limit_to_top_class</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 7. Cross-validation and real performance comparison</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scores_dict</span> <span class="o">=</span> <span class="n">get_cv_and_real_scores</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorers</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span> <span class="n">train_data</span><span class="o">=</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="n">test_data</span><span class="o">=</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;cv_scores&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">real_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;real_scores&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_comparison</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">cv_scores</span><span class="p">,</span> <span class="n">estimated_scores</span><span class="p">,</span> <span class="n">real_scores</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.estimate">
-<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_eval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.estimate" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.confidence.ConfidenceThresholdEvaluator.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_eval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.65</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_to_top_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/skeval/evaluators/confidence.html#ConfidenceThresholdEvaluator.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.estimate" title="Link to this definition">¶</a></dt>
 <dd><p>Estimates scores based on the confidence threshold.</p>
 <p>This method calculates the prediction confidences, filters out those
 that do not meet the threshold, and then computes the score(s)
 specified in the <cite>scorer</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>X_eval</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data for which to estimate scores.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_eval</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data for which to estimate scores.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>default=0.8</em>) – The minimum confidence required to include a prediction in the calculation.</p></li>
+<li><p><strong>limit_to_top_class</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, uses only the probability of the top class as the confidence score.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><p>A dictionary with estimated scores for each scorer.</p>
@@ -395,13 +385,13 @@ specified in the <cite>scorer</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="evaluators.confidence.ConfidenceThresholdEvaluator.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/evaluators/confidence.html#ConfidenceThresholdEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#evaluators.confidence.ConfidenceThresholdEvaluator.fit" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="skeval.evaluators.confidence.ConfidenceThresholdEvaluator.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator" title="skeval.evaluators.confidence.ConfidenceThresholdEvaluator"><span class="pre">ConfidenceThresholdEvaluator</span></a></span></span><a class="reference internal" href="../_modules/skeval/evaluators/confidence.html#ConfidenceThresholdEvaluator.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.fit" title="Link to this definition">¶</a></dt>
 <dd><p>Fits the model to the training data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The training input samples.</p></li>
+<li><p><strong>x</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The training input samples.</p></li>
 <li><p><strong>y</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The target labels.</p></li>
 </ul>
 </dd>
@@ -474,14 +464,12 @@ specified in the <cite>scorer</cite>.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">ConfidenceThresholdEvaluator</a><ul>
-<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator</span></code></a><ul>
-<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.model"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.model</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.scorer"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.scorer</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.threshold"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.threshold</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.limit_to_top_class"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.limit_to_top_class</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.verbose"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.verbose</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.estimate()</span></code></a></li>
-<li><a class="reference internal" href="#evaluators.confidence.ConfidenceThresholdEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.fit()</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator</span></code></a><ul>
+<li><a class="reference internal" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.model"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.model</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.scorer"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.scorer</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.verbose"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.verbose</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.estimate"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.estimate()</span></code></a></li>
+<li><a class="reference internal" href="#skeval.evaluators.confidence.ConfidenceThresholdEvaluator.fit"><code class="docutils literal notranslate"><span class="pre">ConfidenceThresholdEvaluator.fit()</span></code></a></li>
 </ul>
 </li>
 </ul>
