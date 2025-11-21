@@ -44,9 +44,7 @@ class TestRegressionNoiseEvaluator(unittest.TestCase):
 
         # Fit the meta-regressors
         noise_cfg = {"start": 10, "end": 30, "step": 10}
-        evaluator.fit(
-            self.X_list, self.y_list, n_splits=2, noise_cfg=noise_cfg
-        )
+        evaluator.fit(self.X_list, self.y_list, n_splits=2, noise_cfg=noise_cfg)
 
         # Per the example workflow, train a final model manually
         # Here we train on cancer data
@@ -72,15 +70,11 @@ class TestRegressionNoiseEvaluator(unittest.TestCase):
             "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
         }
 
-        evaluator = RegressionNoiseEvaluator(
-            model=model, scorer=scorers, verbose=False
-        )
+        evaluator = RegressionNoiseEvaluator(model=model, scorer=scorers, verbose=False)
 
         # Fit the meta-regressors
         noise_cfg = {"start": 10, "end": 20, "step": 10}
-        evaluator.fit(
-            self.X_list, self.y_list, n_splits=2, noise_cfg=noise_cfg
-        )
+        evaluator.fit(self.X_list, self.y_list, n_splits=2, noise_cfg=noise_cfg)
 
         # The .fit() method automatically fits self.model on X_list[0] (Iris)
         # We can use that fitted model to estimate on the Iris data.
@@ -125,7 +119,7 @@ class TestRegressionNoiseEvaluator(unittest.TestCase):
         model = LogisticRegression()
         evaluator = RegressionNoiseEvaluator(model=model)
         noise_cfg = {"start": 10, "end": 100, "step": 10}
-        
+
         # Test: start_noise < 0
         with self.assertRaises(ValueError):
             noise_cfg["start"] = -10

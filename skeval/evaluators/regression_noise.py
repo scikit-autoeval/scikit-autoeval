@@ -1,5 +1,7 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Callable, cast
+
 import numpy as np
 import pandas as pd
 from sklearn.base import clone
@@ -66,7 +68,13 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
     {'score': ...}
     """
 
-    def fit(self, x, y, n_splits=5, noise_cfg=None):
+    def fit(
+        self,
+        x: Sequence[Any],
+        y: Sequence[Any],
+        n_splits: int = 5,
+        noise_cfg: Optional[Dict[str, int]] = None,
+    ) -> "RegressionNoiseEvaluator":
         """Trains the internal meta-regressor(s) using a single model type.
 
         This method builds a meta-dataset to train the evaluator. For each dataset,
@@ -113,7 +121,7 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
         self.model.fit(x[0], y[0])
         return self
 
-    def _validate_noise_params(self, noise_cfg):
+    def _validate_noise_params(self, noise_cfg: Dict[str, int]) -> None:
         has_all_keys = all(key in noise_cfg for key in ["start", "end", "step"])
 
         if (
@@ -127,7 +135,13 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
                 "0 <= start <= end <= 100 and step > 0."
             )
 
-    def _process_single_dataset(self, train_data, noise_cfg, meta_cfg, n_splits):
+    def _process_single_dataset(
+        self,
+        train_data: Tuple[Any, Any],
+        noise_cfg: Dict[str, int],
+        meta_cfg: Dict[str, Any],
+        n_splits: int = 5,
+    ) -> None:
         """Processes one dataset by generating meta-examples."""
         y_i = train_data[1]
         unique_labels = np.unique(y_i)
@@ -138,7 +152,13 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
                 train_data, stratify_y, split, (noise_cfg, meta_cfg)
             )
 
-    def _process_single_split(self, train_data, stratify_y, split, cfg):
+    def _process_single_split(
+        self,
+        train_data: Tuple[Any, Any],
+        stratify_y: Optional[Any],
+        split: int,
+        cfg: Tuple[Dict[str, int], Dict[str, Any]],
+    ) -> None:
         """Processes each train/holdout split."""
         base_model = clone(self.model)
         noise_cfg, meta_cfg = cfg
@@ -168,18 +188,24 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
                 base_model, (x_holdout, y_holdout), split, generation_cfg
             )
 
-    def _generate_noise_meta_example(self, base_model, holdout, split, cfg):
+    def _generate_noise_meta_example(
+        self, base_model: Any, holdout: Tuple[Any, Any], split: int, cfg: Dict[str, Any]
+    ) -> None:
         """Adds one meta-example (metafeatures + performance target)."""
         x_holdout, y_holdout = holdout
+        # Ensure x_holdout is a DataFrame so column-wise permutation works
+        if not hasattr(x_holdout, "columns"):
+            x_holdout = pd.DataFrame(x_holdout)
+
         n_noisy = int(len(x_holdout) * (cfg["noise_p"] / 100.0))
 
-        x_noisy = x_holdout[:n_noisy].copy()
-        x_clean = x_holdout[n_noisy:].copy()
+        x_noisy = x_holdout.iloc[:n_noisy].copy()
+        x_clean = x_holdout.iloc[n_noisy:].copy()
 
         rng = np.random.default_rng(42 + cfg["noise_p"] + split)
 
         for col in x_holdout.columns:
-            x_noisy[col] = rng.permutation(x_noisy[col])
+            x_noisy[col] = rng.permutation(x_noisy[col].values)
 
         x_concat = pd.concat([x_noisy, x_clean], axis=0)
         y_pred = base_model.predict(x_concat)
@@ -187,16 +213,23 @@ class RegressionNoiseEvaluator(RegressionEvaluator):
         cfg["features"].append(cfg["metafeats"].flatten())
         self._store_meta_targets(cfg["targets"], cfg["scorer_names"], y_holdout, y_pred)
 
-    def _store_meta_targets(self, meta_targets, scorer_names, y_true, y_pred):
+    def _store_meta_targets(
+        self,
+        meta_targets: Dict[str, List[float]],
+        scorer_names: List[str],
+        y_true: Any,
+        y_pred: Any,
+    ) -> None:
         """Stores score values for one meta-example."""
 
         if isinstance(self.scorer, dict):
             for name in scorer_names:
-                meta_targets[name].append(self.scorer[name](y_true, y_pred))
+                meta_targets[name].append(float(self.scorer[name](y_true, y_pred)))
         else:
-            meta_targets["score"].append(self.scorer(y_true, y_pred))
+            scorer_fn = cast(Callable[..., float], self.scorer)
+            meta_targets["score"].append(float(scorer_fn(y_true, y_pred)))
 
-    def _train_meta_regressors(self, meta_cfg):
+    def _train_meta_regressors(self, meta_cfg: Dict[str, Any]) -> None:
         """Trains one regressor per scorer."""
         meta_features = np.array(meta_cfg["features"])
         self.meta_regressors_ = {}

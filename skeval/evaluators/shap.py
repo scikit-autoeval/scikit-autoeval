@@ -1,7 +1,10 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
+from typing import Any, Callable, Dict, Mapping, Optional, Tuple, Union, Sequence, cast
+
 import shap
 import numpy as np
+from numpy.typing import ArrayLike, NDArray
 from sklearn.metrics import accuracy_score
 from sklearn.base import clone
 from xgboost import XGBClassifier
@@ -84,17 +87,21 @@ class ShapEvaluator(BaseEvaluator):
 
     def __init__(
         self,
-        model,
-        scorer=accuracy_score,
-        verbose=False,
-        inner_clf=None,
-    ):
+        model: Any,
+        scorer: Union[
+            Callable[[ArrayLike, ArrayLike], float],
+            Mapping[str, Callable[[ArrayLike, ArrayLike], float]],
+        ] = accuracy_score,
+        verbose: bool = False,
+        inner_clf: Optional[Any] = None,
+    ) -> None:
         super().__init__(model=model, scorer=scorer, verbose=verbose)
-        self.inner_clf = inner_clf or XGBClassifier(random_state=42)
-        self.explainer = None
-        self.x_train, self.y_train = None, None
+        self.inner_clf: Any = inner_clf or XGBClassifier(random_state=42)
+        self.explainer: Optional[Any] = None
+        self.x_train: Optional[ArrayLike] = None
+        self.y_train: Optional[NDArray[Any]] = None
 
-    def fit(self, x=None, y=None):
+    def fit(self, x: Optional[ArrayLike] = None, y: Optional[Sequence[Any]] = None) -> "ShapEvaluator":
         """
         Fit the model used by the evaluator.
 
@@ -128,12 +135,17 @@ class ShapEvaluator(BaseEvaluator):
         if x is None or y is None:
             raise ValueError("x and y must be provided to fit the model.")
         self.x_train = x
-        self.y_train = y
+        self.y_train = np.asarray(y)
 
         self.model.fit(self.x_train, self.y_train)
         return self
 
-    def estimate(self, x_eval, n_pred=30, train_data=None):
+    def estimate(
+        self,
+        x_eval: ArrayLike,
+        n_pred: int = 30,
+        train_data: Optional[Tuple[ArrayLike, ArrayLike]] = None,
+    ) -> Dict[str, float]:
         """
         Estimate metric values using SHAP-based correctness prediction.
 
@@ -161,13 +173,16 @@ class ShapEvaluator(BaseEvaluator):
         if self.x_train is None or self.y_train is None:
             if train_data is None:
                 raise ValueError("Train data must be provided to compute SHAP values.")
-            self.x_train, self.y_train = train_data
+            # normalize train_data: ensure y_train becomes a numpy array
+            self.x_train = train_data[0]
+            self.y_train = np.asarray(train_data[1])
 
         shap_train_arr, shap_eval_arr = self._compute_shap_arrays(x_eval)
 
         pred_eval = self.model.predict(x_eval)
         scores_list = []
 
+        assert self.y_train is not None
         for _ in range(n_pred):
             pred_train = np.random.randint(0, 2, size=len(self.y_train))
             y_right = (self.y_train == pred_train).astype(int)
@@ -179,10 +194,10 @@ class ShapEvaluator(BaseEvaluator):
             scores_list.append(self._evaluate_scores(expected_y, pred_eval))
 
         if isinstance(self.scorer, dict):
-            return {k: np.mean([s[k] for s in scores_list]) for k in self.scorer}
-        return {"score": np.mean([s["score"] for s in scores_list])}
+            return {k: float(np.mean([s[k] for s in scores_list])) for k in self.scorer}
+        return {"score": float(np.mean([s["score"] for s in scores_list]))}
 
-    def _choose_class_shap(self, shap_vals, model):
+    def _choose_class_shap(self, shap_vals: Union[np.ndarray, Sequence[Any]], model: Any) -> NDArray[Any]:
         """
         Returns SHAP values for class 1 (or fallback class). Supports list and 3D-array formats.
         """
@@ -192,14 +207,17 @@ class ShapEvaluator(BaseEvaluator):
             idx = -1
 
         if isinstance(shap_vals, list):
-            return np.array(shap_vals[idx])
+            arr: NDArray[Any] = np.asarray(shap_vals[idx])
+            return arr
 
         if isinstance(shap_vals, np.ndarray) and shap_vals.ndim == 3:
-            return shap_vals[:, :, idx]
+            res: NDArray[Any] = shap_vals[:, :, idx]
+            return res
 
-        return np.array(shap_vals)
+        out: NDArray[Any] = np.asarray(shap_vals)
+        return out
 
-    def _compute_shap_arrays(self, x_eval):
+    def _compute_shap_arrays(self, x_eval: ArrayLike) -> Tuple[NDArray[Any], NDArray[Any]]:
         model_to_explain = (
             self.model[-1] if hasattr(self.model, "steps") else self.model
         )
@@ -208,20 +226,33 @@ class ShapEvaluator(BaseEvaluator):
         shap_train = self.explainer.shap_values(self.x_train)
         shap_eval = self.explainer.shap_values(x_eval)
 
+        shap_train_cast = cast(Union[np.ndarray, Sequence[Any]], shap_train)
+        shap_eval_cast = cast(Union[np.ndarray, Sequence[Any]], shap_eval)
+
         return (
-            self._choose_class_shap(shap_train, self.model),
-            self._choose_class_shap(shap_eval, self.model),
+            self._choose_class_shap(shap_train_cast, self.model),
+            self._choose_class_shap(shap_eval_cast, self.model),
         )
 
-    def _train_correctness_model(self, shap_train_arr, y_right):
+    def _train_correctness_model(
+        self, shap_train_arr: ArrayLike, y_right: ArrayLike
+    ) -> Any:
         clf = clone(self.inner_clf)
         clf.fit(shap_train_arr, y_right)
         return clf
 
-    def _predict_expected_labels(self, pred_eval, pred_right):
-        return pred_eval ^ (1 - pred_right)
+    def _predict_expected_labels(
+        self, pred_eval: ArrayLike, pred_right: ArrayLike
+    ) -> np.ndarray | Any:
+        return np.array(pred_eval) ^ (1 - np.array(pred_right))
 
-    def _evaluate_scores(self, expected_y, pred_eval):
+    def _evaluate_scores(
+        self, expected_y: ArrayLike, pred_eval: ArrayLike
+    ) -> Dict[str, float] | Any:
         if isinstance(self.scorer, dict):
-            return {name: fn(expected_y, pred_eval) for name, fn in self.scorer.items()}
-        return {"score": self.scorer(expected_y, pred_eval)}
+            return {
+                name: float(fn(expected_y, pred_eval))
+                for name, fn in self.scorer.items()
+            }
+        scorer_fn = cast(Callable[[ArrayLike, ArrayLike], float], self.scorer)
+        return {"score": float(scorer_fn(expected_y, pred_eval))}

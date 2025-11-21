@@ -1,11 +1,12 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
+from typing import Any, Callable, Dict, Mapping, Tuple
 from sklearn.utils.validation import check_is_fitted as sklearn_check_is_fitted
 from sklearn.model_selection import cross_validate
 from sklearn.metrics import make_scorer
 
 
-def check_is_fitted(model):
+def check_is_fitted(model: Any) -> None:
     """Check if the model has been fitted.
 
     This method uses `sklearn.utils.validation.check_is_fitted` to verify
@@ -22,7 +23,12 @@ def check_is_fitted(model):
     sklearn_check_is_fitted(model)
 
 
-def get_cv_and_real_scores(model, scorers, train_data, test_data):
+def get_cv_and_real_scores(
+    model: Any,
+    scorers: Mapping[str, Callable[[Any, Any], float]],
+    train_data: Tuple[Any, Any],
+    test_data: Tuple[Any, Any],
+) -> Dict[str, Dict[str, float]]:
     """Compute cross-validation and real scores for a given model and datasets.
 
     Parameters
@@ -66,7 +72,12 @@ def get_cv_and_real_scores(model, scorers, train_data, test_data):
     return {"cv_scores": cv_scores, "real_scores": real_scores}
 
 
-def print_comparison(scorers, cv_scores, estimated_scores, real_scores):
+def print_comparison(
+    scorers: Mapping[str, Any],
+    cv_scores: Mapping[str, float],
+    estimated_scores: Mapping[str, float],
+    real_scores: Mapping[str, float],
+) -> None:
     """
     Print a formatted comparison between cross-validation (intra-domain), estimated, and
     real performance scores for a set of metrics, and display the absolute errors of the

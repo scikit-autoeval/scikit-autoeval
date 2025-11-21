@@ -1,8 +1,0 @@
-datasets
-docs
-evaluators
-metrics
-tests
-utils
-venv
-visualization

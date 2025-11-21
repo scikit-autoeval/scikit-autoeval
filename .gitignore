@@ -6,5 +6,6 @@ skeval/console_tests
 .pypirc
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
 structure/
 metrics/

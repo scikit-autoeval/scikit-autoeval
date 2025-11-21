@@ -54,3 +54,14 @@ Source = "https://github.com/scikit-autoeval/scikit-autoeval"
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.mypy]
+python_version = "3.11"
+exclude = "(build|dist|docs|examples|skeval/tests|.*/tests|(__init__.py$)|plots/)"
+ignore_missing_imports = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true

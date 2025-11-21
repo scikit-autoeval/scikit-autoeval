@@ -1,6 +1,9 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
-def make_scorer(func, **kwargs):
+from typing import Any, Callable
+
+
+def make_scorer(func: Callable[..., float], **kwargs: Any) -> Callable[[Any, Any], float]:
     """
     Wraps a metric function with fixed keyword arguments into a simple scorer.
 
@@ -46,7 +49,7 @@ def make_scorer(func, **kwargs):
     True
     """
 
-    def scorer(y_true, y_pred):
+    def scorer(y_true: Any, y_pred: Any) -> float:
         return func(y_true, y_pred, **kwargs)
 
     return scorer

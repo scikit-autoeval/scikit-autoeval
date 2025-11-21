@@ -1,5 +1,7 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
+from typing import Any, Dict, List, Mapping, Optional, Union
+
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 
@@ -22,16 +24,16 @@ class AgreementEvaluator(BaseEvaluator):
 
     def __init__(
         self,
-        model,
-        scorer=accuracy_score,
-        verbose=False,
-        sec_model=None,
-    ):
+        model: Any,
+        scorer: Union[Mapping[str, Any], Any] = accuracy_score,
+        verbose: bool = False,
+        sec_model: Optional[Any] = None,
+    ) -> None:
         super().__init__(model=model, scorer=scorer, verbose=verbose)
 
         self.sec_model = sec_model if sec_model is not None else GaussianNB()
 
-    def fit(self, x, y):
+    def fit(self, x: Any, y: Any) -> "AgreementEvaluator":
         """
         Fit the evaluator by generating predictions from both models.
 
@@ -51,7 +53,7 @@ class AgreementEvaluator(BaseEvaluator):
 
         return self
 
-    def estimate(self, x_eval):
+    def estimate(self, x_eval: Any) -> Dict[str, float]:
         """
         Estimate the agreement score between the main and secondary models.
 
@@ -76,8 +78,17 @@ class AgreementEvaluator(BaseEvaluator):
         y_agreement = [p if a else 1 - p for p, a in zip(pred_main, agreement)]
 
         if isinstance(self.scorer, dict):
-            return {
-                name: metric(y_agreement, agreement)
+            score: Dict[str, float] = {
+                name: float(metric(y_agreement, agreement))
                 for name, metric in self.scorer.items()
             }
-        return self.scorer(y_agreement, agreement)
+            if self.verbose:
+                print("[INFO] Estimated score:", score)
+
+            return score
+        if callable(self.scorer):
+            score_val = float(self.scorer(y_agreement, agreement))
+            if self.verbose:
+                print("[INFO] Estimated score:", score_val)
+            return {"score": score_val}
+        raise ValueError("'scorer' must be a callable or a dict of callables.")

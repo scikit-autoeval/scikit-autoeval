@@ -1,6 +1,8 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
 import numpy as np
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union, cast
+
 from sklearn.base import clone
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import accuracy_score
@@ -70,19 +72,22 @@ class RegressionEvaluator(BaseEvaluator):
 
     def __init__(
         self,
-        model,
-        scorer=accuracy_score,
-        verbose=False,
-        meta_regressor=None,
-    ):
+        model: Any,
+        scorer: Union[
+            Callable[..., float], Dict[str, Callable[..., float]]
+        ] = accuracy_score,
+        verbose: bool = False,
+        meta_regressor: Optional[Any] = None,
+    ) -> None:
         super().__init__(model=model, scorer=scorer, verbose=verbose)
-
         self.meta_regressor = meta_regressor or RandomForestRegressor(
             n_estimators=500, random_state=42
         )
-        self.meta_regressors_ = {}
+        self.meta_regressors_: Dict[str, Any] = {}
 
-    def fit(self, x, y, n_splits=5):
+    def fit(
+        self, x: Sequence[Any], y: Sequence[Any], n_splits: int = 5
+    ) -> "RegressionEvaluator":
         """Trains the internal meta-regressor(s) using a single model type.
 
         This method builds a meta-dataset to train the evaluator. For each dataset,
@@ -102,26 +107,29 @@ class RegressionEvaluator(BaseEvaluator):
         self : object
             The fitted evaluator instance.
         """
-        scorers_names = self._get_scorer_names()
-        meta_features = []
-        meta_targets = {name: [] for name in scorers_names}
+        scorers_names: List[str] = self._get_scorer_names()
+        meta_features: List[np.ndarray] = []
+        meta_targets: Dict[str, List[float]] = {name: [] for name in scorers_names}
 
         for x_i, y_i in zip(x, y):
             for split in range(n_splits):
                 feats, y_holdout_meta, y_pred_holdout = self._generate_meta_example(
-                    x_i, y_i, split
+                    x_i=x_i, y_i=y_i, split=split
                 )
                 meta_features.append(feats)
 
                 self._update_meta_targets(
-                    y_holdout_meta, y_pred_holdout, meta_targets, scorers_names
+                    y_true=y_holdout_meta,
+                    y_pred=y_pred_holdout,
+                    meta_targets=meta_targets,
+                    scorers_names=scorers_names,
                 )
 
-        meta_features = np.array(meta_features)
+        meta_features_arr = np.array(meta_features)
         self.meta_regressors_ = {}
 
         for name in scorers_names:
-            reg = self._fit_single_meta_regressor(name, meta_features, meta_targets)
+            reg = self._fit_single_meta_regressor(name, meta_features_arr, meta_targets)
             self.meta_regressors_[name] = reg
 
             if self.verbose:
@@ -130,7 +138,7 @@ class RegressionEvaluator(BaseEvaluator):
         self.model.fit(x[0], y[0])
         return self
 
-    def estimate(self, x_eval):
+    def estimate(self, x_eval: Any) -> Dict[str, float]:
         """Estimates the performance of the current model on unlabeled data.
 
         The model assigned to `self.model` must already be a fitted classifier
@@ -164,7 +172,7 @@ class RegressionEvaluator(BaseEvaluator):
                 "The evaluator has not been fitted yet. Call 'fit' before 'estimate'."
             )
 
-        feats = self._extract_metafeatures(self.model, x_eval)
+        feats = self._extract_metafeatures(estimator=self.model, x=x_eval)
         scores = {}
 
         for name, reg in self.meta_regressors_.items():
@@ -174,7 +182,7 @@ class RegressionEvaluator(BaseEvaluator):
                 print(f"[INFO] Estimated {name}: {estimated_score:.4f}")
         return scores
 
-    def _extract_metafeatures(self, estimator, x):
+    def _extract_metafeatures(self, estimator: Any, x: Any) -> np.ndarray:
         """Extracts meta-features from a fitted model's predicted probabilities.
 
         The extracted features include the mean and standard deviation of the
@@ -215,11 +223,13 @@ class RegressionEvaluator(BaseEvaluator):
         }
         return np.array(list(features.values())).reshape(1, -1)
 
-    def _generate_meta_example(self, x_i, y_i, split):
+    def _generate_meta_example(
+        self, x_i: Any, y_i: Any, split: int
+    ) -> Tuple[np.ndarray, Any, np.ndarray]:
         """Generates a single meta-example from a dataset split."""
         est = clone(self.model)
 
-        stratify_y = y_i if len(np.unique(y_i)) > 1 else None
+        stratify_y = self._safe_stratify(y_i)
         x_train, x_hold, y_train, y_hold = train_test_split(
             x_i,
             y_i,
@@ -227,25 +237,47 @@ class RegressionEvaluator(BaseEvaluator):
             random_state=42 + split,
             stratify=stratify_y,
         )
-
         est.fit(x_train, y_train)
 
-        feats = self._extract_metafeatures(est, x_hold)
+        feats = self._extract_metafeatures(estimator=est, x=x_hold)
         y_pred = est.predict(x_hold)
 
         return feats.flatten(), y_hold, y_pred
 
-    def _fit_single_meta_regressor(self, name, meta_features, meta_targets):
+    def _fit_single_meta_regressor(
+        self, name: str, meta_features: np.ndarray, meta_targets: Dict[str, List[float]]
+    ) -> Any:
         """Fits a single meta-regressor for a given scorer."""
         meta_y = np.array(meta_targets[name])
         reg = clone(self.meta_regressor)
         reg.fit(meta_features, meta_y)
         return reg
 
-    def _update_meta_targets(self, y_true, y_pred, meta_targets, scorers_names):
+    def _update_meta_targets(
+        self,
+        y_true: Any,
+        y_pred: Any,
+        meta_targets: Dict[str, List[float]],
+        scorers_names: List[str],
+    ) -> None:
         """Updates the meta-targets dictionary with new scores."""
         if isinstance(self.scorer, dict):
             for name in scorers_names:
-                meta_targets[name].append(self.scorer[name](y_true, y_pred))
+                # scorer[name] is callable
+                meta_targets[name].append(float(self.scorer[name](y_true, y_pred)))
         else:
-            meta_targets["score"].append(self.scorer(y_true, y_pred))
+            scorer_fn = cast(Callable[..., float], self.scorer)
+            meta_targets["score"].append(float(scorer_fn(y_true, y_pred)))
+
+    def _safe_stratify(self, y: Optional[Any]) -> Optional[Any]:
+        if y is None:
+            return None
+        y = np.asarray(y)
+
+        uniques, counts = np.unique(y, return_counts=True)
+        if len(uniques) < 2:
+            return None
+        if np.min(counts) < 2:
+            return None
+
+        return y

@@ -1,22 +1,29 @@
-from sklearn.base import BaseEstimator
+# Authors: The scikit-autoeval developers
+# SPDX-License-Identifier: BSD-3-Clause
+from typing import Any, Callable, Dict, List, Mapping, Union
 from sklearn.metrics import accuracy_score
 
 
-class BaseEvaluator(BaseEstimator):
+class BaseEvaluator:
     """
     Base abstract class for all evaluators in scikit-autoeval.
 
     All evaluators should inherit from this class and implement the `estimate` method.
-    This class also inherits from `sklearn.base.BaseEstimator` to ensure compatibility
-    with scikit-learn utilities like `get_params` and `set_params`.
     """
 
-    def __init__(self, model, scorer=accuracy_score, verbose=False):
+    def __init__(
+        self,
+        model: Any,
+        scorer: Union[
+            Callable[..., Any], Mapping[str, Callable[..., Any]]
+        ] = accuracy_score,
+        verbose: bool = False,
+    ) -> None:
         self.model = model
         self.scorer = scorer
         self.verbose = verbose
 
-    def fit(self, x, y):
+    def fit(self, x: Any, y: Any) -> "BaseEvaluator":
         """
         Fit the evaluator to the training data.
 
@@ -35,7 +42,7 @@ class BaseEvaluator(BaseEstimator):
         self.model.fit(x, y)
         return self
 
-    def estimate(self, x_eval):
+    def estimate(self, x_eval: Any) -> Dict[str, Any]:
         """
         Abstract method to estimate the model's performance on the given data.
 
@@ -50,8 +57,9 @@ class BaseEvaluator(BaseEstimator):
             A dictionary containing the evaluation scores.
         """
         print("Please implement the 'estimate' method to estimate " + str(x_eval))
+        return {}
 
-    def _get_scorer_names(self):
+    def _get_scorer_names(self) -> List[str]:
         """
         Returns the names of the scorers.
 

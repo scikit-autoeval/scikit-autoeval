@@ -43,7 +43,7 @@ jobs:
       # -------------------------------
       - name: Run Ruff check
         run: |
-          ruff check skeval > ruff_report.txt || true
+          ruff check skeval > ruff_report.txt 2>&1 || true
 
       # -------------------------------
       # Pylint

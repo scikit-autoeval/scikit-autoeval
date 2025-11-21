@@ -1,11 +1,15 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
+from typing import Any, Callable, Dict, Mapping, Union
 from sklearn.metrics import mean_absolute_error
 
 
 def score_error(
-    real_scores, est_scores, comparator=mean_absolute_error, verbose=False
-):
+    real_scores: Mapping[str, float],
+    est_scores: Mapping[str, float],
+    comparator: Union[Callable[[Any, Any], float], Mapping[str, Callable[[Any, Any], float]]] = mean_absolute_error,
+    verbose: bool = False,
+) -> Dict[str, float]:
     """
     Compares estimated and real scores using a user-defined comparison function.
 

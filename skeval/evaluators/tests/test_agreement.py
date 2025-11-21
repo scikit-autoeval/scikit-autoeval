@@ -40,9 +40,9 @@ class TestAgreementEvaluator(unittest.TestCase):
         # The error was here: using X_cancer (30 features) after fitting on X_iris (4 features)
         estimated_score = evaluator.estimate(self.X_cancer)
 
-        self.assertIsInstance(estimated_score, float)
-        self.assertGreaterEqual(estimated_score, 0.0)
-        self.assertLessEqual(estimated_score, 1.0)
+        self.assertIsInstance(estimated_score, dict)
+        self.assertGreaterEqual(estimated_score["score"], 0.0)
+        self.assertLessEqual(estimated_score["score"], 1.0)
 
     def test_fit_and_estimate_with_multiple_scorers(self):
         """

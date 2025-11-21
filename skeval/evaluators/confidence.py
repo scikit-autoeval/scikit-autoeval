@@ -1,5 +1,7 @@
 # Authors: The scikit-autoeval developers
 # SPDX-License-Identifier: BSD-3-Clause
+from typing import Any, Callable, Dict, List, Mapping, Tuple, Union
+
 import numpy as np
 from sklearn.metrics import accuracy_score
 
@@ -68,13 +70,15 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
 
     def __init__(
         self,
-        model,
-        scorer=accuracy_score,
-        verbose=False,
-    ):
+        model: Any,
+        scorer: Union[
+            Callable[..., Any], Mapping[str, Callable[..., Any]]
+        ] = accuracy_score,
+        verbose: bool = False,
+    ) -> None:
         super().__init__(model=model, scorer=scorer, verbose=verbose)
 
-    def fit(self, x, y):
+    def fit(self, x: Any, y: Any) -> "ConfidenceThresholdEvaluator":
         """
         Fits the model to the training data.
 
@@ -95,7 +99,9 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
         self.model.fit(x, y)
         return self
 
-    def estimate(self, x_eval, threshold=0.65, limit_to_top_class=True):
+    def estimate(
+        self, x_eval: Any, threshold: float = 0.65, limit_to_top_class: bool = True
+    ) -> Dict[str, float]:
         """
         Estimates scores based on the confidence threshold.
 
@@ -136,44 +142,49 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
 
         return self._compute_scores(y_estimated, y_pred)
 
-    def _print_verbose_confidence_info(self, conf, correct):
+    def _print_verbose_confidence_info(
+        self, conf: np.ndarray, correct: np.ndarray
+    ) -> None:
         if self.verbose:
             print("[INFO] Confidences:", conf)
             print("[INFO] Passed threshold:", correct)
 
-    def _handle_no_confident_predictions(self):
+    def _handle_no_confident_predictions(self) -> Dict[str, float]:
         if self.verbose:
             print("[INFO] No predictions passed the threshold.")
         return {name: 0.0 for name in self._get_scorer_names()}
 
-    def _build_estimated_labels(self, y_pred, correct):
+    def _build_estimated_labels(self, y_pred: Any, correct: np.ndarray) -> List[int]:
         y_estimated = [
             y_pred[i] if c == 1 else (y_pred[i] + 1) % 2 for i, c in enumerate(correct)
         ]
         return [int(y) for y in y_estimated]
 
-    def _print_verbose_label_info(self, y_pred, y_estimated):
+    def _print_verbose_label_info(self, y_pred: Any, y_estimated: List[int]) -> None:
         if self.verbose:
             print("[INFO] y_pred:", y_pred)
             print("[INFO] y_estimated:", y_estimated)
 
-    def _compute_scores(self, y_estimated, y_pred):
+    def _compute_scores(self, y_estimated: List[int], y_pred: Any) -> Dict[str, float]:
         if isinstance(self.scorer, dict):
-            scores = {
-                name: func(y_estimated, y_pred) for name, func in self.scorer.items()
+            scores: Dict[str, float] = {
+                name: float(func(y_estimated, y_pred))
+                for name, func in self.scorer.items()
             }
             if self.verbose:
                 print("[INFO] Estimated scores:", scores)
             return scores
 
         if callable(self.scorer):
-            score = self.scorer(y_estimated, y_pred)
+            score_val = float(self.scorer(y_estimated, y_pred))
             if self.verbose:
-                print("[INFO] Estimated score:", score)
-            return {"score": score}
+                print("[INFO] Estimated score:", score_val)
+            return {"score": score_val}
         raise ValueError("'scorer' must be a callable or a dict of callables.")
 
-    def __get_confidences_and_correct(self, x, threshold, limit_to_top_class):
+    def __get_confidences_and_correct(
+        self, x: Any, threshold: float, limit_to_top_class: bool
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Computes confidence scores and applies the confidence threshold.
         """
@@ -187,10 +198,16 @@ class ConfidenceThresholdEvaluator(BaseEvaluator):
 
         if hasattr(self.model, "predict_proba"):
             probas = self.model.predict_proba(x)
-            conf = np.max(probas, axis=1) if limit_to_top_class else probas
+            conf: np.ndarray = (
+                np.max(probas, axis=1) if limit_to_top_class else np.asarray(probas)
+            )
         elif hasattr(self.model, "decision_function"):
             decision = self.model.decision_function(x)
-            conf = np.max(decision, axis=1) if decision.ndim > 1 else np.abs(decision)
+            conf = (
+                np.max(decision, axis=1)
+                if getattr(decision, "ndim", 1) > 1
+                else np.abs(np.asarray(decision))
+            )
         else:
             raise ValueError(
                 "The model must implement predict_proba or decision_function."
