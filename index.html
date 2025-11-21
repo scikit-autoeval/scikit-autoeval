@@ -267,6 +267,101 @@
 <p><strong>scikit-autoeval</strong> is an open-source Python library designed to automate the evaluation of supervised machine learning models.
 It provides standardized interfaces and metrics for model validation, ensuring compatibility with the Scikit-learn ecosystem.
 The library simplifies the benchmarking process and supports the development of robust and reproducible experiments.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>This section gives a concise description of the library’s purpose, how the
+modules connect, and how to use it in a typical workflow.</p>
+<section id="purpose">
+<h3>Purpose<a class="headerlink" href="#purpose" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>Goal</strong>: estimate, compare, and validate the performance of classification</dt><dd><p>models when labeled target-domain data is limited or unavailable. The
+library provides evaluators that produce performance estimates using
+signals derived from the model itself (e.g., confidence, agreement between
+models, SHAP values, or meta-regression with label noise).</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="module-structure-and-relationships">
+<h3>Module structure and relationships<a class="headerlink" href="#module-structure-and-relationships" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><dl class="simple">
+<dt><cite>skeval.evaluators</cite>: contains the primary evaluators</dt><dd><p>(<cite>ConfidenceThresholdEvaluator</cite>, <cite>RegressionEvaluator</cite>,
+<cite>RegressionNoiseEvaluator</cite>, <cite>AgreementEvaluator</cite>, <cite>ShapEvaluator</cite>). Each
+evaluator encapsulates a strategy for estimating metrics without target
+labels and follows a common pattern: <cite>fit()</cite> to prepare the evaluator and
+<cite>estimate()</cite> to apply it on the target dataset.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>skeval.metrics</cite>: utility functions and scorer wrappers that standardize</dt><dd><p>metric calculation and comparison.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>skeval.utils</cite>: helper utilities such as <cite>get_cv_and_real_scores</cite> and</dt><dd><p><cite>print_comparison</cite>, used in examples and for validating evaluator output.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>skeval.examples</cite>: example scripts showing end-to-end flows for each</dt><dd><p>evaluator; useful as references or starting points for integration.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="typical-usage-flow">
+<h3>Typical usage flow<a class="headerlink" href="#typical-usage-flow" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt>Prepare one or more source-domain training datasets. Some evaluators</dt><dd><p>(e.g., <cite>RegressionEvaluator</cite> and <cite>RegressionNoiseEvaluator</cite>) require
+multiple datasets to train meta-models.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Define a preprocessing + classifier pipeline (for example</dt><dd><p><cite>sklearn.pipeline.make_pipeline(KNNImputer(…), RandomForestClassifier(…))</cite>).</p>
+</dd>
+</dl>
+</li>
+<li><p>Initialize the desired evaluator passing <cite>model</cite> and <cite>scorers</cite>.</p></li>
+<li><dl class="simple">
+<dt>Call <cite>fit(X_list, y_list)</cite> when applicable to train meta-regressors or</dt><dd><p>other internal components.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Use <cite>estimate(X_unlabeled)</cite> on the target data to get performance</dt><dd><p>estimates. When target labels are available, compare estimates with
+<cite>get_cv_and_real_scores(…)</cite> to validate results.</p>
+</dd>
+</dl>
+</li>
+</ol>
+</section>
+<section id="why-use-this-library">
+<h3>Why use this library<a class="headerlink" href="#why-use-this-library" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Automates cross-domain evaluation strategies that would otherwise be</dt><dd><p>repetitive to implement.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Provides a consistent API across multiple techniques (same <cite>fit</cite>/<cite>estimate</cite></dt><dd><p>methods), simplifying experimentation and comparison.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Includes ready-made utilities to compute CV/real scores and to compare</dt><dd><p>results reproducibly.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
 <p>To install the library from PyPI, run:
@@ -397,6 +492,13 @@ The library simplifies the benchmarking process and supports the development of 
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">scikit-autoeval: Documentation and User Guide</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a><ul>
+<li><a class="reference internal" href="#purpose">Purpose</a></li>
+<li><a class="reference internal" href="#module-structure-and-relationships">Module structure and relationships</a></li>
+<li><a class="reference internal" href="#typical-usage-flow">Typical usage flow</a></li>
+<li><a class="reference internal" href="#why-use-this-library">Why use this library</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#quick-example">Quick Example</a></li>
 <li><a class="reference internal" href="#contents">Contents</a></li>
