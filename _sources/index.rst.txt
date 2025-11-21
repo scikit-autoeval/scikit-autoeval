@@ -9,23 +9,15 @@ Installation
 ------------
 
 To install the library from PyPI, run:
-
 .. code-block:: bash
 
    pip install scikit-autoeval
 
-   Quick Example
-   -------------
+Quick Example
+-------------
+A short runnable example showing how to use the `ShapEvaluator` to estimate performance and compare it to cross-validated and real scores:
 
-   A short runnable example showing how to use the `ShapEvaluator` to estimate
-   performance and compare it to cross-validated and real scores::
-
-      # Authors: The scikit-autoeval developers
-      # SPDX-License-Identifier: BSD-3-Clause
-
-      # ==============================================================
-      # ShapEvaluator Example
-      # ==============================================================
+.. code-block:: python
 
       import pandas as pd
       from sklearn.metrics import accuracy_score, f1_score
@@ -82,11 +74,12 @@ Contents
 --------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    modules
 
-.. Indices
+Indices
+-------
 
 * :ref:`search`
 * :ref:`modindex`

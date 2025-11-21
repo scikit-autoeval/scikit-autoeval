@@ -269,72 +269,65 @@ It provides standardized interfaces and metrics for model validation, ensuring c
 The library simplifies the benchmarking process and supports the development of robust and reproducible experiments.</p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
-<p>To install the library from PyPI, run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>scikit-autoeval
+<p>To install the library from PyPI, run:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>pip install scikit-autoeval</p>
+</div></blockquote>
+</section>
+<section id="quick-example">
+<h2>Quick Example<a class="headerlink" href="#quick-example" title="Link to this heading">¶</a></h2>
+<p>A short runnable example showing how to use the <cite>ShapEvaluator</cite> to estimate performance and compare it to cross-validated and real scores:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.impute</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNNImputer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">XGBClassifier</span>
 
-Quick<span class="w"> </span>Example
--------------
-
-A<span class="w"> </span>short<span class="w"> </span>runnable<span class="w"> </span>example<span class="w"> </span>showing<span class="w"> </span>how<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>ShapEvaluator<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>estimate
-performance<span class="w"> </span>and<span class="w"> </span>compare<span class="w"> </span>it<span class="w"> </span>to<span class="w"> </span>cross-validated<span class="w"> </span>and<span class="w"> </span>real<span class="w"> </span>scores::
-
-<span class="w">   </span><span class="c1"># Authors: The scikit-autoeval developers</span>
-<span class="w">   </span><span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
-
-<span class="w">   </span><span class="c1"># ==============================================================</span>
-<span class="w">   </span><span class="c1"># ShapEvaluator Example</span>
-<span class="w">   </span><span class="c1"># ==============================================================</span>
-
-<span class="w">   </span>import<span class="w"> </span>pandas<span class="w"> </span>as<span class="w"> </span>pd
-<span class="w">   </span>from<span class="w"> </span>sklearn.metrics<span class="w"> </span>import<span class="w"> </span>accuracy_score,<span class="w"> </span>f1_score
-<span class="w">   </span>from<span class="w"> </span>sklearn.impute<span class="w"> </span>import<span class="w"> </span>KNNImputer
-<span class="w">   </span>from<span class="w"> </span>sklearn.pipeline<span class="w"> </span>import<span class="w"> </span>make_pipeline
-<span class="w">   </span>from<span class="w"> </span>xgboost<span class="w"> </span>import<span class="w"> </span>XGBClassifier
-
-<span class="w">   </span>from<span class="w"> </span>skeval.evaluators.shap<span class="w"> </span>import<span class="w"> </span>ShapEvaluator
-<span class="w">   </span>from<span class="w"> </span>skeval.utils<span class="w"> </span>import<span class="w"> </span>get_cv_and_real_scores,<span class="w"> </span>print_comparison
+<span class="kn">from</span><span class="w"> </span><span class="nn">skeval.evaluators.shap</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShapEvaluator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skeval.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_cv_and_real_scores</span><span class="p">,</span> <span class="n">print_comparison</span>
 
 
-<span class="w">   </span><span class="c1"># 1. Load datasets</span>
-<span class="w">   </span><span class="nv">geriatrics</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>pd.read_csv<span class="o">(</span><span class="s2">&quot;./skeval/datasets/geriatria-controle-alzheimerLabel.csv&quot;</span><span class="o">)</span>
-<span class="w">   </span><span class="nv">neurology</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>pd.read_csv<span class="o">(</span><span class="s2">&quot;./skeval/datasets/neurologia-controle-alzheimerLabel.csv&quot;</span><span class="o">)</span>
+<span class="c1"># 1. Load datasets</span>
+<span class="n">geriatrics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./skeval/datasets/geriatria-controle-alzheimerLabel.csv&quot;</span><span class="p">)</span>
+<span class="n">neurology</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./skeval/datasets/neurologia-controle-alzheimerLabel.csv&quot;</span><span class="p">)</span>
 
-<span class="w">   </span><span class="c1"># 2. Separate features and target</span>
-<span class="w">   </span>X1,<span class="w"> </span><span class="nv">y1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>geriatrics.drop<span class="o">(</span><span class="nv">columns</span><span class="o">=[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="o">])</span>,<span class="w"> </span>geriatrics<span class="o">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="o">]</span>
-<span class="w">   </span>X2,<span class="w"> </span><span class="nv">y2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>neurology.drop<span class="o">(</span><span class="nv">columns</span><span class="o">=[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="o">])</span>,<span class="w"> </span>neurology<span class="o">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="o">]</span>
+<span class="c1"># 2. Separate features and target</span>
+<span class="n">X1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">geriatrics</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">geriatrics</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
+<span class="n">X2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">neurology</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]),</span> <span class="n">neurology</span><span class="p">[</span><span class="s2">&quot;Alzheimer&quot;</span><span class="p">]</span>
 
-<span class="w">   </span><span class="c1"># 3. Define pipeline (KNNImputer + XGBoost)</span>
-<span class="w">   </span><span class="nv">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>make_pipeline<span class="o">(</span>KNNImputer<span class="o">(</span><span class="nv">n_neighbors</span><span class="o">=</span><span class="m">5</span><span class="o">)</span>,<span class="w"> </span>XGBClassifier<span class="o">())</span>
+<span class="c1"># 3. Define pipeline (KNNImputer + XGBoost)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">KNNImputer</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span> <span class="n">XGBClassifier</span><span class="p">())</span>
 
-<span class="w">   </span><span class="c1"># 4. Define scorers and evaluator</span>
-<span class="w">   </span><span class="nv">scorers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>
-<span class="w">      </span><span class="s2">&quot;accuracy&quot;</span>:<span class="w"> </span>accuracy_score,
-<span class="w">      </span><span class="s2">&quot;f1_macro&quot;</span>:<span class="w"> </span>lambda<span class="w"> </span>y,<span class="w"> </span>p:<span class="w"> </span>f1_score<span class="o">(</span>y,<span class="w"> </span>p,<span class="w"> </span><span class="nv">average</span><span class="o">=</span><span class="s2">&quot;macro&quot;</span><span class="o">)</span>,
-<span class="w">   </span><span class="o">}</span>
+<span class="c1"># 4. Define scorers and evaluator</span>
+<span class="n">scorers</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy_score</span><span class="p">,</span>
+   <span class="s2">&quot;f1_macro&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;macro&quot;</span><span class="p">),</span>
+<span class="p">}</span>
 
-<span class="w">   </span><span class="nv">evaluator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ShapEvaluator<span class="o">(</span>
-<span class="w">      </span><span class="nv">model</span><span class="o">=</span>model,
-<span class="w">      </span><span class="nv">scorer</span><span class="o">=</span>scorers,
-<span class="w">      </span><span class="nv">verbose</span><span class="o">=</span>False,
-<span class="w">      </span><span class="nv">inner_clf</span><span class="o">=</span>XGBClassifier<span class="o">(</span><span class="nv">random_state</span><span class="o">=</span><span class="m">42</span><span class="o">)</span>,
-<span class="w">   </span><span class="o">)</span>
+<span class="n">evaluator</span> <span class="o">=</span> <span class="n">ShapEvaluator</span><span class="p">(</span>
+   <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+   <span class="n">scorer</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span>
+   <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+   <span class="n">inner_clf</span><span class="o">=</span><span class="n">XGBClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">),</span>
+<span class="p">)</span>
 
-<span class="w">   </span><span class="c1"># 5. Fit evaluator on geriatrics data</span>
-<span class="w">   </span>evaluator.fit<span class="o">(</span>X1,<span class="w"> </span>y1<span class="o">)</span>
+<span class="c1"># 5. Fit evaluator on geriatrics data</span>
+<span class="n">evaluator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span>
 
-<span class="w">   </span><span class="c1"># 6. Estimate performance (train on X1, estimate on X2)</span>
-<span class="w">   </span><span class="nv">estimated_scores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>evaluator.estimate<span class="o">(</span>X2<span class="o">)</span>
+<span class="c1"># 6. Estimate performance (train on X1, estimate on X2)</span>
+<span class="n">estimated_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span>
 
-<span class="w">   </span><span class="c1"># 7. Compute real and CV performance</span>
-<span class="w">   </span><span class="nv">train_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>X1,<span class="w"> </span>y1
-<span class="w">   </span><span class="nv">test_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>X2,<span class="w"> </span>y2
-<span class="w">   </span><span class="nv">scores_dict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>get_cv_and_real_scores<span class="o">(</span>
-<span class="w">      </span><span class="nv">model</span><span class="o">=</span>model,<span class="w"> </span><span class="nv">scorers</span><span class="o">=</span>scorers,<span class="w"> </span><span class="nv">train_data</span><span class="o">=</span>train_data,<span class="w"> </span><span class="nv">test_data</span><span class="o">=</span>test_data
-<span class="w">   </span><span class="o">)</span>
-<span class="w">   </span><span class="nv">cv_scores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>scores_dict<span class="o">[</span><span class="s2">&quot;cv_scores&quot;</span><span class="o">]</span>
-<span class="w">   </span><span class="nv">real_scores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>scores_dict<span class="o">[</span><span class="s2">&quot;real_scores&quot;</span><span class="o">]</span>
+<span class="c1"># 7. Compute real and CV performance</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">X1</span><span class="p">,</span> <span class="n">y1</span>
+<span class="n">test_data</span> <span class="o">=</span> <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span>
+<span class="n">scores_dict</span> <span class="o">=</span> <span class="n">get_cv_and_real_scores</span><span class="p">(</span>
+   <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scorers</span><span class="o">=</span><span class="n">scorers</span><span class="p">,</span> <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="o">=</span><span class="n">test_data</span>
+<span class="p">)</span>
+<span class="n">cv_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;cv_scores&quot;</span><span class="p">]</span>
+<span class="n">real_scores</span> <span class="o">=</span> <span class="n">scores_dict</span><span class="p">[</span><span class="s2">&quot;real_scores&quot;</span><span class="p">]</span>
 
-<span class="w">   </span>print_comparison<span class="o">(</span>scorers,<span class="w"> </span>cv_scores,<span class="w"> </span>estimated_scores,<span class="w"> </span>real_scores<span class="o">)</span>
+<span class="n">print_comparison</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">cv_scores</span><span class="p">,</span> <span class="n">estimated_scores</span><span class="p">,</span> <span class="n">real_scores</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -342,9 +335,19 @@ performance<span class="w"> </span>and<span class="w"> </span>compare<span class
 <h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">skeval</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">skeval</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="evaluators/index.html">skeval.evaluators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">skeval.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">skeval.metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">skeval.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html">skeval.examples</a></li>
+</ul>
+</li>
 </ul>
 </div>
+</section>
+<section id="indices">
+<h2>Indices<a class="headerlink" href="#indices" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
@@ -399,7 +402,9 @@ performance<span class="w"> </span>and<span class="w"> </span>compare<span class
             <ul>
 <li><a class="reference internal" href="#">scikit-autoeval: Documentation and User Guide</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#quick-example">Quick Example</a></li>
 <li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#indices">Indices</a></li>
 </ul>
 </li>
 </ul>
