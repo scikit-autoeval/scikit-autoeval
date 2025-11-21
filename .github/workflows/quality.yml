@@ -57,19 +57,19 @@ jobs:
       # -------------------------------
       - name: Radon Cyclomatic Complexity
         run: |
-          radon cc -s -a skeval > radon_cc_report.txt
+          radon cc -s -a skeval --exclude "*/tests*,*/examples*,*/plots*" > radon_cc_report.txt
 
       - name: Radon Maintainability Index
         run: |
-          radon mi -s skeval > radon_mi_report.txt
+          radon mi -s skeval --exclude "*/tests*,*/examples*,*/plots*" > radon_mi_report.txt
 
       - name: Radon Raw Metrics
         run: |
-          radon raw skeval > metricas_raw.txt
+          radon raw skeval --exclude "*/tests*,*/examples*,*/plots*" > radon_raw.txt
       
       - name: Radon Halstead Metrics
         run: |
-          radon hal skeval > metricas_halstead.txt
+          radon hal skeval --exclude "*/tests*,*/examples*,*/plots*" > radon_halstead.txt
 
       # -------------------------------
       # Pytest + Coverage
@@ -91,5 +91,7 @@ jobs:
             pylint_report.txt
             radon_cc_report.txt
             radon_mi_report.txt
+            radon_raw.txt
+            radon_halstead.txt
             coverage_report.txt
             ruff_report.txt
