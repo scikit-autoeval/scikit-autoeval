@@ -1,4 +1,5 @@
 venv/
+.venv/
 dist/
 docs/_build
 skeval/console_tests

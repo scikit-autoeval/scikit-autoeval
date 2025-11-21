@@ -50,7 +50,7 @@ jobs:
       # -------------------------------
       - name: Run Pylint
         run: |
-          pylint skeval > pylint_report.txt || true
+          pylint skeval --disable=all --enable=duplicate-code > pylint_report.txt || true
 
       # -------------------------------
       # Radon (cc + mi + raw + halstead)

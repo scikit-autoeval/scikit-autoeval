@@ -1,7 +1,7 @@
 AgreementEvaluator
 ----------------------------
 
-.. automodule:: evaluators.agreement
+.. automodule:: skeval.evaluators.agreement
    :members:
    :show-inheritance:
    :undoc-members:

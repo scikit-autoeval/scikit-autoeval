@@ -1,7 +1,7 @@
 RegressionNoiseEvaluator
 ----------------------------
 
-.. automodule:: evaluators.regression_noise
+.. automodule:: skeval.evaluators.regression_noise
    :members:
    :show-inheritance:
    :undoc-members:

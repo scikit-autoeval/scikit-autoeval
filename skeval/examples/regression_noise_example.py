@@ -28,10 +28,6 @@ def run_regression_noise_eval(verbose=False):
     # =====================================
     # 3. Define pipeline (KNNImputer + RandomForest)
     # =====================================
-    # model = make_pipeline(
-    #     KNNImputer(n_neighbors=5),
-    #     RandomForestClassifier(n_estimators=300, random_state=42)
-    # )
     model = RandomForestClassifier(n_estimators=180, random_state=42)
 
     # =====================================
@@ -47,7 +43,6 @@ def run_regression_noise_eval(verbose=False):
     # 5. Fit evaluator using multiple datasets
     # =====================================
     evaluator.fit([X1, X2], [y1, y2], n_splits=5)
-    # final_model = model.fit(X1, y1)
 
     # =====================================
     # 6. Estimate scores for new dataset

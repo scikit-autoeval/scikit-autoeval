@@ -13,6 +13,15 @@ def check_is_fitted(model: Any) -> None:
     that the underlying model has been fitted. It raises a `RuntimeError`
     if the model is not fitted.
 
+    Parameters
+    ----------
+    model : object
+        The model to check.
+
+    Returns
+    -------
+    None
+
     Raises
     ------
     RuntimeError
@@ -79,21 +88,26 @@ def print_comparison(
     real_scores: Mapping[str, float],
 ) -> None:
     """
-    Print a formatted comparison between cross-validation (intra-domain), estimated, and
-    real performance scores for a set of metrics, and display the absolute errors of the
-    CV and estimated scores with respect to the real scores.
+    Print a formatted comparison between cross-validation (intra-domain),
+    estimated, and real performance scores for a set of metrics, and display
+    the absolute errors of the CV and estimated scores with respect to the
+    real scores.
+
     Parameters
     ----------
     scorers : Mapping[str, Any]
-        A mapping whose keys are metric names (strings). Only the keys are used to
-        determine which metrics to display; values (e.g., scorer callables) are not
-        inspected by this function.
+        A mapping whose keys are metric names (strings). Only the keys are
+        used to determine which metrics to display; values (e.g., scorer
+        callables) are not inspected by this function.
     cv_scores : Mapping[str, float]
-        Mapping from metric name to the cross-validation (intra-domain) score.
+        Mapping from metric name to the cross-validation (intra-domain)
+        score.
     estimated_scores : Mapping[str, float]
         Mapping from metric name to the estimated cross-domain score.
     real_scores : Mapping[str, float]
-        Mapping from metric name to the observed real score on the target domain.
+        Mapping from metric name to the observed real score on the target
+        domain.
+
     Returns
     -------
     None

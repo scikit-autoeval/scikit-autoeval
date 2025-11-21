@@ -4,7 +4,7 @@ skeval.examples
 ConfidenceThresholdEvaluator Example
 ------------------------------------
 
-.. automodule:: examples.confidence_example
+.. automodule:: skeval.examples.confidence_example
    :members:
    :show-inheritance:
    :undoc-members:
@@ -12,7 +12,7 @@ ConfidenceThresholdEvaluator Example
 RegressionEvaluator Example
 ---------------------------
 
-.. automodule:: examples.regression_example
+.. automodule:: skeval.examples.regression_example
    :members:
    :show-inheritance:
    :undoc-members:
@@ -20,7 +20,7 @@ RegressionEvaluator Example
 RegressionNoiseEvaluator Example
 --------------------------------
 
-.. automodule:: examples.regression_noise_example
+.. automodule:: skeval.examples.regression_noise_example
    :members:
    :show-inheritance:
    :undoc-members:
@@ -28,7 +28,7 @@ RegressionNoiseEvaluator Example
 AgreementEvaluator Example
 --------------------------
 
-.. automodule:: examples.agreement_example
+.. automodule:: skeval.examples.agreement_example
    :members:
    :show-inheritance:
    :undoc-members:
@@ -36,7 +36,7 @@ AgreementEvaluator Example
 ShapEvaluator Example
 ---------------------
 
-.. automodule:: examples.shap_example
+.. automodule:: skeval.examples.shap_example
    :members:
    :show-inheritance:
    :undoc-members:
@@ -52,7 +52,7 @@ ShapEvaluator Example
 .. Module contents
 .. ---------------
 
-.. .. automodule:: evaluators
+.. .. automodule:: skeval.evaluators
 ..    :members:
 ..    :show-inheritance:
 ..    :undoc-members:

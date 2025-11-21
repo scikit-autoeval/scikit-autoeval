@@ -46,28 +46,89 @@ class RegressionEvaluator(BaseEvaluator):
         A dictionary mapping each scorer's name to its fitted meta-regressor
         instance. This attribute is populated after the `fit` method is called.
 
+        Notes
+        -----
+        - The `fit` method expects lists of datasets (`x` and `y`), where each
+            element is a dataset (features/labels) used to build the meta-dataset.
+        - After training the meta-regressors, `fit` will also fit `self.model`
+            on the first dataset provided (``x[0], y[0]``). If you prefer to use a
+            differently trained final model before calling `estimate`, manually set
+            `evaluator.model` to your fitted estimator.
+        - The underlying classifier must implement `predict_proba` because the
+            evaluator extracts meta-features from predicted probability
+            distributions. This evaluator is designed for classification tasks.
+
     Examples
     --------
-    >>> from sklearn.datasets import load_iris
-    >>> from sklearn.linear_model import LogisticRegression
-    >>> from sklearn.metrics import accuracy_score
-    >>> from skeval.evaluators.regression import RegressionEvaluator
+    >>> # Authors: The scikit-autoeval developers
+    >>> # SPDX-License-Identifier: BSD-3-Clause
     >>>
-    >>> iris = load_iris()
-    >>> X_list, y_list = [iris.data], [iris.target]
-    >>> evaluator = RegressionEvaluator(
-    ...     model=LogisticRegression(max_iter=1000),
-    ...     scorer=accuracy_score,
-    ...     verbose=False
-    ... )
-    >>> evaluator.fit(X_list, y_list)
-    RegressionEvaluator(...)
-    >>> # Train a final model manually
-    >>> final_model = LogisticRegression(max_iter=1000).fit(iris.data, iris.target)
-    >>> evaluator.model = final_model
-    >>> estimated_scores = evaluator.estimate(iris.data)
-    >>> print(estimated_scores)
-    {'score': ...}
+    >>> # ==============================================================
+    >>> # RegressionEvaluator Example
+    >>> # ==============================================================
+    >>> import pandas as pd
+    >>> from sklearn.metrics import accuracy_score, f1_score
+    >>> from sklearn.ensemble import RandomForestClassifier
+    >>>
+    >>> from skeval.evaluators import RegressionEvaluator
+    >>> from skeval.utils import get_cv_and_real_scores, print_comparison
+    >>>
+    >>> def run_regression_eval(verbose=False):
+    >>>     # =====================================
+    >>>     # 1. Load datasets
+    >>>     # =====================================
+    >>>     geriatrics = pd.read_csv("./skeval/datasets/geriatria-controle-alzheimerLabel.csv")
+    >>>     neurology = pd.read_csv("./skeval/datasets/neurologia-controle-alzheimerLabel.csv")
+    >>>
+    >>>     # =====================================
+    >>>     # 2. Separate features and target
+    >>>     # =====================================
+    >>>     X1, y1 = geriatrics.drop(columns=["Alzheimer"]), geriatrics["Alzheimer"]
+    >>>     X2, y2 = neurology.drop(columns=["Alzheimer"]), neurology["Alzheimer"]
+    >>>
+    >>>     # =====================================
+    >>>     # 3. Define pipeline (KNNImputer + RandomForest)
+    >>>     # =====================================
+    >>>     model = RandomForestClassifier(n_estimators=180, random_state=42)
+    >>>
+    >>>     # =====================================
+    >>>     # 4. Define scorers and evaluator
+    >>>     # =====================================
+    >>>     scorers = {
+    >>>         "accuracy": accuracy_score,
+    >>>         "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
+    >>>     }
+    >>>
+    >>>     evaluator = RegressionEvaluator(model=model, scorer=scorers, verbose=False)
+    >>>
+    >>>     # =====================================
+    >>>     # 5. Fit evaluator using multiple datasets
+    >>>     # =====================================
+    >>>     evaluator.fit([X1, X2], [y1, y2], n_splits=4)
+    >>>
+    >>>     # =====================================
+    >>>     # 6. Estimate scores for new dataset
+    >>>     # =====================================
+    >>>     estimated_scores = evaluator.estimate(X2)
+    >>>
+    >>>     # ======================
+    >>>     # 7. Cross-Validation and Real Performance
+    >>>     # ======================
+    >>>     train_data = X1, y1
+    >>>     test_data = X2, y2
+    >>>     scores_dict = get_cv_and_real_scores(
+    >>>         model=model, scorers=scorers, train_data=train_data, test_data=test_data
+    >>>     )
+    >>>     cv_scores = scores_dict["cv_scores"]
+    >>>     real_scores = scores_dict["real_scores"]
+    >>>
+    >>>     if verbose:
+    >>>         print_comparison(scorers, cv_scores, estimated_scores, real_scores)
+    >>>
+    >>>     return {"cv": cv_scores, "estimated": estimated_scores, "real": real_scores}
+    >>>
+    >>> if __name__ == "__main__":
+    >>>     results = run_regression_eval(verbose=True)
     """
 
     def __init__(

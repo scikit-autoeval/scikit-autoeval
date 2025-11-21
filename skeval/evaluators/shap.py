@@ -67,22 +67,84 @@ class ShapEvaluator(BaseEvaluator):
 
     Examples
     --------
-    >>> from skeval.evaluators import ShapEvaluator
-    >>> from sklearn.metrics import accuracy_score
-    >>> from xgboost import XGBClassifier
+    >>> # Authors: The scikit-autoeval developers
+    >>> # SPDX-License-Identifier: BSD-3-Clause
+    >>>
+    >>> # ==============================================================
+    >>> # ShapEvaluator Example
+    >>> # ==============================================================
+    >>>
     >>> import pandas as pd
+    >>> from sklearn.metrics import accuracy_score, f1_score
+    >>> from sklearn.impute import KNNImputer
+    >>> from sklearn.pipeline import make_pipeline
+    >>> from xgboost import XGBClassifier
     >>>
-    >>> df_train = pd.read_csv("dataset_train.csv")
-    >>> df_test = pd.read_csv("dataset_test.csv")
-    >>> x_train, y_train = df_train.drop(columns=["label"]), df_train["label"]
-    >>> x_test = df_test.drop(columns=["label"])
-    >>> model = XGBClassifier()
+    >>> from skeval.evaluators.shap import ShapEvaluator
+    >>> from skeval.utils import get_cv_and_real_scores, print_comparison
     >>>
-    >>> evaluator = ShapEvaluator(model, scorer=accuracy_score)
-    >>> evaluator.fit(x_train, y_train)
-    >>> scores = evaluator.estimate(x_test)
-    >>> print(scores)
-    0.84
+    >>> def run_shap_eval(verbose=False):
+    >>>     # =====================================
+    >>>     # 1. Load datasets
+    >>>     # =====================================
+    >>>     geriatrics = pd.read_csv("geriatria.csv")
+    >>>     neurology = pd.read_csv("neurologia.csv")
+    >>>
+    >>>     # =====================================
+    >>>     # 2. Separate features and target
+    >>>     # =====================================
+    >>>     X1, y1 = geriatrics.drop(columns=["Alzheimer"]), geriatrics["Alzheimer"]
+    >>>     X2, y2 = neurology.drop(columns=["Alzheimer"]), neurology["Alzheimer"]
+    >>>
+    >>>     # =====================================
+    >>>     # 3. Define pipeline (KNNImputer + RandomForest)
+    >>>     # =====================================
+    >>>     model = make_pipeline(KNNImputer(n_neighbors=5), XGBClassifier())
+    >>>
+    >>>     # =====================================
+    >>>     # 4. Define scorers and evaluator
+    >>>     # =====================================
+    >>>     scorers = {
+    >>>         "accuracy": accuracy_score,
+    >>>         "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
+    >>>     }
+    >>>
+    >>>     evaluator = ShapEvaluator(
+    >>>         model=model,
+    >>>         scorer=scorers,
+    >>>         verbose=False,
+    >>>         inner_clf=XGBClassifier(random_state=42),
+    >>>     )
+    >>>
+    >>>     # =====================================
+    >>>     # 5. Fit evaluator on geriatrics data
+    >>>     # =====================================
+    >>>     evaluator.fit(X1, y1)
+    >>>
+    >>>     # =====================================
+    >>>     # 6. Estimate performance (train on X1, estimate on X2)
+    >>>     # =====================================
+    >>>
+    >>>     estimated_scores = evaluator.estimate(X2)
+    >>>
+    >>>     # =====================================
+    >>>     # 7. Compute real and CV performance
+    >>>     # =====================================
+    >>>     train_data = X1, y1
+    >>>     test_data = X2, y2
+    >>>     scores_dict = get_cv_and_real_scores(
+    >>>         model=model, scorers=scorers, train_data=train_data, test_data=test_data
+    >>>     )
+    >>>     cv_scores = scores_dict["cv_scores"]
+    >>>     real_scores = scores_dict["real_scores"]
+    >>>
+    >>>     if verbose:
+    >>>         print_comparison(scorers, cv_scores, estimated_scores, real_scores)
+    >>>
+    >>>     return {"cv": cv_scores, "estimated": estimated_scores, "real": real_scores}
+    >>>
+    >>> if __name__ == "__main__":
+    >>>     results = run_shap_eval(verbose=True)
     """
 
     def __init__(

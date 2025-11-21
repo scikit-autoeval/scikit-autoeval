@@ -1,7 +1,7 @@
 RegressionEvaluator
 ----------------------------
 
-.. automodule:: evaluators.regression
+.. automodule:: skeval.evaluators.regression
    :members:
    :show-inheritance:
    :undoc-members:

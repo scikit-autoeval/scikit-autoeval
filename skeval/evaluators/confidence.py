@@ -10,62 +10,74 @@ from skeval.utils import check_is_fitted
 
 
 class ConfidenceThresholdEvaluator(BaseEvaluator):
-    """
-    Confidence-based evaluator for classification models.
+    """Confidence-based evaluator for classification models.
 
-    This evaluator filters the predictions of a classification model based on a
-    confidence threshold. Only predictions with a confidence greater than or
-    equal to the specified threshold are considered for scoring.
+    This evaluator filters predictions from a classification model according to
+    a confidence threshold. Only predictions whose confidence (top-class
+    probability, or other chosen score) is greater than or equal to the given
+    threshold are treated as "trusted"; the remaining predictions are flipped
+    (binary case) to build an expected label vector used for metric estimation.
 
     Parameters
     ----------
     model : object
-        Any model with `fit`, `predict`, and `predict_proba` or
-        `decision_function` methods.
+        Any classifier implementing ``fit``, ``predict`` and either
+        ``predict_proba`` or ``decision_function``.
     scorer : callable or dict of str -> callable, default=accuracy_score
-        An evaluation function or a dictionary of multiple evaluation functions.
+        Single scoring function or mapping of metric names to callables with
+        signature ``scorer(y_true, y_pred)``.
     verbose : bool, default=False
-        If True, prints additional information during evaluation.
+        If ``True``, prints intermediate information during fitting and
+        estimation.
 
     Attributes
     ----------
     model : object
-        The model passed in the constructor.
+        The primary model evaluated.
     scorer : callable or dict
-        The scoring function(s) passed in the constructor.
+        Scoring function(s) applied to agreement-based labels.
     verbose : bool
-        The verbosity level.
+        Verbosity flag.
 
     Examples
     --------
-    >>> import numpy as np
-    >>> from sklearn.linear_model import LogisticRegression
-    >>> from sklearn.metrics import precision_score, recall_score
-    >>> # Sample data
-    >>> x_train = np.array([[1], [2], [3], [4], [5], [6]])
-    >>> y_train = np.array([0, 0, 0, 1, 1, 1])
-    >>> x_test = np.array([[0.5], [0.8], [3.5], [5.5]])
-    >>> # 1. Create and train a standard classifier
-    >>> classifier = LogisticRegression(solver='liblinear', random_state=0)
-    >>> classifier.fit(x_train, y_train)
-    LogisticRegression(random_state=0, solver='liblinear')
-    >>> # 2. Create the evaluator with the trained classifier
-    >>> scorings = {'precision': precision_score, 'recall': recall_score}
-    >>> conf_eval = ConfidenceThresholdEvaluator(
-    ...     model=classifier,
-    ...     scorer=scorings
+    Example using medical datasets and a RandomForest pipeline:
+
+    >>> import pandas as pd
+    >>> from sklearn.metrics import accuracy_score, f1_score
+    >>> from sklearn.impute import KNNImputer
+    >>> from sklearn.pipeline import make_pipeline
+    >>> from sklearn.ensemble import RandomForestClassifier
+    >>> from skeval.evaluators.confidence import ConfidenceThresholdEvaluator
+    >>> from skeval.utils import get_cv_and_real_scores, print_comparison
+    >>> # 1. Load datasets
+    >>> df_geriatrics = pd.read_csv("geriatria.csv")
+    >>> df_neurology = pd.read_csv("neurologia.csv")
+    >>> # 2. Separate features and target
+    >>> X1, y1 = df_geriatrics.drop(columns=["Alzheimer"]), df_geriatrics["Alzheimer"]
+    >>> X2, y2 = df_neurology.drop(columns=["Alzheimer"]), df_neurology["Alzheimer"]
+    >>> # 3. Define model pipeline
+    >>> model = make_pipeline(
+    ...     KNNImputer(n_neighbors=4),
+    ...     RandomForestClassifier(n_estimators=300, random_state=42),
     ... )
-    >>> # 3. The fit method is for compatibility, not strictly needed here
-    >>> #    since the model is already trained.
-    >>> conf_eval.fit(x_train, y_train)
-    ConfidenceThresholdEvaluator(...)
-    >>> # 4. Estimate the performance on the test set
-    >>> #    The evaluator will internally call classifier.predict_proba(x_test)
-    >>> scores = conf_eval.estimate(x_test, threshold=0.9)
-    >>> for score_name, value in scores.items():
-    ...     print(f"{score_name}: {value:.2f}")
-    precision: 1.00
-    recall: 1.00
+    >>> # 4. Initialize evaluator with scorers
+    >>> scorers = {
+    ...     "accuracy": accuracy_score,
+    ...     "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
+    ... }
+    >>> evaluator = ConfidenceThresholdEvaluator(model=model, scorer=scorers)
+    >>> # 5. Fit evaluator
+    >>> evaluator.fit(X1, y1)
+    >>> # 6. Estimated performance (using confidence threshold)
+    >>> estimated_scores = evaluator.estimate(X2, threshold=0.65, limit_to_top_class=True)
+    >>> # 7. Cross-validation and real performance comparison
+    >>> scores_dict = get_cv_and_real_scores(
+    ...     model=model, scorers=scorers, train_data=(X1, y1), test_data=(X2, y2)
+    ... )
+    >>> cv_scores = scores_dict["cv_scores"]
+    >>> real_scores = scores_dict["real_scores"]
+    >>> print_comparison(scorers, cv_scores, estimated_scores, real_scores)
     """
 
     def __init__(

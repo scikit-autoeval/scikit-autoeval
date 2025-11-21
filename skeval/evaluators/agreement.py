@@ -10,16 +10,93 @@ from skeval.utils import check_is_fitted
 
 
 class AgreementEvaluator(BaseEvaluator):
-    """
-    Evaluator based on agreement/disagreement between the target model (M)
-    and a secondary model (M').
+    """Agreement-based evaluator for supervised classification models.
 
-    The agreement is computed as:
-        1 if the prediction of M equals the prediction of M' for an instance,
-        0 otherwise.
+    This evaluator compares predictions produced by a *primary* model (``model``)
+    and a *secondary* model (``sec_model``) on an evaluation set. For each
+    sample, an agreement indicator is defined as ``1`` when both models predict
+    the same class and ``0`` otherwise. Using this indicator, an *expected label*
+    vector is created by flipping the primary model's prediction when the models
+    disagree. Metric(s) are then computed comparing the expected label vector
+    to the agreement indicator, providing an estimate of how often the primary
+    model's predictions would align with a plausible correction strategy based
+    on model disagreement.
 
-    The secondary model is set to Naive Bayes by default, but can be replaced
-    by any other classifier.
+    Evaluation workflow:
+    1. Fit both the primary and secondary models on the training data.
+    2. Generate predictions for both models on the evaluation data.
+    3. Build the agreement vector (1 = same prediction, 0 = different).
+    4. Produce an expected label vector, flipping predictions where disagreement occurs.
+    5. Compute the chosen metric(s) using the scorer(s).
+
+    Parameters
+    ----------
+    model : estimator
+        A classification estimator implementing ``fit`` and ``predict``.
+        May be a single estimator or a pipeline created with
+        ``sklearn.pipeline.make_pipeline``.
+    scorer : callable or dict of str -> callable, default=accuracy_score
+        A single scoring function or a dictionary mapping metric names to
+        scoring callables. Each scorer must follow the signature
+        ``scorer(y_true, y_pred)``.
+    verbose : bool, default=False
+        If ``True``, prints progress information during fit and estimate.
+    sec_model : estimator, optional
+        Secondary classification model used solely to generate comparison
+        predictions. If ``None``, defaults to ``GaussianNB()``.
+
+    Attributes
+    ----------
+    model : estimator
+        The primary model provided at initialization.
+    sec_model : estimator
+        The secondary model used to create agreement signals.
+
+    Notes
+    -----
+    This evaluator assumes both models output class labels directly via
+    ``predict``. No probability calibration is performed. The metric(s) are
+    computed on synthetic targets produced from model agreement—not against
+    real ground-truth labels—so scores should be interpreted as *agreement-based
+    estimates*, not actual performance metrics.
+
+    Examples
+    --------
+    Basic usage with two RandomForest pipelines and multiple scorers:
+
+    >>> import pandas as pd
+    >>> from sklearn.metrics import accuracy_score, f1_score
+    >>> from sklearn.impute import KNNImputer
+    >>> from sklearn.pipeline import make_pipeline
+    >>> from sklearn.ensemble import RandomForestClassifier
+    >>> from skeval.evaluators.agreement import AgreementEvaluator
+    >>> from skeval.utils import get_cv_and_real_scores, print_comparison
+    >>> df_geriatrics = pd.read_csv("geriatria.csv")
+    >>> df_neurology = pd.read_csv("neurologia.csv")
+    >>> X1, y1 = df_geriatrics.drop(columns=["Alzheimer"]), df_geriatrics["Alzheimer"]
+    >>> X2, y2 = df_neurology.drop(columns=["Alzheimer"]), df_neurology["Alzheimer"]
+    >>> model = make_pipeline(
+    ...     KNNImputer(n_neighbors=10),
+    ...     RandomForestClassifier(n_estimators=50, random_state=42),
+    ... )
+    >>> sec_model = make_pipeline(
+    ...     KNNImputer(n_neighbors=10),
+    ...     RandomForestClassifier(n_estimators=100, random_state=42),
+    ... )
+    >>> scorers = {
+    ...     "accuracy": accuracy_score,
+    ...     "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
+    ... }
+    >>> evaluator = AgreementEvaluator(model=model, sec_model=sec_model, scorer=scorers)
+    >>> evaluator.fit(X1, y1)
+    >>> estimated_scores = evaluator.estimate(X2)
+    >>> # Optionally compare with CV and real scores
+    >>> scores_dict = get_cv_and_real_scores(
+    ...     model=model, scorers=scorers, train_data=(X1, y1), test_data=(X2, y2)
+    ... )
+    >>> cv_scores = scores_dict["cv_scores"]
+    >>> real_scores = scores_dict["real_scores"]
+    >>> print_comparison(scorers, cv_scores, estimated_scores, real_scores)
     """
 
     def __init__(
@@ -34,15 +111,19 @@ class AgreementEvaluator(BaseEvaluator):
         self.sec_model = sec_model if sec_model is not None else GaussianNB()
 
     def fit(self, x: Any, y: Any) -> "AgreementEvaluator":
-        """
-        Fit the evaluator by generating predictions from both models.
+        """Fit the evaluator by training both primary and secondary models.
 
         Parameters
         ----------
-        x : array-like
-            Feature matrix.
-        y : array-like
-            Target vector.
+        x : array-like of shape (n_samples, n_features)
+            Feature matrix used to fit both models.
+        y : array-like of shape (n_samples,)
+            Target labels corresponding to ``x``.
+
+        Returns
+        -------
+        self : AgreementEvaluator
+            The fitted evaluator instance.
         """
 
         self.model.fit(x, y)
@@ -54,18 +135,27 @@ class AgreementEvaluator(BaseEvaluator):
         return self
 
     def estimate(self, x_eval: Any) -> Dict[str, float]:
-        """
-        Estimate the agreement score between the main and secondary models.
+        """Estimate agreement-based metric values on evaluation data.
+
+        Generates predictions from both models, constructs an agreement vector
+        and an expected label vector (flipping the primary prediction when
+        disagreement occurs), then applies the configured scorer(s).
 
         Parameters
         ----------
-        x_eval : array-like
-            Feature matrix (not used, kept for interface consistency).
+        x_eval : array-like of shape (n_samples, n_features)
+            Evaluation feature matrix.
 
         Returns
         -------
-        scores : dict or float
-            Agreement score(s) computed using the provided scorer(s).
+        scores : dict
+            If ``scorer`` is a dict, returns a mapping from metric name to
+            agreement-based score. Otherwise returns ``{"score": float}``.
+
+        Raises
+        ------
+        ValueError
+            If ``scorer`` is neither a callable nor a dict of callables.
         """
 
         check_is_fitted(self.model)

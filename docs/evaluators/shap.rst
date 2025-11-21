@@ -1,7 +1,7 @@
 ShapEvaluator
 ----------------------------
 
-.. automodule:: evaluators.shap
+.. automodule:: skeval.evaluators.shap
    :members:
    :show-inheritance:
    :undoc-members:
