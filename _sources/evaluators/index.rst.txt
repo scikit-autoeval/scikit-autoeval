@@ -3,7 +3,7 @@ skeval.evaluators
 
 .. toctree::
    :maxdepth: 1
-
+   
    agreement
    confidence
    regression

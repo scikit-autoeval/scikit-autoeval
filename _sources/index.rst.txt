@@ -78,8 +78,4 @@ Contents
 
    modules
 
-Indices
--------
-
-* :ref:`search`
 * :ref:`modindex`
