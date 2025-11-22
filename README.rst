@@ -8,7 +8,7 @@
    :target: https://pypi.org/project/scikit-autoeval/
 .. |Status| image:: https://img.shields.io/badge/status-beta-yellow.svg
 
-.. image:: https://raw.githubusercontent.com/scikit-autoeval/scikit-autoeval/main/docs/_static/logo.png
+.. image:: https://raw.githubusercontent.com/scikit-autoeval/scikit-autoeval/main/docs/_static/logo-dark.png
    :alt: scikit-autoeval logo
    :target: https://github.com/scikit-autoeval/scikit-autoeval
 
