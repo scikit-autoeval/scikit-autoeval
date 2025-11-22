@@ -67,7 +67,6 @@ Basic usage with the confidence threshold evaluator:
    from skeval.evaluators.confidence import ConfidenceThresholdEvaluator
    from skeval.utils import get_cv_and_real_scores, print_comparison
 
-   # Load two related medical datasets (source & target)
    src = pd.read_csv("./skeval/datasets/geriatria-controle-alzheimerLabel.csv")
    tgt = pd.read_csv("./skeval/datasets/neurologia-controle-alzheimerLabel.csv")
 
