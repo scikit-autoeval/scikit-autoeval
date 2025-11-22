@@ -20,9 +20,10 @@
    :target: https://pypi.org/project/scikit-autoeval/
 
 .. image:: https://raw.githubusercontent.com/scikit-autoeval/scikit-autoeval/main/docs/_static/logo-dark.png
-    :alt: scikit-autoeval logo
-    :target: https://github.com/scikit-autoeval/scikit-autoeval
-    :scale: 25%
+   :alt: scikit-autoeval logo
+   :target: https://github.com/scikit-autoeval/scikit-autoeval
+   :width: 180px
+
 
 scikit-autoeval: Automatic Estimation of Model Performance Without Labels
 =========================================================================
