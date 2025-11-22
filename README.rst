@@ -1,16 +1,28 @@
 .. -*- mode: rst -*-
 
-|License| |Python| |Status|
+|License| |Python| |QA| |Ruff| |Black| |Pylint| |Radon| |PyPI|
 
 .. |License| image:: https://img.shields.io/badge/license-BSD%203--Clause-blue.svg
    :target: https://opensource.org/licenses/BSD-3-Clause
 .. |Python| image:: https://img.shields.io/pypi/pyversions/scikit-autoeval.svg
    :target: https://pypi.org/project/scikit-autoeval/
-.. |Status| image:: https://img.shields.io/badge/status-beta-yellow.svg
+.. |QA| image:: https://github.com/scikit-eval/scikit-eval/actions/workflows/quality.yml/badge.svg?branch=main
+   :target: https://github.com/scikit-eval/scikit-eval/actions/workflows/quality.yml?query=branch%3Amain
+.. |Ruff| image:: https://img.shields.io/badge/code%20style-ruff-000000.svg
+   :target: https://github.com/astral-sh/ruff
+.. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+.. |Pylint| image:: https://img.shields.io/badge/pylint-enabled-3C7EBB.svg
+   :target: https://pylint.readthedocs.io/
+.. |Radon| image:: https://img.shields.io/badge/radon-cc%2Fmi%2Fhal%2Fraw-blue.svg
+   :target: https://radon.readthedocs.io/
+.. |PyPI| image:: https://img.shields.io/pypi/v/scikit-autoeval.svg
+   :target: https://pypi.org/project/scikit-autoeval/
 
 .. image:: https://raw.githubusercontent.com/scikit-autoeval/scikit-autoeval/main/docs/_static/logo-dark.png
-   :alt: scikit-autoeval logo
-   :target: https://github.com/scikit-autoeval/scikit-autoeval
+    :alt: scikit-autoeval logo
+    :target: https://github.com/scikit-autoeval/scikit-autoeval
+    :scale: 25%
 
 scikit-autoeval: Automatic Estimation of Model Performance Without Labels
 =========================================================================
