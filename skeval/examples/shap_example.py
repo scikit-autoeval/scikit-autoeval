@@ -16,26 +16,17 @@ from skeval.utils import get_cv_and_real_scores, print_comparison
 
 
 def run_shap_eval(verbose=False):
-    # =====================================
-    # 1. Load datasets
-    # =====================================
+
     geriatrics = pd.read_csv("./skeval/datasets/geriatria-controle-alzheimerLabel.csv")
     neurology = pd.read_csv("./skeval/datasets/neurologia-controle-alzheimerLabel.csv")
 
-    # =====================================
-    # 2. Separate features and target
-    # =====================================
-    X1, y1 = geriatrics.drop(columns=["Alzheimer"]), geriatrics["Alzheimer"]
-    X2, y2 = neurology.drop(columns=["Alzheimer"]), neurology["Alzheimer"]
+    x_geriatria, y_geriatria = geriatrics.drop(columns=["Alzheimer"]), geriatrics["Alzheimer"]
+    x_neurologia = neurology.drop(columns=["Alzheimer"])
 
-    # =====================================
-    # 3. Define pipeline (KNNImputer + RandomForest)
-    # =====================================
+    # Define pipeline
     model = make_pipeline(KNNImputer(n_neighbors=5), XGBClassifier())
 
-    # =====================================
-    # 4. Define scorers and evaluator
-    # =====================================
+    # Define scorers and evaluator
     scorers = {
         "accuracy": accuracy_score,
         "f1_macro": lambda y, p: f1_score(y, p, average="macro"),
@@ -48,16 +39,11 @@ def run_shap_eval(verbose=False):
         inner_clf=XGBClassifier(random_state=42),
     )
 
-    # =====================================
-    # 5. Fit evaluator on geriatrics data
-    # =====================================
-    evaluator.fit(X1, y1)
+    # Fit evaluator
+    evaluator.fit(x_geriatria, y_geriatria)
 
-    # =====================================
-    # 6. Estimate performance (train on X1, estimate on X2)
-    # =====================================
-
-    estimated_scores = evaluator.estimate(X2)
+    # Estimate performance
+    estimated_scores = evaluator.estimate(x_neurologia)
 
     # =====================================
     # 7. Compute real and CV performance

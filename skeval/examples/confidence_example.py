@@ -6,6 +6,7 @@ from sklearn.metrics import accuracy_score, f1_score
 from sklearn.impute import KNNImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 
 from skeval.evaluators.confidence import ConfidenceThresholdEvaluator
 from skeval.utils import get_cv_and_real_scores, print_comparison
@@ -31,10 +32,7 @@ def run_confidence_eval(verbose=False):
     # ======================
     # 3. Define model pipeline
     # ======================
-    model = make_pipeline(
-        KNNImputer(n_neighbors=4),
-        RandomForestClassifier(n_estimators=300, random_state=42),
-    )
+    model = make_pipeline(KNNImputer(n_neighbors=5), XGBClassifier())
 
     # ======================
     # 4. Initialize evaluator
@@ -54,7 +52,7 @@ def run_confidence_eval(verbose=False):
     # ======================
     # 6. Estimated performance
     # ======================
-    estimated_scores = evaluator.estimate(X2, threshold=0.65, limit_to_top_class=True)
+    estimated_scores = evaluator.estimate(X2, threshold=0.8, limit_to_top_class=True)
 
     # ======================
     # 7. CV and Real performance

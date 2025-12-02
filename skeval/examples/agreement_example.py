@@ -10,6 +10,7 @@ from sklearn.metrics import accuracy_score, f1_score
 from sklearn.impute import KNNImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 
 from skeval.evaluators.agreement import AgreementEvaluator
 from skeval.utils import get_cv_and_real_scores, print_comparison
@@ -35,16 +36,13 @@ def run_agreement_eval(verbose=False):
     # ======================
     # 3. Define model pipelines
     # ======================
-    model = make_pipeline(
-        KNNImputer(n_neighbors=10),
-        RandomForestClassifier(n_estimators=50, random_state=42),
-    )
-    # model = RandomForestClassifier(n_estimators=50, random_state=42)
+    model = make_pipeline(KNNImputer(n_neighbors=5), XGBClassifier())
 
     sec_model = make_pipeline(
-        KNNImputer(n_neighbors=10),
-        RandomForestClassifier(n_estimators=100, random_state=42),
+        KNNImputer(n_neighbors=5),
+        XGBClassifier(),
     )
+    # rede neural
     # sec_model = RandomForestClassifier(n_estimators=100, random_state=42)
 
     # ======================

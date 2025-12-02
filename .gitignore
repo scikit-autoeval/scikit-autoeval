@@ -3,6 +3,7 @@ venv/
 dist/
 docs/_build
 skeval/console_tests
+skeval/plots
 .coverage
 .pypirc
 .pytest_cache/

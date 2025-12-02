@@ -6,7 +6,9 @@
 # ==============================================================
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.pipeline import make_pipeline
+from sklearn.impute import KNNImputer
+from xgboost import XGBClassifier
 
 from skeval.evaluators import RegressionEvaluator
 from skeval.utils import get_cv_and_real_scores, print_comparison
@@ -28,7 +30,7 @@ def run_regression_eval(verbose=False):
     # =====================================
     # 3. Define pipeline (KNNImputer + RandomForest)
     # =====================================
-    model = RandomForestClassifier(n_estimators=180, random_state=42)
+    model = make_pipeline(KNNImputer(n_neighbors=5), XGBClassifier())
 
     # =====================================
     # 4. Define scorers and evaluator
@@ -43,7 +45,7 @@ def run_regression_eval(verbose=False):
     # =====================================
     # 5. Fit evaluator using multiple datasets
     # =====================================
-    evaluator.fit([X1, X2], [y1, y2], n_splits=4)
+    evaluator.fit([X1, X2], [y1, y2], n_splits=30)
 
     # =====================================
     # 6. Estimate scores for new dataset
