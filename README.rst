@@ -120,10 +120,10 @@ Example key references:
 
 .. code-block:: text
 
-   Guillory et al. (2021) – Predicting accuracy under shift.
-   Deng et al. (2021) – Learning performance from unlabeled data.
-   Madani et al. (2004) – Agreement/co-training perspectives.
-   Silva & Veloso (2022) – SHAP-driven automatic evaluation.
+   Guillory et al. (2021) – Predicting with confidence on unseen distributions.
+   Deng et al. (2021) – Are labels always necessary for classifier accuracy evaluation?
+   Madani et al. (2004) – Co-validation: Using model disagreement on unlabeled data to validate classification algorithms.
+   Silva & Veloso (2022) – Automatic model evaluation using feature importance patterns on unlabeled data.
 
 Contributing
 ------------
