@@ -5,9 +5,13 @@ docs/_build
 skeval/console_tests
 skeval/plots
 .coverage
+.coveragerc
 .pypirc
+.pylintrc
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
 structure/
 metrics/
+__pycache__/
+*.egg-info/

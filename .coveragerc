@@ -1,8 +1,0 @@
-[run]
-source = skeval
-branch = True
-parallel = True
-
-[report]
-omit =
-    */tests/*

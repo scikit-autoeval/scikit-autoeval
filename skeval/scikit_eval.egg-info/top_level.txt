@@ -1,7 +1,0 @@
-console_tests
-datasets
-evaluators
-metrics
-tests
-utils
-visualization
